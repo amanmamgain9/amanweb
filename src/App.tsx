@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './styles/Showcase.css'
+import './styles/Raffle.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState('all')
