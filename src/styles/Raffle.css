@@ -1,0 +1,91 @@
+.raffle-container {
+  background-color: #001a1a;
+  min-height: 100vh;
+  padding: 20px;
+  color: #00f0ff;
+  font-family: 'Courier New', monospace;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 2px solid #00f0ff;
+}
+
+.points-balance {
+  font-size: 1.2em;
+}
+
+.tab-container {
+  margin-top: 20px;
+}
+
+.tab-button {
+  background-color: transparent;
+  color: #00f0ff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: 1em;
+}
+
+.tab-button.active {
+  background-color: #00f0ff;
+  color: #001a1a;
+}
+
+.raffle-card {
+  border: 1px solid #00f0ff;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: rgba(0, 240, 255, 0.05);
+}
+
+.raffle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.raffle-title {
+  font-size: 1.2em;
+  color: #00f0ff;
+}
+
+.raffle-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.raffle-description {
+  color: #7fdbff;
+  margin-bottom: 15px;
+}
+
+.ticket-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-label {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.ticket-button {
+  background-color: transparent;
+  color: #00f0ff;
+  border: 1px solid #00f0ff;
+  padding: 5px 15px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+}
+
+.ticket-button:hover {
+  background-color: rgba(0, 240, 255, 0.1);
+}
