@@ -1,109 +1,131 @@
 import { useState } from 'react'
-import './styles/Raffle.css'
+import './styles/Showcase.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState('all')
-  const [pointsBalance] = useState(727007)
-  const [selectedRaffle, setSelectedRaffle] = useState<number | null>(null)
+  const [selectedItem, setSelectedItem] = useState<number | null>(null)
 
-  const raffles = [
+  const showcaseItems = [
     {
       id: 1,
-      title: '5 AMATERASU WL SPOTS',
-      description: 'Launching on Aptos chain, an upcoming collection of 10,000 NFTs based on the DN404 standard. Stand a chance to participate in the fair launch of their collection by winning a spot! You must have a Petra wallet address to be able to claim the whitelist spot, GL!',
-      status: 'ENDED',
-      tickets: 0,
-      logo: '/path-to-logo.png'
+      category: 'project',
+      title: 'Project Name 1',
+      description: 'Description of your project',
+      technologies: ['React', 'TypeScript', 'CSS'],
+      link: 'https://project-link.com',
+      image: '/path-to-project-image.png'
     },
     {
       id: 2,
-      title: '15 TOKYO BEAST SILVER MYSTERY TICKETS',
-      description: 'A crypto entertainment IP project centered on Web3 games.',
-      status: 'ENDED',
-      tickets: 1,
-      result: 'YOU LOST',
-      logo: '/path-to-logo.png'
+      category: 'article',
+      title: 'Article Title',
+      description: 'Brief description of the article',
+      date: '2023-12-01',
+      link: 'https://article-link.com',
+      image: '/path-to-article-image.png'
     },
     {
       id: 3,
-      title: '10 TOKYO BEAST GOLDEN MYSTERY TICKETS',
-      description: 'A crypto entertainment IP project centered on Web3 games.',
-      status: 'ENDED',
-      tickets: 1,
-      result: 'YOU LOST',
-      logo: '/path-to-logo.png'
+      category: 'thought',
+      title: 'Interesting Thought',
+      description: 'Your thoughts on a particular topic',
+      date: '2023-12-05',
+      image: '/path-to-thought-image.png'
     }
   ]
 
   return (
-    <div className="raffle-container">
+    <div className="showcase-container">
       <div className="topbar">
         <div className="topbar-title">
-          <span>ALL RAFFLES 10</span>
+          <span>MY SHOWCASE</span>
           <span className="title-decoration">////</span>
-        </div>
-        <div className="points-balance">
-          POINTS BALANCE {pointsBalance} +
         </div>
       </div>
 
       <div className="main-content">
-
-      <div className="tab-container">
-        <button 
-          className={`tab-button ${activeTab === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveTab('all')}
-        >
-          ALL RAFFLES
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'my' ? 'active' : ''}`}
-          onClick={() => setActiveTab('my')}
-        >
-          MY ENTRIES
-        </button>
-      </div>
-
-        <div className="raffle-list">
-          {raffles.map(raffle => (
-            <div 
-              key={raffle.id} 
-              className="raffle-card"
-              onClick={() => setSelectedRaffle(raffle.id)}
-            >
-            <div className="raffle-header">
-              <div className="raffle-title">{raffle.title}</div>
-              <img src={raffle.logo} alt="Raffle logo" className="raffle-logo" />
-            </div>
-            <div className="raffle-description">{raffle.description}</div>
-            <div className="ticket-controls">
-              <div>ENDED</div>
-              <div>YOUR TICKETS</div>
-              <button className="ticket-button">-</button>
-              <span>{raffle.tickets}</span>
-              <button className="ticket-button">+</button>
-              {raffle.result && <div className="status-label">{raffle.result}</div>}
-            </div>
-          </div>
-          ))}
+        <div className="tab-container">
+          <button 
+            className={`tab-button ${activeTab === 'all' ? 'active' : ''}`}
+            onClick={() => setActiveTab('all')}
+          >
+            ALL
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'projects' ? 'active' : ''}`}
+            onClick={() => setActiveTab('projects')}
+          >
+            PROJECTS
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'articles' ? 'active' : ''}`}
+            onClick={() => setActiveTab('articles')}
+          >
+            ARTICLES
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'thoughts' ? 'active' : ''}`}
+            onClick={() => setActiveTab('thoughts')}
+          >
+            THOUGHTS
+          </button>
         </div>
 
-        {selectedRaffle && (
-          <div className="raffle-detail">
+        <div className="showcase-list">
+          {showcaseItems
+            .filter(item => activeTab === 'all' || item.category === activeTab)
+            .map(item => (
+              <div 
+                key={item.id} 
+                className="showcase-card"
+                onClick={() => setSelectedItem(item.id)}
+              >
+                <div className="showcase-header">
+                  <div className="showcase-title">{item.title}</div>
+                  <img src={item.image} alt={item.title} className="showcase-image" />
+                </div>
+                <div className="showcase-description">{item.description}</div>
+                {item.technologies && (
+                  <div className="technologies">
+                    {item.technologies.map(tech => (
+                      <span key={tech} className="tech-tag">{tech}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
+
+        {selectedItem && (
+          <div className="showcase-detail">
             <button 
               className="close-button"
-              onClick={() => setSelectedRaffle(null)}
+              onClick={() => setSelectedItem(null)}
             >
               ✕
             </button>
-            <img 
-              src={raffles.find(r => r.id === selectedRaffle)?.logo} 
-              alt="Raffle logo" 
-              className="raffle-logo" 
-            />
-            <h2>{raffles.find(r => r.id === selectedRaffle)?.title}</h2>
-            <p>{raffles.find(r => r.id === selectedRaffle)?.description}</p>
-            <div className="status-label">RAFFLE CLOSED</div>
+            {(() => {
+              const item = showcaseItems.find(i => i.id === selectedItem)
+              return (
+                <>
+                  <img src={item?.image} alt={item?.title} className="showcase-image" />
+                  <h2>{item?.title}</h2>
+                  <p>{item?.description}</p>
+                  {item?.technologies && (
+                    <div className="technologies">
+                      {item.technologies.map(tech => (
+                        <span key={tech} className="tech-tag">{tech}</span>
+                      ))}
+                    </div>
+                  )}
+                  {item?.link && (
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="item-link">
+                      View {item.category}
+                    </a>
+                  )}
+                </>
+              )
+            })()}
           </div>
         )}
       </div>

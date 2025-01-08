@@ -1,4 +1,4 @@
-.raffle-container {
+.showcase-container {
   background-color: #001a1a;
   min-height: 100vh;
   color: #00f0ff;
@@ -31,14 +31,14 @@
   height: calc(100vh - 60px);
 }
 
-.raffle-list {
+.showcase-list {
   width: 40%;
   padding: 20px;
   overflow-y: auto;
   border-right: 1px solid rgba(0, 240, 255, 0.3);
 }
 
-.raffle-detail {
+.showcase-detail {
   width: 60%;
   padding: 20px;
   background-image: linear-gradient(rgba(0, 26, 26, 0.9), rgba(0, 26, 26, 0.9));
@@ -87,55 +87,66 @@
   color: #001a1a;
 }
 
-.raffle-card {
+.showcase-card {
   border: 1px solid #00f0ff;
   margin: 20px 0;
   padding: 15px;
   background-color: rgba(0, 240, 255, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
-.raffle-header {
+.showcase-card:hover {
+  transform: translateY(-2px);
+}
+
+.technologies {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.tech-tag {
+  background-color: rgba(0, 240, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+.item-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #00f0ff;
+  text-decoration: none;
+  border: 1px solid #00f0ff;
+  padding: 8px 16px;
+  transition: background-color 0.2s;
+}
+
+.item-link:hover {
+  background-color: rgba(0, 240, 255, 0.1);
+}
+
+.showcase-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.raffle-title {
+.showcase-title {
   font-size: 1.2em;
   color: #00f0ff;
 }
 
-.raffle-logo {
+.showcase-image {
   width: 50px;
   height: 50px;
 }
 
-.raffle-description {
+.showcase-description {
   color: #7fdbff;
   margin-bottom: 15px;
 }
 
-.ticket-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.status-label {
-  color: #ff6b6b;
-  font-weight: bold;
-}
-
-.ticket-button {
-  background-color: transparent;
-  color: #00f0ff;
-  border: 1px solid #00f0ff;
-  padding: 5px 15px;
-  cursor: pointer;
-  font-family: 'Courier New', monospace;
-}
-
-.ticket-button:hover {
-  background-color: rgba(0, 240, 255, 0.1);
-}
