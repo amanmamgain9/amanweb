@@ -1,9 +1,59 @@
 .raffle-container {
   background-color: #001a1a;
   min-height: 100vh;
-  padding: 20px;
   color: #00f0ff;
-  font-family: 'Courier New', monospace;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.topbar {
+  background-color: rgba(0, 26, 26, 0.9);
+  padding: 15px 20px;
+  border-bottom: 2px solid rgba(0, 240, 255, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-decoration {
+  color: #00f0ff;
+  font-size: 0.8em;
+  letter-spacing: 2px;
+}
+
+.main-content {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+.raffle-list {
+  width: 40%;
+  padding: 20px;
+  overflow-y: auto;
+  border-right: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.raffle-detail {
+  width: 60%;
+  padding: 20px;
+  background-image: linear-gradient(rgba(0, 26, 26, 0.9), rgba(0, 26, 26, 0.9));
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #00f0ff;
+  font-size: 1.5em;
+  cursor: pointer;
 }
 
 .header {

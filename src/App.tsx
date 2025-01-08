@@ -4,6 +4,7 @@ import './styles/Raffle.css'
 function App() {
   const [activeTab, setActiveTab] = useState('all')
   const [pointsBalance] = useState(727007)
+  const [selectedRaffle, setSelectedRaffle] = useState<number | null>(null)
 
   const raffles = [
     {
@@ -36,10 +37,17 @@ function App() {
 
   return (
     <div className="raffle-container">
-      <div className="header">
-        <div>ALL RAFFLES 10</div>
-        <div className="points-balance">POINTS BALANCE {pointsBalance} +</div>
+      <div className="topbar">
+        <div className="topbar-title">
+          <span>ALL RAFFLES 10</span>
+          <span className="title-decoration">////</span>
+        </div>
+        <div className="points-balance">
+          POINTS BALANCE {pointsBalance} +
+        </div>
       </div>
+
+      <div className="main-content">
 
       <div className="tab-container">
         <button 
@@ -56,9 +64,13 @@ function App() {
         </button>
       </div>
 
-      <div className="raffles-list">
-        {raffles.map(raffle => (
-          <div key={raffle.id} className="raffle-card">
+        <div className="raffle-list">
+          {raffles.map(raffle => (
+            <div 
+              key={raffle.id} 
+              className="raffle-card"
+              onClick={() => setSelectedRaffle(raffle.id)}
+            >
             <div className="raffle-header">
               <div className="raffle-title">{raffle.title}</div>
               <img src={raffle.logo} alt="Raffle logo" className="raffle-logo" />
@@ -73,7 +85,27 @@ function App() {
               {raffle.result && <div className="status-label">{raffle.result}</div>}
             </div>
           </div>
-        ))}
+          ))}
+        </div>
+
+        {selectedRaffle && (
+          <div className="raffle-detail">
+            <button 
+              className="close-button"
+              onClick={() => setSelectedRaffle(null)}
+            >
+              ✕
+            </button>
+            <img 
+              src={raffles.find(r => r.id === selectedRaffle)?.logo} 
+              alt="Raffle logo" 
+              className="raffle-logo" 
+            />
+            <h2>{raffles.find(r => r.id === selectedRaffle)?.title}</h2>
+            <p>{raffles.find(r => r.id === selectedRaffle)?.description}</p>
+            <div className="status-label">RAFFLE CLOSED</div>
+          </div>
+        )}
       </div>
     </div>
   )
