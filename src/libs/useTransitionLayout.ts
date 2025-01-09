@@ -3,7 +3,7 @@
  * Handles smooth transitions between different route/state layouts
  */
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 type LayoutState = {
   list?: React.ReactNode;
@@ -99,10 +99,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
     if (!currentLayout) return null;
 
     return (
-      <>
+      <React.Fragment>
         {isTransitioning && previousLayout?.list ? previousLayout.list : currentLayout.list}
         {isTransitioning && previousLayout?.content ? previousLayout.content : currentLayout.content}
-      </>
+      </React.Fragment>
     );
   };
 
