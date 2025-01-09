@@ -30,15 +30,12 @@ const ContentContainer = styled.div`
 
 const DetailSection = styled.div<{ 
   $isProjectsPage: boolean;
-  $transitionState: 'idle' | 'content' | 'layout' | 'cleanup';
+  $transitionState: 'idle' | 'exiting' | 'entering';
 }>`
-  width: ${props => {
-    if (props.$transitionState === 'layout' || props.$transitionState === 'cleanup') {
-      return '100%';
-    }
-    return props.$isProjectsPage ? '61.8%' : '100%';
-  }};
-  transition: width 0.3s ease-in-out;
+  width: ${props => props.$isProjectsPage ? '61.8%' : '100%'};
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: ${props => props.$transitionState === 'exiting' ? 0 : 1};
+  transform: translateY(${props => props.$transitionState === 'entering' ? '0' : '20px'});
   
   @media (max-width: 768px) {
     width: 100%;
@@ -47,7 +44,7 @@ const DetailSection = styled.div<{
 
 const MainContent = styled.div<{ 
   $isProjectsPage: boolean;
-  $transitionState: 'idle' | 'content' | 'layout' | 'cleanup';
+  $transitionState: 'idle' | 'exiting' | 'entering';
 }>`
   width: 100%;
   max-width: 1200px;
@@ -57,14 +54,9 @@ const MainContent = styled.div<{
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  opacity: ${props => props.$transitionState === 'content' ? 0 : 1};
-  transform: translateY(${props => props.$transitionState === 'content' ? '20px' : '0'});
-  transition: ${props => {
-    if (props.$transitionState === 'layout') {
-      return 'width 0.3s ease-in-out';
-    }
-    return 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
-  }};
+  opacity: ${props => props.$transitionState === 'exiting' ? 0 : 1};
+  transform: translateY(${props => props.$transitionState === 'entering' ? '0' : '20px'});
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 
   @media (max-width: 768px) {
@@ -79,7 +71,7 @@ const MainContent = styled.div<{
 export default function App() {
   const [activePage, setActivePage] = useState('PROJECTS')
   const [selectedItemId, setSelectedItemId] = useState<number | null>(showcaseItems[0].id)
-  const [transitionState, setTransitionState] = useState<'idle' | 'content' | 'layout' | 'cleanup'>('idle')
+  const [transitionState, setTransitionState] = useState<'idle' | 'exiting' | 'entering'>('idle')
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
@@ -88,42 +80,19 @@ export default function App() {
   const handlePageChange = (page: string) => {
     if (page === activePage) return;
     
-    if (page === 'PROJECTS') {
-      // Going TO Projects page - focus on internal transitions
-      setTransitionState('content');
+    // Start exit animation
+    setTransitionState('exiting');
+    
+    // After content fades out, change page and start enter animation
+    setTimeout(() => {
       setActivePage(page);
-      setIsContentVisible(true); // Keep main content visible
+      setTransitionState('entering');
       
-      // Layout changes after content updates
-      setTimeout(() => {
-        setTransitionState('layout');
-      }, 250);
-      
-      // Cleanup and reset
-      setTimeout(() => {
-        setTransitionState('cleanup');
-      }, 550);
-      
+      // Reset to idle after enter animation completes
       setTimeout(() => {
         setTransitionState('idle');
-      }, 600);
-    } else {
-      // Going FROM Projects page - use main content transition
-      setTransitionState('content');
-      
-      setTimeout(() => {
-        setActivePage(page);
-        setTransitionState('layout');
       }, 300);
-      
-      setTimeout(() => {
-        setTransitionState('cleanup');
-      }, 600);
-      
-      setTimeout(() => {
-        setTransitionState('idle');
-      }, 600);
-    }
+    }, 300);
   }
 
   return (

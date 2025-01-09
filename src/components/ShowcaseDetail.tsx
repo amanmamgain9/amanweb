@@ -7,6 +7,7 @@ const DetailContainer = styled.div<{ $isProjectsPage: boolean }>`
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   @media (max-width: 768px) {
     width: 100%;
