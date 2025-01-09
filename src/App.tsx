@@ -35,7 +35,6 @@ const MainContent = styled.div`
   background: rgba(10, 25, 41, 0.8);
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
-  padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
