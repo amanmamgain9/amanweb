@@ -9,7 +9,7 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     margin: 0;
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Press Start 2P', cursive;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #0a1929;
@@ -21,7 +21,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   button {
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Press Start 2P', cursive;
   }
 
   ::-webkit-scrollbar {
