@@ -78,12 +78,12 @@ const NavButton = styled.button<{ $active?: boolean }>`
   }
 `
 
-interface TopBarProps {
+interface NavbarProps {
   activePage: string;
   onPageChange: (page: string) => void;
 }
 
-export function TopBar({ activePage, onPageChange }: TopBarProps) {
+export function Navbar({ activePage, onPageChange }: NavbarProps) {
   const pages = ['HOME', 'PROJECTS', 'RANTS'];
   
   return (

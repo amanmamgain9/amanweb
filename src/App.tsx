@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { TopBar } from './components/TopBar'
+import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
 import { showcaseItems } from './data/showcaseItems'
@@ -60,7 +60,7 @@ export default function App() {
 
   return (
     <Container>
-      <TopBar 
+      <Navbar 
         title="DEVELOPER SHOWCASE"
         activePage={activePage}
         onPageChange={handlePageChange}
