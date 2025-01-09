@@ -1,7 +1,7 @@
 @font-face {
-  font-family: 'BPdotsUnicaseSquare';
-  src: url('/fonts/bpdots.unicasesquare.otf') format('opentype');
-  font-weight: normal;
+  font-family: 'Miso';
+  src: url('/fonts/miso-bold.otf') format('opentype');
+  font-weight: bold;
   font-style: normal;
   font-display: swap;
 }

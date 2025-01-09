@@ -10,8 +10,7 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     margin: 0;
-    font-family: 'Exo 2';
-    // font-family: "BPdotsUnicaseSquare";
+    font-family: Verdana, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #0a1929;
@@ -27,7 +26,8 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Press Start 2P';
+    font-family: 'Miso', sans-serif;
+    font-weight: bold;
   }
 
   ::-webkit-scrollbar {
