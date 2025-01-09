@@ -37,7 +37,11 @@ const DetailSection = styled.div<{ $isProjectsPage: boolean }>`
   }
 `
 
-const MainContent = styled.div<{ $isProjectsPage: boolean; $isVisible: boolean }>`
+const MainContent = styled.div<{ 
+  $isProjectsPage: boolean; 
+  $isVisible: boolean;
+  $transitionState: 'idle' | 'content' | 'layout' | 'cleanup';
+}>`
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -46,7 +50,13 @@ const MainContent = styled.div<{ $isProjectsPage: boolean; $isVisible: boolean }
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
+  transition: ${props => {
+    // Only apply transition when idle or going to non-Projects page
+    if (props.$transitionState === 'idle' || !props.$isProjectsPage) {
+      return 'all 0.3s ease-in-out';
+    }
+    return 'none';
+  }};
   opacity: ${props => props.$isVisible ? 1 : 0};
   transform: translateY(${props => props.$isVisible ? '0' : '20px'});
   overflow: hidden;
@@ -62,19 +72,57 @@ const MainContent = styled.div<{ $isProjectsPage: boolean; $isVisible: boolean }
 
 export default function App() {
   const [activePage, setActivePage] = useState('PROJECTS')
-  const [selectedItemId, setSelectedItemId] = useState<number>(showcaseItems[0].id)
+  const [selectedItemId, setSelectedItemId] = useState<number | null>(showcaseItems[0].id)
   const [isContentVisible, setIsContentVisible] = useState(true)
+  const [transitionState, setTransitionState] = useState<'idle' | 'content' | 'layout' | 'cleanup'>('idle')
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
   const handlePageChange = (page: string) => {
-    setIsContentVisible(false)
-    setTimeout(() => {
-      setActivePage(page)
-      setIsContentVisible(true)
-    }, 300)
+    if (page === activePage) return;
+    
+    if (page === 'PROJECTS') {
+      // Going TO Projects page - focus on internal transitions
+      setTransitionState('content');
+      setActivePage(page);
+      setIsContentVisible(true); // Keep main content visible
+      
+      // Layout changes after content updates
+      setTimeout(() => {
+        setTransitionState('layout');
+      }, 250);
+      
+      // Cleanup and reset
+      setTimeout(() => {
+        setTransitionState('cleanup');
+      }, 550);
+      
+      setTimeout(() => {
+        setTransitionState('idle');
+      }, 600);
+    } else {
+      // Going FROM Projects page - use main content transition
+      setIsContentVisible(false);
+      
+      // Start internal transitions
+      setTransitionState('content');
+      setTimeout(() => {
+        setActivePage(page);
+        setTransitionState('layout');
+      }, 250);
+      
+      // Complete transition
+      setTimeout(() => {
+        setTransitionState('cleanup');
+        setIsContentVisible(true);
+      }, 550);
+      
+      setTimeout(() => {
+        setTransitionState('idle');
+      }, 600);
+    }
   }
 
   return (
@@ -88,11 +136,13 @@ export default function App() {
         <MainContent 
           $isProjectsPage={activePage === 'PROJECTS'}
           $isVisible={isContentVisible}
+          $transitionState={transitionState}
         >
-        {activePage === 'PROJECTS' && (
+        {(activePage === 'PROJECTS' || transitionState === 'content' || transitionState === 'layout') && (
           <ShowcaseList
             items={showcaseItems}
             onItemSelect={setSelectedItemId}
+            transitionState={transitionState}
           />
         )}
         <DetailSection $isProjectsPage={activePage === 'PROJECTS'}>
@@ -102,10 +152,12 @@ export default function App() {
                 item={selectedItem}
                 onClose={() => setSelectedItemId(null)}
                 isProjectsPage={true}
+                transitionState={transitionState}
               />
             )
           ) : (
             <ShowcaseDetail
+              transitionState={transitionState}
               item={{
                 id: 0,
                 title: "Aman Mamgain",
@@ -113,8 +165,7 @@ export default function App() {
                 image: "/profile-image.png",
                 category: "about",
                 link: "/cv.pdf",
-                technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"],
-                linkText: "View CV"
+                technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
               }}
               onClose={() => {}}
               isProjectsPage={false}

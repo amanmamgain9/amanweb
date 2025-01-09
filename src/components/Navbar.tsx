@@ -46,7 +46,6 @@ const NavButton = styled.button<{ $active?: boolean }>`
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  font-family: 'Share Tech Mono', monospace;
   font-size: 1em;
   transition: all 0.3s ease;
   position: relative;
