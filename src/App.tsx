@@ -28,28 +28,16 @@ const ContentContainer = styled.div`
   }
 `
 
-const ListSection = styled.div<{ $isVisible: boolean }>`
-  opacity: ${props => props.$isVisible ? '1' : '0'};
-  transition: opacity 0.3s ease-in-out;
+const ListSection = styled.div`
   overflow: hidden;
   
   @media (max-width: 768px) {
     width: 100%;
-    height: ${props => props.$isVisible ? 'auto' : '0'};
+    height: auto;
   }
 `
 
-const DetailSection = styled.div<{ 
-  $isProjectsPage: boolean;
-  $phase: TransitionPhase;
-}>`
-  width: ${props => {
-    if (props.$phase === 'initial') return '100%';
-    if (props.$phase === 'expanding') return '80%';
-    return props.$isProjectsPage ? '61.8%' : '100%';
-  }};
-  opacity: ${props => props.$phase === 'expanding' ? 0.5 : 1};
-  transition: all 0.3s ease-in-out;
+const DetailSection = styled.div`
   background-color: #0a1929;
   
   @media (max-width: 768px) {

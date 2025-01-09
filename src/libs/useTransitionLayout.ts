@@ -26,10 +26,11 @@ const useLayoutTransition = (options: TransitionOptions) => {
   const [previousLayout, setPreviousLayout] = useState<LayoutState | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [phase, setPhase] = useState<TransitionPhase>('complete');
+  const duration = options.duration || 300;
+  const easing = options.easing || 'ease-in-out';
 
   const getCurrentLayout = () => options.layouts[currentRoute];
 
-  // Initialize transition system
   useEffect(() => {
     const container = options.containerRef.current;
     const list = options.listRef.current;
@@ -42,22 +43,18 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
     // Setup initial styles
     container.style.display = 'flex';
-    content.style.flex = '1';
+    list.style.transition = `width ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
+    content.style.transition = `width ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
 
     return () => {
-      // Cleanup styles on unmount
       container.style.display = '';
-      content.style.flex = '';
+      list.style.transition = '';
+      content.style.transition = '';
     };
-  }, [options.containerRef, options.listRef, options.contentRef]);
+  }, [options.containerRef, options.listRef, options.contentRef, duration, easing]);
 
-  // Handle route changes
   const navigateTo = (route: string) => {
-    if (route === currentRoute) return;
-    if (!options.layouts[route]) {
-      console.warn(`Layout not found for route: ${route}`);
-      return;
-    }
+    if (route === currentRoute || !options.layouts[route]) return;
 
     setPreviousLayout(getCurrentLayout());
     setCurrentRoute(route);
@@ -68,19 +65,26 @@ const useLayoutTransition = (options: TransitionOptions) => {
     const content = options.contentRef.current;
     if (!list || !content) return;
 
-    const duration = options.duration || 300;
-    const easing = options.easing || 'ease-in-out';
-
-    // Setup transition
-    content.style.transition = `opacity ${duration}ms ${easing}`;
-
     // Start transition sequence
     requestAnimationFrame(() => {
-      // Initial fade out
+      // Phase 1: Initial fade out
       content.style.opacity = '0.5';
       setPhase('expanding');
       
-      // Complete transition
+      // Phase 2: Width adjustment
+      setTimeout(() => {
+        if (route === 'PROJECTS') {
+          list.style.width = '38.2%';
+          list.style.opacity = '1';
+          content.style.width = '61.8%';
+        } else {
+          list.style.width = '0';
+          list.style.opacity = '0';
+          content.style.width = '100%';
+        }
+      }, duration * 0.1);
+
+      // Phase 3: Complete transition
       setTimeout(() => {
         setPhase('complete');
         content.style.opacity = '1';
@@ -93,7 +97,6 @@ const useLayoutTransition = (options: TransitionOptions) => {
     });
   };
 
-  // Render function for layouts
   const Layout = ({ type }: { type: 'list' | 'content' }) => {
     const currentLayout = getCurrentLayout();
     if (!currentLayout) return null;
