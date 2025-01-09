@@ -3,7 +3,6 @@ import styled from 'styled-components'
 
 const DetailContainer = styled.div`
   width: 500px;
-  background-color: rgba(13, 35, 57, 0.95);
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
@@ -29,9 +28,9 @@ const DetailImage = styled.img`
   border-radius: 4px;
 `
 
-const Title = styled.h2`
+const Title = styled.h3`
   color: #00f0ff;
-  font-size: 1.4em;
+  font-size: 1.8em;
   margin: 0;
 `
 

@@ -32,8 +32,8 @@ const CardHeader = styled.div`
   margin-bottom: 1rem;
 `
 
-const Title = styled.div`
-  font-size: 1.2em;
+const Title = styled.h3`
+  font-size: 1.8em;
   color: #00f0ff;
   display: flex;
   align-items: center;
