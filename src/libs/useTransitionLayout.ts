@@ -101,15 +101,15 @@ const useLayoutTransition = (options: TransitionOptions) => {
   };
 
   // Render function
-  const Layout = () => {
+  const Layout = ({ type }: { type: 'list' | 'content' }) => {
     const currentLayout = getCurrentLayout();
     if (!currentLayout) return null;
 
     if (isTransitioning && previousLayout) {
-      return previousLayout.list || previousLayout.content;
+      return type === 'list' ? previousLayout.list : previousLayout.content;
     }
     
-    return currentLayout.list || currentLayout.content;
+    return type === 'list' ? currentLayout.list : currentLayout.content;
   };
 
   return {

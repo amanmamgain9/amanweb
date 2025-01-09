@@ -137,16 +137,18 @@ export default function App() {
           ref={containerRef}
           $isProjectsPage={currentRoute === 'PROJECTS'}
         >
-          <div ref={listRef} style={{ flex: '0 0 auto' }}>
-            <Layout />
-          </div>
+          {currentRoute === 'PROJECTS' && (
+            <div ref={listRef} style={{ flex: '0 0 auto' }}>
+              <Layout type="list" />
+            </div>
+          )}
           <DetailSection 
             ref={contentRef}
             $isProjectsPage={currentRoute === 'PROJECTS'}
             $phase="complete"
             style={{ flex: '1 1 auto' }}
           >
-            <Layout />
+            <Layout type="content" />
           </DetailSection>
         </MainContent>
       </ContentContainer>
