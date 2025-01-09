@@ -2,15 +2,12 @@ import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 
-const DetailContainer = styled.div<{ $isProjectsPage: boolean }>`
-  width: ${props => props.$isProjectsPage ? '61.8%' : '100%'};
+const DetailContainer = styled.div`
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   @media (max-width: 768px) {
-    width: 100%;
     border-top: 1px solid #1c4c7c;
   }
 `
@@ -65,7 +62,6 @@ const ItemLink = styled.a`
   text-decoration: none;
   border: 1px solid #00f0ff;
   padding: 0.75rem 1.5rem;
-  transition: all 0.2s;
   font-size: 0.9em;
 
   &:hover {
@@ -84,9 +80,7 @@ export function ShowcaseDetail({
   isProjectsPage
 }: ShowcaseDetailProps) {
   return (
-    <DetailContainer 
-      $isProjectsPage={isProjectsPage}
-    >
+    <DetailContainer>
       <Header>
         <DetailImage src={item.image} alt={item.title} />
         <Title>{item.title}</Title>

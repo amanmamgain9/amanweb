@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import useTransitionLayout from './libs/useTransitionLayout'
+import useTransitionLayout, { TransitionPhase } from './libs/useTransitionLayout'
 import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
@@ -28,9 +28,21 @@ const ContentContainer = styled.div`
   }
 `
 
+const ListSection = styled.div<{ $isVisible: boolean }>`
+  width: ${props => props.$isVisible ? '38.2%' : '0'};
+  opacity: ${props => props.$isVisible ? '1' : '0'};
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    height: ${props => props.$isVisible ? 'auto' : '0'};
+  }
+`
+
 const DetailSection = styled.div<{ 
   $isProjectsPage: boolean;
-  $phase: string;
+  $phase: TransitionPhase;
 }>`
   width: ${props => {
     if (props.$phase === 'initial') return '100%';
@@ -78,7 +90,7 @@ export default function App() {
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
-  const { Layout, navigateTo, currentRoute } = useTransitionLayout({
+  const { Layout, navigateTo, currentRoute, phase, isTransitioning } = useTransitionLayout({
     duration: 300,
     containerRef,
     listRef,
@@ -153,16 +165,16 @@ export default function App() {
           ref={containerRef}
           $isProjectsPage={currentRoute === 'PROJECTS'}
         >
-          {currentRoute === 'PROJECTS' && (
-            <div ref={listRef} style={{ flex: '0 0 auto' }}>
-              <Layout type="list" />
-            </div>
-          )}
+          <ListSection 
+            ref={listRef}
+            $isVisible={currentRoute === 'PROJECTS' && !isTransitioning}
+          >
+            {currentRoute === 'PROJECTS' && <Layout type="list" />}
+          </ListSection>
           <DetailSection 
             ref={contentRef}
             $isProjectsPage={currentRoute === 'PROJECTS'}
-            $phase="complete"
-            style={{ flex: '1 1 auto' }}
+            $phase={phase}
           >
             <Layout type="content" />
           </DetailSection>

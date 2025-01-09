@@ -1,9 +1,4 @@
-/**
- * Layout Transition Library
- * Handles smooth transitions between different route/state layouts
- */
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type LayoutState = {
   list?: React.ReactNode;
@@ -24,10 +19,13 @@ interface TransitionOptions {
   initialRoute: string;
 }
 
+export type TransitionPhase = 'initial' | 'expanding' | 'complete';
+
 const useLayoutTransition = (options: TransitionOptions) => {
   const [currentRoute, setCurrentRoute] = useState<string>(options.initialRoute);
   const [previousLayout, setPreviousLayout] = useState<LayoutState | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [phase, setPhase] = useState<TransitionPhase>('complete');
 
   const getCurrentLayout = () => options.layouts[currentRoute];
 
@@ -53,10 +51,11 @@ const useLayoutTransition = (options: TransitionOptions) => {
       list.style.overflow = '';
       content.style.flex = '';
     };
-  }, [options]);
+  }, [options.containerRef, options.listRef, options.contentRef]);
 
   // Handle route changes
   const navigateTo = (route: string) => {
+    if (route === currentRoute) return;
     if (!options.layouts[route]) {
       console.warn(`Layout not found for route: ${route}`);
       return;
@@ -65,6 +64,7 @@ const useLayoutTransition = (options: TransitionOptions) => {
     setPreviousLayout(getCurrentLayout());
     setCurrentRoute(route);
     setIsTransitioning(true);
+    setPhase('initial');
 
     const list = options.listRef.current;
     const content = options.contentRef.current;
@@ -74,35 +74,38 @@ const useLayoutTransition = (options: TransitionOptions) => {
     const easing = options.easing || 'ease-in-out';
 
     // Setup transition
-    list.style.transition = `width ${duration}ms ${easing}`;
-    content.style.transition = `opacity ${duration}ms ${easing}`;
+    list.style.transition = `width ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
+    content.style.transition = `opacity ${duration}ms ${easing}, width ${duration}ms ${easing}`;
 
-    // Start transition
+    // Start transition sequence
     requestAnimationFrame(() => {
-      // First fade out
-      content.style.opacity = '0';
+      // Initial fade out
+      content.style.opacity = '0.5';
+      setPhase('expanding');
       
-      // Then adjust width if needed
+      // Adjust widths
       setTimeout(() => {
         if (list) {
-          list.style.width = options.layouts[route].list ? '38.2%' : '0';
+          const newListWidth = options.layouts[route].list ? '38.2%' : '0';
+          list.style.width = newListWidth;
+          list.style.opacity = options.layouts[route].list ? '1' : '0';
         }
       }, duration * 0.1);
 
-      // Finally fade in new content
+      // Complete transition
       setTimeout(() => {
+        setPhase('complete');
         content.style.opacity = '1';
         
-        // Complete transition
         setTimeout(() => {
           setIsTransitioning(false);
           setPreviousLayout(null);
-        }, duration * 0.3);
-      }, duration * 0.5);
+        }, duration * 0.2);
+      }, duration * 0.8);
     });
   };
 
-  // Render function
+  // Render function for layouts
   const Layout = ({ type }: { type: 'list' | 'content' }) => {
     const currentLayout = getCurrentLayout();
     if (!currentLayout) return null;
@@ -117,50 +120,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
   return {
     Layout,
     navigateTo,
-    currentRoute
+    currentRoute,
+    phase,
+    isTransitioning
   };
 };
-
-// Usage Example:
-/*
-const App = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  const { Layout, navigateTo } = useLayoutTransition({
-    duration: 300,
-    containerRef,
-    listRef,
-    contentRef,
-    initialRoute: 'about',
-    layouts: {
-      about: {
-        content: <AboutPage />
-      },
-      posts: {
-        list: <PostsList />,
-        content: <PostContent />
-      },
-      projects: {
-        list: <ProjectList />,
-        content: <ProjectContent />
-      }
-    }
-  });
-
-  return (
-    <div ref={containerRef}>
-      <div ref={listRef}>
-        <Layout />
-      </div>
-      <div ref={contentRef}>
-        <Layout />
-      </div>
-      <button onClick={() => navigateTo('posts')}>Go to Posts</button>
-    </div>
-  );
-};
-*/
 
 export default useLayoutTransition;

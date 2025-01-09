@@ -1,7 +1,7 @@
 import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 
-const ListContainer = styled.div`
+const ListContainer = styled.div<{ $isVisible?: boolean }>`
   width: 38.2%;
   padding: 1rem;
   overflow: hidden;
@@ -10,6 +10,8 @@ const ListContainer = styled.div`
   gap: 1rem;
   height: calc(100vh - 200px);
   border-right: 1px solid #1c4c7c;
+  opacity: ${props => props.$isVisible === false ? 0 : 1};
+  transition: opacity 0.3s ease-in-out;
 `
 
 const ListContent = styled.div`
@@ -79,14 +81,16 @@ const TechTag = styled.span`
 interface ShowcaseListProps {
   items: ShowcaseItem[]
   onItemSelect: (id: number) => void
+  isVisible?: boolean
 }
 
 export function ShowcaseList({ 
   items, 
-  onItemSelect
+  onItemSelect,
+  isVisible
 }: ShowcaseListProps) {
   return (
-    <ListContainer>
+    <ListContainer $isVisible={isVisible}>
       <ListContent>
         {items.map(item => (
         <Card 
