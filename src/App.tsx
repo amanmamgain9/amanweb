@@ -19,33 +19,23 @@ const ContentContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   padding: 2rem;
-  padding-top: 5rem; /* Add space for the navbar */
-  overflow: auto;
+  padding-top: 5rem;
 
   @media (max-width: 768px) {
     padding: 1rem;
-    padding-bottom: 5rem; /* Add space for the bottom navbar on mobile */
+    padding-bottom: 5rem;
   }
 `
 
-const DetailSection = styled.div<{ 
-  $isProjectsPage: boolean;
-  $transitionState: 'idle' | 'exiting' | 'entering';
-}>`
+const DetailSection = styled.div<{ $isProjectsPage: boolean }>`
   width: ${props => props.$isProjectsPage ? '61.8%' : '100%'};
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: ${props => props.$transitionState === 'exiting' ? 0 : 1};
-  transform: translateY(${props => props.$transitionState === 'entering' ? '0' : '20px'});
   
   @media (max-width: 768px) {
     width: 100%;
   }
 `
 
-const MainContent = styled.div<{ 
-  $isProjectsPage: boolean;
-  $transitionState: 'idle' | 'exiting' | 'entering';
-}>`
+const MainContent = styled.div<{ $isProjectsPage: boolean }>`
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -54,9 +44,6 @@ const MainContent = styled.div<{
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  opacity: ${props => props.$transitionState === 'exiting' ? 0 : 1};
-  transform: translateY(${props => props.$transitionState === 'entering' ? '0' : '20px'});
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 
   @media (max-width: 768px) {
@@ -71,7 +58,6 @@ const MainContent = styled.div<{
 export default function App() {
   const [activePage, setActivePage] = useState('PROJECTS')
   const [selectedItemId, setSelectedItemId] = useState<number | null>(showcaseItems[0].id)
-  const [transitionState, setTransitionState] = useState<'idle' | 'exiting' | 'entering'>('idle')
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
@@ -79,20 +65,7 @@ export default function App() {
 
   const handlePageChange = (page: string) => {
     if (page === activePage) return;
-    
-    // Start exit animation
-    setTransitionState('exiting');
-    
-    // After content fades out, change page and start enter animation
-    setTimeout(() => {
-      setActivePage(page);
-      setTransitionState('entering');
-      
-      // Reset to idle after enter animation completes
-      setTimeout(() => {
-        setTransitionState('idle');
-      }, 300);
-    }, 300);
+    setActivePage(page);
   }
 
   return (
@@ -103,47 +76,38 @@ export default function App() {
       />
       
       <ContentContainer>
-        <MainContent 
-          $isProjectsPage={activePage === 'PROJECTS'}
-          $transitionState={transitionState}
-        >
-        {(activePage === 'PROJECTS' || transitionState === 'content' || transitionState === 'layout') && (
-          <ShowcaseList
-            items={showcaseItems}
-            onItemSelect={setSelectedItemId}
-            transitionState={transitionState}
-          />
-        )}
-        <DetailSection 
-          $isProjectsPage={activePage === 'PROJECTS'}
-          $transitionState={transitionState}
-        >
-          {activePage === 'PROJECTS' ? (
-            selectedItem && (
-              <ShowcaseDetail
-                item={selectedItem}
-                onClose={() => setSelectedItemId(null)}
-                isProjectsPage={true}
-                transitionState={transitionState}
-              />
-            )
-          ) : (
-            <ShowcaseDetail
-              transitionState={transitionState}
-              item={{
-                id: 0,
-                title: "Aman Mamgain",
-                description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
-                image: "/profile-image.png",
-                category: "about",
-                link: "/cv.pdf",
-                technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
-              }}
-              onClose={() => {}}
-              isProjectsPage={false}
+        <MainContent $isProjectsPage={activePage === 'PROJECTS'}>
+          {activePage === 'PROJECTS' && (
+            <ShowcaseList
+              items={showcaseItems}
+              onItemSelect={setSelectedItemId}
             />
           )}
-        </DetailSection>
+          <DetailSection $isProjectsPage={activePage === 'PROJECTS'}>
+            {activePage === 'PROJECTS' ? (
+              selectedItem && (
+                <ShowcaseDetail
+                  item={selectedItem}
+                  onClose={() => setSelectedItemId(null)}
+                  isProjectsPage={true}
+                />
+              )
+            ) : (
+              <ShowcaseDetail
+                item={{
+                  id: 0,
+                  title: "Aman Mamgain",
+                  description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
+                  image: "/profile-image.png",
+                  category: "about",
+                  link: "/cv.pdf",
+                  technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
+                }}
+                onClose={() => {}}
+                isProjectsPage={false}
+              />
+            )}
+          </DetailSection>
         </MainContent>
       </ContentContainer>
     </Container>
