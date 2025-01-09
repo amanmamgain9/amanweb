@@ -28,9 +28,17 @@ const ContentContainer = styled.div`
   }
 `
 
-const DetailSection = styled.div<{ $isProjectsPage: boolean }>`
-  flex: ${props => props.$isProjectsPage ? '1' : '100%'};
-  transition: flex 0.3s ease-in-out;
+const DetailSection = styled.div<{ 
+  $isProjectsPage: boolean;
+  $transitionState: 'idle' | 'content' | 'layout' | 'cleanup';
+}>`
+  width: ${props => {
+    if (props.$transitionState === 'layout' || props.$transitionState === 'cleanup') {
+      return '100%';
+    }
+    return props.$isProjectsPage ? '61.8%' : '100%';
+  }};
+  transition: width 0.3s ease-in-out;
   
   @media (max-width: 768px) {
     width: 100%;
@@ -39,7 +47,7 @@ const DetailSection = styled.div<{ $isProjectsPage: boolean }>`
 
 const MainContent = styled.div<{ 
   $isProjectsPage: boolean;
-  $isTransitioning: boolean;
+  $transitionState: 'idle' | 'content' | 'layout' | 'cleanup';
 }>`
   width: 100%;
   max-width: 1200px;
@@ -49,9 +57,14 @@ const MainContent = styled.div<{
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-  opacity: ${props => props.$isTransitioning ? 0 : 1};
-  transform: translateY(${props => props.$isTransitioning ? '20px' : '0'});
+  opacity: ${props => props.$transitionState === 'content' ? 0 : 1};
+  transform: translateY(${props => props.$transitionState === 'content' ? '20px' : '0'});
+  transition: ${props => {
+    if (props.$transitionState === 'layout') {
+      return 'width 0.3s ease-in-out';
+    }
+    return 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+  }};
   overflow: hidden;
 
   @media (max-width: 768px) {
@@ -66,7 +79,6 @@ const MainContent = styled.div<{
 export default function App() {
   const [activePage, setActivePage] = useState('PROJECTS')
   const [selectedItemId, setSelectedItemId] = useState<number | null>(showcaseItems[0].id)
-  const [isContentVisible, setIsContentVisible] = useState(true)
   const [transitionState, setTransitionState] = useState<'idle' | 'content' | 'layout' | 'cleanup'>('idle')
 
   const selectedItem = selectedItemId 
@@ -97,20 +109,16 @@ export default function App() {
       }, 600);
     } else {
       // Going FROM Projects page - use main content transition
-      setIsContentVisible(false);
-      
-      // Start internal transitions
       setTransitionState('content');
+      
       setTimeout(() => {
         setActivePage(page);
         setTransitionState('layout');
-      }, 250);
+      }, 300);
       
-      // Complete transition
       setTimeout(() => {
         setTransitionState('cleanup');
-        setIsContentVisible(true);
-      }, 550);
+      }, 600);
       
       setTimeout(() => {
         setTransitionState('idle');
@@ -128,7 +136,6 @@ export default function App() {
       <ContentContainer>
         <MainContent 
           $isProjectsPage={activePage === 'PROJECTS'}
-          $isVisible={isContentVisible}
           $transitionState={transitionState}
         >
         {(activePage === 'PROJECTS' || transitionState === 'content' || transitionState === 'layout') && (
@@ -138,7 +145,10 @@ export default function App() {
             transitionState={transitionState}
           />
         )}
-        <DetailSection $isProjectsPage={activePage === 'PROJECTS'}>
+        <DetailSection 
+          $isProjectsPage={activePage === 'PROJECTS'}
+          $transitionState={transitionState}
+        >
           {activePage === 'PROJECTS' ? (
             selectedItem && (
               <ShowcaseDetail
