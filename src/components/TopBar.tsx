@@ -5,23 +5,8 @@ const TopBarContainer = styled.div`
   padding: 1rem;
   border-bottom: 1px solid #1c4c7c;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-`
-
-const TitleContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.2em;
-  color: #58a6ff;
-`
-
-const TitleDecoration = styled.span`
-  color: #00f0ff;
-  font-size: 0.8em;
-  letter-spacing: 2px;
-  opacity: 0.7;
 `
 
 const NavContainer = styled.div`
@@ -45,20 +30,15 @@ const NavButton = styled.button<{ $active?: boolean }>`
 `
 
 interface TopBarProps {
-  title: string;
   activePage: string;
   onPageChange: (page: string) => void;
 }
 
-export function TopBar({ title, activePage, onPageChange }: TopBarProps) {
+export function TopBar({ activePage, onPageChange }: TopBarProps) {
   const pages = ['HOME', 'PROJECTS', 'RANTS'];
   
   return (
     <TopBarContainer>
-      <TitleContainer>
-        <span>{title}</span>
-        <TitleDecoration>////</TitleDecoration>
-      </TitleContainer>
       <NavContainer>
         {pages.map(page => (
           <NavButton
