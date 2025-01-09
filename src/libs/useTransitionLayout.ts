@@ -45,6 +45,15 @@ const useLayoutTransition = (options: TransitionOptions) => {
     container.style.display = 'flex';
     list.style.transition = `width ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
     content.style.transition = `width ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
+    
+    // Set initial widths
+    if (currentRoute === 'PROJECTS') {
+      list.style.width = '38.2%';
+      content.style.width = '61.8%';
+    } else {
+      list.style.width = '0';
+      content.style.width = '100%';
+    }
 
     return () => {
       container.style.display = '';

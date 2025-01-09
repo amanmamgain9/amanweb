@@ -30,6 +30,7 @@ const ContentContainer = styled.div`
 
 const ListSection = styled.div`
   overflow: hidden;
+  width: 0;
   
   @media (max-width: 768px) {
     width: 100%;
