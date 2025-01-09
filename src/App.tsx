@@ -20,10 +20,12 @@ const ContentContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   padding: 2rem;
+  padding-top: 5rem; /* Add space for the navbar */
   overflow: auto;
 
   @media (max-width: 768px) {
     padding: 1rem;
+    padding-bottom: 5rem; /* Add space for the bottom navbar on mobile */
   }
 `
 
