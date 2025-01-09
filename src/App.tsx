@@ -49,7 +49,7 @@ const MainContent = styled.div`
 
 export default function App() {
   const [activePage, setActivePage] = useState('PROJECTS')
-  const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
+  const [selectedItemId, setSelectedItemId] = useState<number>(showcaseItems[0].id)
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
