@@ -42,13 +42,11 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
     // Setup initial styles
     container.style.display = 'flex';
-    list.style.overflow = 'hidden';
     content.style.flex = '1';
 
     return () => {
       // Cleanup styles on unmount
       container.style.display = '';
-      list.style.overflow = '';
       content.style.flex = '';
     };
   }, [options.containerRef, options.listRef, options.contentRef]);
@@ -74,8 +72,7 @@ const useLayoutTransition = (options: TransitionOptions) => {
     const easing = options.easing || 'ease-in-out';
 
     // Setup transition
-    list.style.transition = `width ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
-    content.style.transition = `opacity ${duration}ms ${easing}, width ${duration}ms ${easing}`;
+    content.style.transition = `opacity ${duration}ms ${easing}`;
 
     // Start transition sequence
     requestAnimationFrame(() => {
@@ -83,15 +80,6 @@ const useLayoutTransition = (options: TransitionOptions) => {
       content.style.opacity = '0.5';
       setPhase('expanding');
       
-      // Adjust widths
-      setTimeout(() => {
-        if (list) {
-          const newListWidth = options.layouts[route].list ? '38.2%' : '0';
-          list.style.width = newListWidth;
-          list.style.opacity = options.layouts[route].list ? '1' : '0';
-        }
-      }, duration * 0.1);
-
       // Complete transition
       setTimeout(() => {
         setPhase('complete');
