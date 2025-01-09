@@ -91,10 +91,11 @@ export default function App() {
     } else if (page === 'ABOUT' && activePage === 'PROJECTS') {
       // From PROJECTS to ABOUT
       setTransitionPhase('expanding');
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      setActivePage(page);
+      await new Promise(resolve => setTimeout(resolve, 100));
       setSelectedItemId(null);
+      
+      await new Promise(resolve => setTimeout(resolve, 200));
+      setActivePage(page);
       
       await new Promise(resolve => setTimeout(resolve, 100));
       setTransitionPhase('complete');
@@ -113,13 +114,11 @@ export default function App() {
       />
       <ContentContainer>
         <MainContent $isProjectsPage={activePage === 'PROJECTS'}>
-          {activePage === 'PROJECTS' && (
-            <ShowcaseList
-              items={showcaseItems}
-              onItemSelect={setSelectedItemId}
-              isVisible={transitionPhase === 'complete'}
-            />
-          )}
+          <ShowcaseList
+            items={showcaseItems}
+            onItemSelect={setSelectedItemId}
+            isVisible={activePage === 'PROJECTS' && transitionPhase !== 'expanding'}
+          />
           <DetailSection 
             $isProjectsPage={activePage === 'PROJECTS'}
             $phase={transitionPhase}
