@@ -26,8 +26,8 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Miso', sans-serif;
-    font-weight: bold;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
   }
 
   ::-webkit-scrollbar {
