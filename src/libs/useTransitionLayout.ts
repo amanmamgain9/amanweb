@@ -82,9 +82,11 @@ const useLayoutTransition = (options: TransitionOptions) => {
       // First fade out
       content.style.opacity = '0';
       
-      // Then adjust width
+      // Then adjust width if needed
       setTimeout(() => {
-        list.style.width = options.layouts[route].list ? '200px' : '0px';
+        if (list) {
+          list.style.width = options.layouts[route].list ? '38.2%' : '0';
+        }
       }, duration * 0.1);
 
       // Finally fade in new content

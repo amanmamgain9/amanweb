@@ -117,6 +117,22 @@ export default function App() {
             isProjectsPage={false}
           />
         )
+      },
+      HOME: {
+        content: (
+          <ShowcaseDetail
+            item={{
+              id: -1,
+              title: "Welcome",
+              description: "Welcome to my portfolio. Browse through my projects and articles to learn more about my work.",
+              image: "/welcome-image.png",
+              category: "home",
+              technologies: []
+            }}
+            onClose={() => {}}
+            isProjectsPage={false}
+          />
+        )
       }
     }
   });
