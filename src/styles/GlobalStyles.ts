@@ -11,6 +11,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
     font-family: 'Exo 2';
+    // font-family: "BPdotsUnicaseSquare";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #0a1929;
