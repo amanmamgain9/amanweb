@@ -28,7 +28,7 @@ const ContentContainer = styled.div`
   }
 `
 
-const MainContent = styled.div<{ $isProjectsPage: boolean }>`
+const MainContent = styled.div<{ $isProjectsPage: boolean; $isVisible: boolean }>`
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -38,6 +38,8 @@ const MainContent = styled.div<{ $isProjectsPage: boolean }>`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: translateY(${props => props.$isVisible ? '0' : '20px'});
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -51,13 +53,18 @@ const MainContent = styled.div<{ $isProjectsPage: boolean }>`
 export default function App() {
   const [activePage, setActivePage] = useState('PROJECTS')
   const [selectedItemId, setSelectedItemId] = useState<number>(showcaseItems[0].id)
+  const [isContentVisible, setIsContentVisible] = useState(true)
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
   const handlePageChange = (page: string) => {
-    setActivePage(page)
+    setIsContentVisible(false)
+    setTimeout(() => {
+      setActivePage(page)
+      setIsContentVisible(true)
+    }, 300)
   }
 
   return (
@@ -69,7 +76,10 @@ export default function App() {
       
       <ContentContainer>
         {activePage === 'PROJECTS' && (
-          <MainContent $isProjectsPage={activePage === 'PROJECTS'}>
+          <MainContent 
+            $isProjectsPage={activePage === 'PROJECTS'}
+            $isVisible={isContentVisible}
+          >
             <ShowcaseList
               items={showcaseItems}
               onItemSelect={setSelectedItemId}

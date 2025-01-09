@@ -1,12 +1,25 @@
 import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
+import { useState, useEffect } from 'react'
 
 const DetailContainer = styled.div<{ $isProjectsPage: boolean }>`
   width: ${props => props.$isProjectsPage ? '61.8%' : '100%'};
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
-  transition: width 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  transform: translateX(0);
+
+  &.entering {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  &.exiting {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
 
   @media (max-width: 768px) {
     width: 100%;
@@ -79,8 +92,19 @@ interface ShowcaseDetailProps {
 }
 
 export function ShowcaseDetail({ item, isProjectsPage }: ShowcaseDetailProps) {
+  const [transitionState, setTransitionState] = useState('entered')
+
+  useEffect(() => {
+    setTransitionState('entering')
+    const timer = setTimeout(() => setTransitionState('entered'), 50)
+    return () => clearTimeout(timer)
+  }, [item.id])
+
   return (
-    <DetailContainer $isProjectsPage={isProjectsPage}>
+    <DetailContainer 
+      $isProjectsPage={isProjectsPage}
+      className={transitionState}
+    >
       <Header>
         <DetailImage src={item.image} alt={item.title} />
         <Title>{item.title}</Title>
