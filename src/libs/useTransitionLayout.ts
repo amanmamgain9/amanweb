@@ -79,17 +79,24 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
     // Start transition
     requestAnimationFrame(() => {
-      list.style.width = options.layouts[route].list ? '200px' : '0px';
+      // First fade out
       content.style.opacity = '0';
+      
+      // Then adjust width
+      setTimeout(() => {
+        list.style.width = options.layouts[route].list ? '200px' : '0px';
+      }, duration * 0.1);
 
+      // Finally fade in new content
       setTimeout(() => {
         content.style.opacity = '1';
-      }, duration * 0.3);
-
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setPreviousLayout(null);
-      }, duration);
+        
+        // Complete transition
+        setTimeout(() => {
+          setIsTransitioning(false);
+          setPreviousLayout(null);
+        }, duration * 0.3);
+      }, duration * 0.5);
     });
   };
 
@@ -98,15 +105,11 @@ const useLayoutTransition = (options: TransitionOptions) => {
     const currentLayout = getCurrentLayout();
     if (!currentLayout) return null;
 
-    const listContent = isTransitioning && previousLayout ? previousLayout.list : currentLayout.list;
-    const mainContent = isTransitioning && previousLayout ? previousLayout.content : currentLayout.content;
+    if (isTransitioning && previousLayout) {
+      return previousLayout.list || previousLayout.content;
+    }
     
-    return (
-      <>
-        {listContent}
-        {mainContent}
-      </>
-    );
+    return currentLayout.list || currentLayout.content;
   };
 
   return {
