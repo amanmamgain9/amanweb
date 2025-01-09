@@ -38,9 +38,8 @@ const DetailSection = styled.div<{ $isProjectsPage: boolean }>`
 `
 
 const MainContent = styled.div<{ 
-  $isProjectsPage: boolean; 
-  $isVisible: boolean;
-  $transitionState: 'idle' | 'content' | 'layout' | 'cleanup';
+  $isProjectsPage: boolean;
+  $isTransitioning: boolean;
 }>`
   width: 100%;
   max-width: 1200px;
@@ -50,15 +49,9 @@ const MainContent = styled.div<{
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: ${props => {
-    // Only apply transition when idle or going to non-Projects page
-    if (props.$transitionState === 'idle' || !props.$isProjectsPage) {
-      return 'all 0.3s ease-in-out';
-    }
-    return 'none';
-  }};
-  opacity: ${props => props.$isVisible ? 1 : 0};
-  transform: translateY(${props => props.$isVisible ? '0' : '20px'});
+  transition: all 0.3s ease-in-out;
+  opacity: ${props => props.$isTransitioning ? 0 : 1};
+  transform: translateY(${props => props.$isTransitioning ? '20px' : '0'});
   overflow: hidden;
 
   @media (max-width: 768px) {

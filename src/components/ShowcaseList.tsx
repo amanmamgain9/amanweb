@@ -1,22 +1,18 @@
 import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 
-const ListContainer = styled.div<{ $transitionState?: 'idle' | 'content' | 'layout' | 'cleanup' }>`
-  width: ${props => props.$transitionState === 'layout' || props.$transitionState === 'cleanup' ? '0' : '38.2%'};
-  padding: ${props => props.$transitionState === 'layout' || props.$transitionState === 'cleanup' ? '0' : '1rem'};
+const ListContainer = styled.div`
+  width: 38.2%;
+  padding: 1rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   height: calc(100vh - 200px);
   border-right: 1px solid #1c4c7c;
-  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
 `
 
-const ListContent = styled.div<{ $transitionState?: 'idle' | 'content' | 'layout' | 'cleanup' }>`
-  opacity: ${props => props.$transitionState === 'content' || props.$transitionState === 'layout' || props.$transitionState === 'cleanup' ? '0' : '1'};
-  transform: translateX(${props => props.$transitionState === 'content' || props.$transitionState === 'layout' || props.$transitionState === 'cleanup' ? '-20px' : '0'});
-  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+const ListContent = styled.div`
   overflow-y: auto;
   height: 100%;
 `
@@ -84,17 +80,15 @@ const TechTag = styled.span`
 interface ShowcaseListProps {
   items: ShowcaseItem[]
   onItemSelect: (id: number) => void
-  transitionState?: 'idle' | 'content' | 'layout' | 'cleanup'
 }
 
 export function ShowcaseList({ 
   items, 
-  onItemSelect,
-  transitionState = 'idle'
+  onItemSelect
 }: ShowcaseListProps) {
   return (
-    <ListContainer $transitionState={transitionState}>
-      <ListContent $transitionState={transitionState}>
+    <ListContainer>
+      <ListContent>
         {items.map(item => (
         <Card 
           key={item.id} 

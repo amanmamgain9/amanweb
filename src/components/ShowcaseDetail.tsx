@@ -2,22 +2,11 @@ import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 
-const DetailContainer = styled.div<{ 
-  $isProjectsPage: boolean;
-  $transitionState?: 'idle' | 'content' | 'layout' | 'cleanup';
-}>`
-  width: ${props => {
-    if (props.$transitionState === 'layout' || props.$transitionState === 'cleanup') {
-      return '100%';
-    }
-    return props.$isProjectsPage ? '61.8%' : '100%';
-  }};
+const DetailContainer = styled.div<{ $isProjectsPage: boolean }>`
+  width: ${props => props.$isProjectsPage ? '61.8%' : '100%'};
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
-  transition: all 0.3s ease-in-out;
-  position: relative;
-  z-index: ${props => props.$transitionState === 'layout' ? 2 : 1};
 
   @media (max-width: 768px) {
     width: 100%;
@@ -87,18 +76,15 @@ interface ShowcaseDetailProps {
   item: ShowcaseItem
   onClose: () => void
   isProjectsPage: boolean
-  transitionState?: 'idle' | 'content' | 'layout' | 'cleanup'
 }
 
 export function ShowcaseDetail({ 
   item, 
-  isProjectsPage,
-  transitionState = 'idle'
+  isProjectsPage
 }: ShowcaseDetailProps) {
   return (
     <DetailContainer 
       $isProjectsPage={isProjectsPage}
-      $transitionState={transitionState}
     >
       <Header>
         <DetailImage src={item.image} alt={item.title} />
