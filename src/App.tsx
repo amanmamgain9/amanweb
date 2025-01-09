@@ -28,6 +28,15 @@ const ContentContainer = styled.div`
   }
 `
 
+const DetailSection = styled.div<{ $isProjectsPage: boolean }>`
+  flex: ${props => props.$isProjectsPage ? '1' : '100%'};
+  transition: flex 0.3s ease-in-out;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`
+
 const MainContent = styled.div<{ $isProjectsPage: boolean; $isVisible: boolean }>`
   width: 100%;
   max-width: 1200px;
@@ -40,6 +49,7 @@ const MainContent = styled.div<{ $isProjectsPage: boolean; $isVisible: boolean }
   transition: all 0.3s ease-in-out;
   opacity: ${props => props.$isVisible ? 1 : 0};
   transform: translateY(${props => props.$isVisible ? '0' : '20px'});
+  overflow: hidden;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -79,36 +89,38 @@ export default function App() {
           $isProjectsPage={activePage === 'PROJECTS'}
           $isVisible={isContentVisible}
         >
-          {activePage === 'PROJECTS' ? (
-            <>
-              <ShowcaseList
-                items={showcaseItems}
-                onItemSelect={setSelectedItemId}
-              />
-              {selectedItem && (
-                <ShowcaseDetail
-                  item={selectedItem}
-                  onClose={() => setSelectedItemId(null)}
-                  isProjectsPage={activePage === 'PROJECTS'}
-                />
-              )}
-            </>
-          ) : (
-          <ShowcaseDetail
-            item={{
-              id: 0,
-              title: "Aman Mamgain",
-              description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
-              image: "/profile-image.png",
-              category: "about",
-              link: "/cv.pdf",
-              technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"],
-              linkText: "View CV"
-            }}
-            onClose={() => {}}
-            isProjectsPage={false}
+        {activePage === 'PROJECTS' && (
+          <ShowcaseList
+            items={showcaseItems}
+            onItemSelect={setSelectedItemId}
           />
         )}
+        <DetailSection $isProjectsPage={activePage === 'PROJECTS'}>
+          {activePage === 'PROJECTS' ? (
+            selectedItem && (
+              <ShowcaseDetail
+                item={selectedItem}
+                onClose={() => setSelectedItemId(null)}
+                isProjectsPage={true}
+              />
+            )
+          ) : (
+            <ShowcaseDetail
+              item={{
+                id: 0,
+                title: "Aman Mamgain",
+                description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
+                image: "/profile-image.png",
+                category: "about",
+                link: "/cv.pdf",
+                technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"],
+                linkText: "View CV"
+              }}
+              onClose={() => {}}
+              isProjectsPage={false}
+            />
+          )}
+        </DetailSection>
         </MainContent>
       </ContentContainer>
     </Container>
