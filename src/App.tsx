@@ -75,36 +75,31 @@ export default function App() {
     : null
 
   const handlePageChange = async (page: string) => {
-    console.log('page change', page);
     if (page === activePage) return;
-    console.log('transitioning');
+
     if (page === 'PROJECTS' && activePage === 'ABOUT') {
       // From ABOUT to PROJECTS
-      // Start at full width
-      console.log('start expanding');
       setTransitionPhase('initial');
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Start shrinking and show list
       setActivePage(page);
       setTransitionPhase('expanding');
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Complete transition
       setTransitionPhase('complete');
     } else if (page === 'ABOUT' && activePage === 'PROJECTS') {
       // From PROJECTS to ABOUT
-      // Start expanding
-      console.log('start 3dsds');
       setTransitionPhase('expanding');
-      await new Promise(resolve => setTimeout(resolve, 150));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Hide list and go full width
       setActivePage(page);
-      setTransitionPhase('initial');
-      await new Promise(resolve => setTimeout(resolve, 150));
+      setSelectedItemId(null);
       
-      // Complete transition
+      await new Promise(resolve => setTimeout(resolve, 100));
+      setTransitionPhase('complete');
+    } else {
+      // Direct transition for other cases
+      setActivePage(page);
       setTransitionPhase('complete');
     }
   }
