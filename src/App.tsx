@@ -92,8 +92,7 @@ export default function App() {
                 isProjectsPage={activePage === 'PROJECTS'}
               />
             )}
-          </MainContent>
-        ) : (
+          ) : (
           <ShowcaseDetail
             item={{
               id: 0,
@@ -109,6 +108,7 @@ export default function App() {
             isProjectsPage={false}
           />
         )}
+        </MainContent>
       </ContentContainer>
     </Container>
   )
