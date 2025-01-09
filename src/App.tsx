@@ -27,8 +27,17 @@ const ContentContainer = styled.div`
   }
 `
 
-const DetailSection = styled.div<{ $isProjectsPage: boolean }>`
-  width: ${props => props.$isProjectsPage ? '61.8%' : '100%'};
+const DetailSection = styled.div<{ 
+  $isProjectsPage: boolean;
+  $phase: string;
+}>`
+  width: ${props => {
+    if (props.$phase === 'initial') return '100%';
+    if (props.$phase === 'expanding') return '80%';
+    return props.$isProjectsPage ? '61.8%' : '100%';
+  }};
+  transition: width 0.3s ease-in-out;
+  background-color: #0a1929;
   
   @media (max-width: 768px) {
     width: 100%;
@@ -58,13 +67,25 @@ const MainContent = styled.div<{ $isProjectsPage: boolean }>`
 export default function App() {
   const [activePage, setActivePage] = useState('PROJECTS')
   const [selectedItemId, setSelectedItemId] = useState<number | null>(showcaseItems[0].id)
+  const [transitionPhase, setTransitionPhase] = useState<'initial' | 'expanding' | 'complete'>('complete')
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
-  const handlePageChange = (page: string) => {
+  const handlePageChange = async (page: string) => {
     if (page === activePage) return;
+    
+    if (page === 'PROJECTS' && activePage === 'ABOUT') {
+      setTransitionPhase('initial');
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      setTransitionPhase('expanding');
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      setTransitionPhase('complete');
+    }
+    
     setActivePage(page);
   }
 
@@ -83,7 +104,10 @@ export default function App() {
               onItemSelect={setSelectedItemId}
             />
           )}
-          <DetailSection $isProjectsPage={activePage === 'PROJECTS'}>
+          <DetailSection 
+            $isProjectsPage={activePage === 'PROJECTS'}
+            $phase={transitionPhase}
+          >
             {activePage === 'PROJECTS' ? (
               selectedItem && (
                 <ShowcaseDetail
