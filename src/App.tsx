@@ -28,7 +28,7 @@ const ContentContainer = styled.div`
   }
 `
 
-const MainContent = styled.div`
+const MainContent = styled.div<{ $isProjectsPage: boolean }>`
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -37,6 +37,7 @@ const MainContent = styled.div`
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -68,7 +69,7 @@ export default function App() {
       
       <ContentContainer>
         {activePage === 'PROJECTS' && (
-          <MainContent>
+          <MainContent $isProjectsPage={activePage === 'PROJECTS'}>
             <ShowcaseList
               items={showcaseItems}
               onItemSelect={setSelectedItemId}
@@ -78,6 +79,7 @@ export default function App() {
               <ShowcaseDetail
                 item={selectedItem}
                 onClose={() => setSelectedItemId(null)}
+                isProjectsPage={activePage === 'PROJECTS'}
               />
             )}
           </MainContent>

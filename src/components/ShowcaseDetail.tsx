@@ -1,11 +1,12 @@
 import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 
-const DetailContainer = styled.div`
-  width: 61.8%;
+const DetailContainer = styled.div<{ $isProjectsPage: boolean }>`
+  width: ${props => props.$isProjectsPage ? '61.8%' : '100%'};
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
+  transition: width 0.3s ease-in-out;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -74,11 +75,12 @@ const ItemLink = styled.a`
 interface ShowcaseDetailProps {
   item: ShowcaseItem
   onClose: () => void
+  isProjectsPage: boolean
 }
 
-export function ShowcaseDetail({ item }: ShowcaseDetailProps) {
+export function ShowcaseDetail({ item, isProjectsPage }: ShowcaseDetailProps) {
   return (
-    <DetailContainer>
+    <DetailContainer $isProjectsPage={isProjectsPage}>
       <Header>
         <DetailImage src={item.image} alt={item.title} />
         <Title>{item.title}</Title>
