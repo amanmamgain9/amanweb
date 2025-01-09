@@ -1,17 +1,43 @@
 import styled from 'styled-components'
 
 const TopBarContainer = styled.div`
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: rgba(13, 35, 57, 0.95);
-  padding: 1rem;
-  border-bottom: 1px solid #1c4c7c;
+  padding: 0.75rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.1),
+              0 8px 30px rgba(13, 35, 57, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(88, 166, 255, 0.1);
+  margin: 1rem;
+  
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    margin: 0;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem;
+  }
 `
 
 const NavContainer = styled.div`
   display: flex;
   gap: 2rem;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: space-around;
+    gap: 1rem;
+  }
 `
 
 const NavButton = styled.button<{ $active?: boolean }>`
@@ -22,10 +48,33 @@ const NavButton = styled.button<{ $active?: boolean }>`
   cursor: pointer;
   font-family: 'Share Tech Mono', monospace;
   font-size: 1em;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
 
   &:hover {
     color: #00f0ff;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: ${props => props.$active ? '100%' : '0'};
+    height: 2px;
+    background: #00f0ff;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+
+  &:hover:after {
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+    font-size: 0.9em;
   }
 `
 
