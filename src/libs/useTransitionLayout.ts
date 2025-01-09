@@ -100,10 +100,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
     return (
       <React.Fragment>
-        {isTransitioning && previousLayout?.list 
+        {(isTransitioning && previousLayout?.list) 
           ? previousLayout.list 
           : currentLayout.list}
-        {isTransitioning && previousLayout?.content 
+        {(isTransitioning && previousLayout?.content) 
           ? previousLayout.content 
           : currentLayout.content}
       </React.Fragment>
