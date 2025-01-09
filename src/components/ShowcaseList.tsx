@@ -2,7 +2,6 @@ import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 
 const ListContainer = styled.div<{ $isVisible?: boolean }>`
-  width: 38.2%;
   padding: 1rem;
   overflow: hidden;
   display: flex;

@@ -6,6 +6,7 @@ const DetailContainer = styled.div`
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
+  width: 100%;
 
   @media (max-width: 768px) {
     border-top: 1px solid #1c4c7c;
