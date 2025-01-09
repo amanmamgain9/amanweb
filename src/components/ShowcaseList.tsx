@@ -8,8 +8,8 @@ const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: calc(100vh - 100px);
-  margin-top: 1rem;
+  height: calc(100vh - 200px);
+  border-right: 1px solid #1c4c7c;
 `
 
 const Card = styled.div`

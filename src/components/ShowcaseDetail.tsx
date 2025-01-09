@@ -4,12 +4,14 @@ import styled from 'styled-components'
 const DetailContainer = styled.div`
   width: 500px;
   background-color: rgba(13, 35, 57, 0.95);
-  border: 1px solid #1c4c7c;
-  border-radius: 4px;
   padding: 2rem;
   overflow-y: auto;
-  height: calc(100vh - 100px);
-  margin-top: 1rem;
+  height: calc(100vh - 200px);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    border-top: 1px solid #1c4c7c;
+  }
 `
 
 const Header = styled.div`

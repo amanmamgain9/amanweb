@@ -32,7 +32,6 @@ const MainContent = styled.div`
   max-width: 1200px;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
   background: rgba(10, 25, 41, 0.8);
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
