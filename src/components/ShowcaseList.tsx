@@ -22,7 +22,6 @@ const Card = styled.div`
   padding: 1.5rem;
   background-color: rgba(13, 35, 57, 0.95);
   cursor: pointer;
-  transition: all 0.2s;
 
   &:hover {
     border-color: #00f0ff;
