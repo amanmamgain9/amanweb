@@ -98,11 +98,14 @@ const useLayoutTransition = (options: TransitionOptions) => {
     const currentLayout = getCurrentLayout();
     if (!currentLayout) return null;
 
+    const listContent = isTransitioning && previousLayout ? previousLayout.list : currentLayout.list;
+    const mainContent = isTransitioning && previousLayout ? previousLayout.content : currentLayout.content;
+    
     return (
-      <React.Fragment>
-        {isTransitioning ? previousLayout?.list : currentLayout.list}
-        {isTransitioning ? previousLayout?.content : currentLayout.content}
-      </React.Fragment>
+      <>
+        {listContent}
+        {mainContent}
+      </>
     );
   };
 
