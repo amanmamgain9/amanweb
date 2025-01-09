@@ -25,7 +25,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'VT323';
+    font-family: 'Press Start 2P';
   }
 
   ::-webkit-scrollbar {
