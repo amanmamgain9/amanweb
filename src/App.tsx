@@ -36,7 +36,8 @@ const DetailSection = styled.div<{
     if (props.$phase === 'expanding') return '80%';
     return props.$isProjectsPage ? '61.8%' : '100%';
   }};
-  transition: width 0.3s ease-in-out;
+  opacity: ${props => props.$phase === 'expanding' ? 0.5 : 1};
+  transition: all 0.3s ease-in-out;
   background-color: #0a1929;
   
   @media (max-width: 768px) {
@@ -74,19 +75,38 @@ export default function App() {
     : null
 
   const handlePageChange = async (page: string) => {
+    console.log('page change', page);
     if (page === activePage) return;
-    
+    console.log('transitioning');
     if (page === 'PROJECTS' && activePage === 'ABOUT') {
+      // From ABOUT to PROJECTS
+      // Start at full width
+      console.log('start expanding');
       setTransitionPhase('initial');
       await new Promise(resolve => setTimeout(resolve, 50));
       
+      // Start shrinking and show list
+      setActivePage(page);
       setTransitionPhase('expanding');
       await new Promise(resolve => setTimeout(resolve, 300));
       
+      // Complete transition
+      setTransitionPhase('complete');
+    } else if (page === 'ABOUT' && activePage === 'PROJECTS') {
+      // From PROJECTS to ABOUT
+      // Start expanding
+      console.log('start 3dsds');
+      setTransitionPhase('expanding');
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      // Hide list and go full width
+      setActivePage(page);
+      setTransitionPhase('initial');
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      // Complete transition
       setTransitionPhase('complete');
     }
-    
-    setActivePage(page);
   }
 
   return (
@@ -95,15 +115,13 @@ export default function App() {
         activePage={activePage}
         onPageChange={handlePageChange}
       />
-      
       <ContentContainer>
         <MainContent $isProjectsPage={activePage === 'PROJECTS'}>
-          {activePage === 'PROJECTS' && (
-            <ShowcaseList
-              items={showcaseItems}
-              onItemSelect={setSelectedItemId}
-            />
-          )}
+          <ShowcaseList
+            items={showcaseItems}
+            onItemSelect={setSelectedItemId}
+            isVisible={activePage === 'PROJECTS' && transitionPhase === 'complete'}
+          />
           <DetailSection 
             $isProjectsPage={activePage === 'PROJECTS'}
             $phase={transitionPhase}
