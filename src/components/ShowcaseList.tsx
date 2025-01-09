@@ -2,7 +2,7 @@ import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 
 const ListContainer = styled.div`
-  flex: 1;
+  width: 38.2%;
   padding: 1rem;
   overflow-y: auto;
   display: flex;

@@ -2,7 +2,7 @@ import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
 
 const DetailContainer = styled.div`
-  width: 500px;
+  width: 61.8%;
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
