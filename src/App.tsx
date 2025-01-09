@@ -17,16 +17,35 @@ const Container = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex: 1;
-  overflow: hidden;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  overflow: auto;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `
 
 const MainContent = styled.div`
-  flex: 1;
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  overflow-y: auto;
-  padding: 0 1rem;
+  background: rgba(10, 25, 41, 0.8);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
 `
 
 export default function App() {
