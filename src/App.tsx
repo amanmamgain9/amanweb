@@ -113,11 +113,13 @@ export default function App() {
       />
       <ContentContainer>
         <MainContent $isProjectsPage={activePage === 'PROJECTS'}>
-          <ShowcaseList
-            items={showcaseItems}
-            onItemSelect={setSelectedItemId}
-            isVisible={activePage === 'PROJECTS' && transitionPhase === 'complete'}
-          />
+          {activePage === 'PROJECTS' && (
+            <ShowcaseList
+              items={showcaseItems}
+              onItemSelect={setSelectedItemId}
+              isVisible={transitionPhase === 'complete'}
+            />
+          )}
           <DetailSection 
             $isProjectsPage={activePage === 'PROJECTS'}
             $phase={transitionPhase}
