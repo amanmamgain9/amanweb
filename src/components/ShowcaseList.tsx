@@ -8,7 +8,6 @@ const ListContainer = styled.div<{ $isVisible?: boolean }>`
   flex-direction: column;
   gap: 1rem;
   height: calc(100vh - 200px);
-  border-right: 1px solid #1c4c7c;
   opacity: ${props => props.$isVisible === false ? 0 : 1};
   transition: opacity 0.3s ease-in-out;
 `

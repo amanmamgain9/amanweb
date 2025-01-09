@@ -58,6 +58,10 @@ const MainContent = styled.div<{ $isProjectsPage: boolean }>`
   overflow: hidden;
   margin: ${props => props.$isProjectsPage ? '0' : '0 auto'};
 
+  & > ${ListSection} {
+    border-right: 1px solid #1c4c7c;
+  }
+
   @media (max-width: 768px) {
     flex-direction: column;
     padding: ${props => props.$isProjectsPage ? '1rem' : '0'};
