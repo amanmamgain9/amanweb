@@ -9,7 +9,7 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     margin: 0;
-    font-family: 'Press Start 2P';
+    font-family: 'Silkscreen';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #0a1929;
@@ -22,6 +22,10 @@ export const GlobalStyles = createGlobalStyle`
 
   button {
     font-family: 'Press Start 2P';
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'VT323';
   }
 
   ::-webkit-scrollbar {
