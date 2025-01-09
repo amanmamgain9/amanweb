@@ -80,18 +80,19 @@ export default function App() {
           $isVisible={isContentVisible}
         >
           {activePage === 'PROJECTS' ? (
-            <ShowcaseList
-              items={showcaseItems}
-              onItemSelect={setSelectedItemId}
-            />
-
-            {selectedItem && (
-              <ShowcaseDetail
-                item={selectedItem}
-                onClose={() => setSelectedItemId(null)}
-                isProjectsPage={activePage === 'PROJECTS'}
+            <>
+              <ShowcaseList
+                items={showcaseItems}
+                onItemSelect={setSelectedItemId}
               />
-            )}
+              {selectedItem && (
+                <ShowcaseDetail
+                  item={selectedItem}
+                  onClose={() => setSelectedItemId(null)}
+                  isProjectsPage={activePage === 'PROJECTS'}
+                />
+              )}
+            </>
           ) : (
           <ShowcaseDetail
             item={{
