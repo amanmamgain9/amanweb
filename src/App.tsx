@@ -129,7 +129,7 @@ export default function App() {
   return (
     <Container>
       <Navbar 
-        activePage={activePage}
+        activePage={currentRoute}
         onPageChange={handlePageChange}
       />
       <ContentContainer>
