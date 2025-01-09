@@ -11,7 +11,6 @@ const Container = styled.div`
   min-height: 100vh;
   background-color: #0a1929;
   color: #00f0ff;
-  font-family: 'Share Tech Mono', monospace;
 `
 
 const ContentContainer = styled.div`
@@ -63,7 +62,6 @@ export default function App() {
   return (
     <Container>
       <Navbar 
-        title="DEVELOPER SHOWCASE"
         activePage={activePage}
         onPageChange={handlePageChange}
       />
