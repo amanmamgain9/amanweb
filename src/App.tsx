@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import useTransitionLayout from './libs/useTransitionLayout'
 import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
@@ -67,43 +68,62 @@ const MainContent = styled.div<{ $isProjectsPage: boolean }>`
 `
 
 export default function App() {
-  const [activePage, setActivePage] = useState('PROJECTS')
   const [selectedItemId, setSelectedItemId] = useState<number | null>(showcaseItems[0].id)
-  const [transitionPhase, setTransitionPhase] = useState<'initial' | 'expanding' | 'complete'>('complete')
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
-  const handlePageChange = async (page: string) => {
-    if (page === activePage) return;
-
-    if (page === 'PROJECTS' && activePage === 'ABOUT') {
-      // From ABOUT to PROJECTS
-      setTransitionPhase('initial');
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      setActivePage(page);
-      setTransitionPhase('expanding');
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      setTransitionPhase('complete');
-    } else if (page === 'ABOUT' && activePage === 'PROJECTS') {
-      // From PROJECTS to ABOUT
-      setTransitionPhase('expanding');
-      await new Promise(resolve => setTimeout(resolve, 100));
-      setSelectedItemId(null);
-      
-      await new Promise(resolve => setTimeout(resolve, 200));
-      setActivePage(page);
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      setTransitionPhase('complete');
-    } else {
-      // Direct transition for other cases
-      setActivePage(page);
-      setTransitionPhase('complete');
+  const { Layout, navigateTo, currentRoute } = useTransitionLayout({
+    duration: 300,
+    containerRef,
+    listRef,
+    contentRef,
+    initialRoute: 'PROJECTS',
+    layouts: {
+      PROJECTS: {
+        list: (
+          <ShowcaseList
+            items={showcaseItems}
+            onItemSelect={setSelectedItemId}
+            isVisible={true}
+          />
+        ),
+        content: selectedItem && (
+          <ShowcaseDetail
+            item={selectedItem}
+            onClose={() => setSelectedItemId(null)}
+            isProjectsPage={true}
+          />
+        )
+      },
+      ABOUT: {
+        content: (
+          <ShowcaseDetail
+            item={{
+              id: 0,
+              title: "Aman Mamgain",
+              description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
+              image: "/profile-image.png",
+              category: "about",
+              link: "/cv.pdf",
+              technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
+            }}
+            onClose={() => {}}
+            isProjectsPage={false}
+          />
+        )
+      }
     }
+  });
+
+  const handlePageChange = (page: string) => {
+    if (page === currentRoute) return;
+    navigateTo(page);
   }
 
   return (
@@ -113,39 +133,19 @@ export default function App() {
         onPageChange={handlePageChange}
       />
       <ContentContainer>
-        <MainContent $isProjectsPage={activePage === 'PROJECTS'}>
-          <ShowcaseList
-            items={showcaseItems}
-            onItemSelect={setSelectedItemId}
-            isVisible={activePage === 'PROJECTS' && transitionPhase !== 'expanding'}
-          />
+        <MainContent 
+          ref={containerRef}
+          $isProjectsPage={currentRoute === 'PROJECTS'}
+        >
+          <div ref={listRef}>
+            <Layout />
+          </div>
           <DetailSection 
-            $isProjectsPage={activePage === 'PROJECTS'}
-            $phase={transitionPhase}
+            ref={contentRef}
+            $isProjectsPage={currentRoute === 'PROJECTS'}
+            $phase="complete"
           >
-            {activePage === 'PROJECTS' ? (
-              selectedItem && (
-                <ShowcaseDetail
-                  item={selectedItem}
-                  onClose={() => setSelectedItemId(null)}
-                  isProjectsPage={true}
-                />
-              )
-            ) : (
-              <ShowcaseDetail
-                item={{
-                  id: 0,
-                  title: "Aman Mamgain",
-                  description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
-                  image: "/profile-image.png",
-                  category: "about",
-                  link: "/cv.pdf",
-                  technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
-                }}
-                onClose={() => {}}
-                isProjectsPage={false}
-              />
-            )}
+            <Layout />
           </DetailSection>
         </MainContent>
       </ContentContainer>
