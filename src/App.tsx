@@ -29,9 +29,8 @@ const ContentContainer = styled.div`
 `
 
 const ListSection = styled.div<{ $isVisible: boolean }>`
-  width: ${props => props.$isVisible ? '38.2%' : '0'};
   opacity: ${props => props.$isVisible ? '1' : '0'};
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
   overflow: hidden;
   
   @media (max-width: 768px) {
