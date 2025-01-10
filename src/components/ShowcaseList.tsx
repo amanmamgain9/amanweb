@@ -15,6 +15,11 @@ const ListContainer = styled.div<{ $isVisible?: boolean }>`
 const ListContent = styled.div`
   overflow-y: auto;
   height: 100%;
+  
+  /* Add spacing between cards */
+  & > *:not(:last-child) {
+    margin-bottom: 1rem;
+  }
 `
 
 const Card = styled.div`
@@ -22,10 +27,14 @@ const Card = styled.div`
   padding: 1.5rem;
   background-color: rgba(13, 35, 57, 0.95);
   cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
 
   &:hover {
     border-color: #00f0ff;
     background-color: rgba(28, 76, 124, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 240, 255, 0.1);
   }
 `
 
@@ -42,6 +51,7 @@ const Title = styled.h3`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin: 0;
 
   &::before {
     content: '>';
@@ -52,7 +62,8 @@ const Title = styled.h3`
 const Image = styled.img`
   width: 40px;
   height: 40px;
-  border-radius: 4px;
+  border-radius: 8px;
+  object-fit: cover;
 `
 
 const Description = styled.div`
@@ -74,6 +85,12 @@ const TechTag = styled.span`
   padding: 0.25rem 0.75rem;
   font-size: 0.8em;
   border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: rgba(0, 240, 255, 0.15);
+  }
 `
 
 interface ShowcaseListProps {
