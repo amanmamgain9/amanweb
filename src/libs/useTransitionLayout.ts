@@ -28,9 +28,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
     const duration = options.duration || 300;
     const easing = options.easing || 'ease-in-out';
 
+    const [showFutureContent, setShowFutureContent] = useState(false);
+
     const getCurrentLayout = () => {
-        // During transition, after the midpoint, show the future layout
-        if (futureRoute && isTransitioning) {
+        if (futureRoute && showFutureContent) {
             return options.layouts[futureRoute];
         }
         return options.layouts[currentRoute];
@@ -98,7 +99,7 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
         // Phase 3: Switch content at midpoint
         runAfter(duration * 0.5, () => {
-            setCurrentRoute(route);
+            setShowFutureContent(true);
             content.style.opacity = '0.3';
         });
 
@@ -109,8 +110,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
         // Phase 5: Complete transition
         runAfter(duration, () => {
+            setCurrentRoute(route);
             setIsTransitioning(false);
             setFutureRoute(null);
+            setShowFutureContent(false);
         });
     };
 
