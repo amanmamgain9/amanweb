@@ -155,18 +155,16 @@ export default function App() {
       <ContentContainer>
         <MainContent 
           ref={containerRef}
-          $isProjectsPage={!!options.layouts[currentRoute].list}
+          $isProjectsPage={currentRoute === 'PROJECTS'}
         >
           <ListSection 
             ref={listRef}
-            $isVisible={currentRoute === 'PROJECTS' && !isTransitioning}
           >
             {currentRoute === 'PROJECTS' && <Layout type="list" />}
           </ListSection>
           <DetailSection 
             ref={contentRef}
             $isProjectsPage={currentRoute === 'PROJECTS'}
-            $phase={phase}
           >
             <Layout type="content" />
           </DetailSection>
