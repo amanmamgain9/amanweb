@@ -88,6 +88,11 @@ const useLayoutTransition = (options: TransitionOptions) => {
         if (!list || !content) return;
 
         const hasListView = !!options.layouts[route].list;
+        
+        // Update border state immediately for the new route
+        setHasListContent(hasListView);
+        
+        // Then start the width transition
         if (hasListView) {
             list.style.width = '38.2%';
             content.style.width = '61.8%';
@@ -102,7 +107,6 @@ const useLayoutTransition = (options: TransitionOptions) => {
             setCurrentRoute(route);
             runAfter(contentDuration, () => {
                 setIsRouteTransition(false);
-                setHasListContent(hasListView);
             });
         });
     };
