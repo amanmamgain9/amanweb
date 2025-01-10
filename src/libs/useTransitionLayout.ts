@@ -44,7 +44,8 @@ const useLayoutTransition = (options: TransitionOptions) => {
     content.style.transition = `width ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
     
     // Set initial widths
-    if (currentRoute === 'PROJECTS') {
+    const hasListView = !!options.layouts[currentRoute].list;
+    if (hasListView) {
       list.style.width = '38.2%';
       content.style.width = '61.8%';
     } else {
