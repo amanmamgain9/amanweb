@@ -23,11 +23,18 @@ interface TransitionOptions {
 
 const useLayoutTransition = (options: TransitionOptions) => {
     const [currentRoute, setCurrentRoute] = useState<string>(options.initialRoute);
+    const [futureRoute, setFutureRoute] = useState<string | null>(null);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const duration = options.duration || 300;
     const easing = options.easing || 'ease-in-out';
 
-    const getCurrentLayout = () => options.layouts[currentRoute];
+    const getCurrentLayout = () => {
+        // During transition, after the midpoint, show the future layout
+        if (futureRoute && isTransitioning) {
+            return options.layouts[futureRoute];
+        }
+        return options.layouts[currentRoute];
+    };
 
     useEffect(() => {
         const container = options.containerRef.current;
@@ -63,8 +70,9 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
     const navigateTo = (route: string) => {
         if (route === currentRoute || !options.layouts[route]) return;
+        if (isTransitioning) return; // Prevent multiple transitions
 
-        setCurrentRoute(route);
+        setFutureRoute(route);
         setIsTransitioning(true);
 
         const list = options.listRef.current;
@@ -72,10 +80,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
         if (!list || !content) return;
 
         // Phase 1: Initial fade out
-        content.style.opacity = '0.5';
+        content.style.opacity = '0';
 
         // Phase 2: Width adjustment
-        runAfter(duration * 0.1, () => {
+        runAfter(duration * 0.2, () => {
             const hasListView = !!options.layouts[route].list;
             if (hasListView) {
                 list.style.width = '38.2%';
@@ -88,12 +96,21 @@ const useLayoutTransition = (options: TransitionOptions) => {
             }
         });
 
-        // Phase 3: Complete transition
-        runAfter(duration * 0.8, () => {
+        // Phase 3: Switch content at midpoint
+        runAfter(duration * 0.5, () => {
+            setCurrentRoute(route);
+            content.style.opacity = '0.3';
+        });
+
+        // Phase 4: Fade in new content
+        runAfter(duration * 0.7, () => {
             content.style.opacity = '1';
-            runAfter(duration * 0.2, () => {
-                setIsTransitioning(false);
-            });
+        });
+
+        // Phase 5: Complete transition
+        runAfter(duration, () => {
+            setIsTransitioning(false);
+            setFutureRoute(null);
         });
     };
 
