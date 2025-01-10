@@ -29,10 +29,10 @@ const ContentContainer = styled.div`
   }
 `
 
-const ListSection = styled.div`
+const ListSection = styled.div<{ showBorder: boolean }>`
   overflow: hidden;
   width: 0;
-  border-right: 1px solid #1c4c7c;
+  border-right: ${props => props.showBorder ? '1px solid #1c4c7c' : 'none'};
   @media (max-width: 768px) {
     width: 100%;
     height: auto;
@@ -140,6 +140,7 @@ export default function App() {
         >
           <ListSection 
             ref={listRef}
+            showBorder={hasListContent}
           >
             <Layout type="list" />
           </ListSection>

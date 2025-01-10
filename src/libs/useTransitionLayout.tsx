@@ -25,6 +25,7 @@ interface TransitionOptions {
 const useLayoutTransition = (options: TransitionOptions) => {
     const [currentRoute, setCurrentRoute] = useState<string>(options.initialRoute);
     const [isRouteTransition, setIsRouteTransition] = useState(false);
+    const [hasListContent, setHasListContent] = useState(!!options.layouts[options.initialRoute].list);
     const duration = options.duration || 300;
     const contentDuration = options.contentDuration || 500;
     const easing = options.easing || 'ease-in-out';
@@ -101,6 +102,7 @@ const useLayoutTransition = (options: TransitionOptions) => {
             setCurrentRoute(route);
             runAfter(contentDuration, () => {
                 setIsRouteTransition(false);
+                setHasListContent(hasListView);
             });
         });
     };
@@ -138,7 +140,8 @@ const useLayoutTransition = (options: TransitionOptions) => {
     return {
         Layout,
         navigateTo,
-        currentRoute
+        currentRoute,
+        hasListContent
     };
 };
 
