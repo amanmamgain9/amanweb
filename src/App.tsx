@@ -155,7 +155,7 @@ export default function App() {
       <ContentContainer>
         <MainContent 
           ref={containerRef}
-          $isProjectsPage={!!options.layouts[currentRoute].list}
+          $isProjectsPage={!!layouts[currentRoute].list}
         >
           <ListSection 
             ref={listRef}
