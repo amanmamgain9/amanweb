@@ -82,7 +82,7 @@ export default function App() {
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
-  const { Layout, navigateTo, currentRoute, phase, isTransitioning } = useTransitionLayout({
+  const { Layout, navigateTo, currentRoute, isTransitioning } = useTransitionLayout({
     duration: 3000,
     containerRef,
     listRef,
