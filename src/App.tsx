@@ -46,7 +46,7 @@ const DetailSection = styled.div`
   }
 `
 
-const MainContent = styled.div<{ $isProjectsPage: boolean }>`
+const MainContent = styled.div`
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -56,7 +56,6 @@ const MainContent = styled.div<{ $isProjectsPage: boolean }>`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin: ${props => props.$isProjectsPage ? '0' : '0 auto'};
 
   & > ${ListSection} {
     border-right: 1px solid #1c4c7c;
@@ -64,7 +63,6 @@ const MainContent = styled.div<{ $isProjectsPage: boolean }>`
 
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: ${props => props.$isProjectsPage ? '1rem' : '0'};
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -83,7 +81,7 @@ export default function App() {
     : null
 
   const { Layout, navigateTo, currentRoute } = useTransitionLayout({
-    duration: 3000,
+    duration: 700,
     containerRef,
     listRef,
     contentRef,
@@ -152,7 +150,6 @@ export default function App() {
       <ContentContainer>
         <MainContent 
           ref={containerRef}
-          $isProjectsPage={currentRoute === 'PROJECTS'}
         >
           <ListSection 
             ref={listRef}

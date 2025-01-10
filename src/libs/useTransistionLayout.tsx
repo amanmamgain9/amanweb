@@ -13,7 +13,6 @@ type RouteLayouts = {
 
 interface TransitionOptions {
     duration?: number;
-    contentDuration?: number;  // New duration for content animation
     easing?: string;
     containerRef: React.RefObject<HTMLElement>;
     listRef: React.RefObject<HTMLElement>;
@@ -24,29 +23,10 @@ interface TransitionOptions {
 
 const useLayoutTransition = (options: TransitionOptions) => {
     const [currentRoute, setCurrentRoute] = useState<string>(options.initialRoute);
+    const [futureRoute, setFutureRoute] = useState<string | null>(null);
+    const [isTransitioning, setIsTransitioning] = useState(false);
     const duration = options.duration || 300;
-    const contentDuration = options.contentDuration || 500; // Slightly longer for content animation
     const easing = options.easing || 'ease-in-out';
-
-    useEffect(() => {
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes animateTop {
-                from {
-                    position: relative;
-                    top: -300px;
-                    opacity: 0;
-                }
-                to {
-                    position: relative;
-                    top: 0;
-                    opacity: 1;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        return () => style.remove();
-    }, []);
 
     useEffect(() => {
         const container = options.containerRef.current;
@@ -58,10 +38,14 @@ const useLayoutTransition = (options: TransitionOptions) => {
             return;
         }
 
+        // Setup initial styles
         container.style.display = 'flex';
-        list.style.transition = `width ${duration}ms ${easing}`;
-        content.style.transition = `width ${duration}ms ${easing}`;
+        list.style.transition = `width ${duration * 0.4}ms ${easing}`;
+        content.style.transition = `width ${duration * 0.4}ms ${easing}`;
+        content.style.position = 'relative';
+        content.style.overflow = 'hidden';
 
+        // Set initial widths
         const hasListView = !!options.layouts[currentRoute].list;
         if (hasListView) {
             list.style.width = '38.2%';
@@ -75,16 +59,23 @@ const useLayoutTransition = (options: TransitionOptions) => {
             container.style.display = '';
             list.style.transition = '';
             content.style.transition = '';
+            content.style.position = '';
+            content.style.overflow = '';
         };
     }, [options.containerRef, options.listRef, options.contentRef, duration, easing, currentRoute]);
 
     const navigateTo = (route: string) => {
         if (route === currentRoute || !options.layouts[route]) return;
+        if (isTransitioning) return;
+
+        setIsTransitioning(true);
+        setFutureRoute(route);
 
         const list = options.listRef.current;
         const content = options.contentRef.current;
         if (!list || !content) return;
 
+        // Phase 1: Adjust widths
         const hasListView = !!options.layouts[route].list;
         if (hasListView) {
             list.style.width = '38.2%';
@@ -94,36 +85,56 @@ const useLayoutTransition = (options: TransitionOptions) => {
             content.style.width = '100%';
         }
 
-        runAfter(duration, () => {
+        // Complete transition after width change
+        runAfter(duration * 0.4, () => {
             setCurrentRoute(route);
+            setFutureRoute(null);
+            setIsTransitioning(false);
         });
     };
 
     const Layout = ({ type }: { type: 'list' | 'content' }) => {
-        const layout = options.layouts[currentRoute];
-        
-        if (type === 'list' && !layout.list) return null;
+        if (type === 'list') {
+            return futureRoute ? options.layouts[futureRoute].list : options.layouts[currentRoute].list;
+        }
 
+        // For content transitions
         return (
-            <div 
-                style={{
-                    display: 'grid',
-                    width: '100%',
-                    position: 'relative'
-                }}
-            >
-                <div
-                    key={currentRoute}
-                    style={{ 
-                        gridArea: '1 / 1',
+            <>
+                {!isTransitioning && (
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
                         width: '100%',
-                        position: 'relative',
-                        animation: `animateTop ${contentDuration}ms ${easing}`
-                    }}
-                >
-                    {type === 'list' ? layout.list : layout.content}
-                </div>
-            </div>
+                        transform: 'translateY(0)',
+                        transition: `transform ${duration * 0.6}ms ${easing}`
+                    }}>
+                        {options.layouts[currentRoute].content}
+                    </div>
+                )}
+                {isTransitioning && futureRoute && (
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        transform: 'translateY(-100%)',
+                        animation: `slideDown ${duration * 0.6}ms ${easing} forwards`,
+                        animationDelay: `${duration * 0.4}ms`
+                    }}>
+                        {options.layouts[futureRoute].content}
+                    </div>
+                )}
+                <style>
+                    {`
+                    @keyframes slideDown {
+                        from { transform: translateY(-100%); }
+                        to { transform: translateY(0); }
+                    }
+                    `}
+                </style>
+            </>
         );
     };
 
