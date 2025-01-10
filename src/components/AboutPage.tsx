@@ -131,24 +131,6 @@ const InterestText = styled.p`
   line-height: 1.4;
 `;
 
-const CVButton = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.2rem;
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  border-radius: 4px;
-  color: #00f0ff;
-  text-decoration: none;
-  font-size: 1.1rem;
-  transition: all 0.2s;
-
-  &:hover {
-    background: rgba(0, 240, 255, 0.2);
-    transform: translateY(-2px);
-  }
-`;
 
 export const AboutPage: React.FC = () => {
   return (

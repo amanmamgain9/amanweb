@@ -21,7 +21,7 @@ const ContentContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   padding: 2rem;
-  padding-top: 5rem;
+  padding-top: 6rem;
 
   @media (max-width: 768px) {
     padding: 1rem;
@@ -32,7 +32,7 @@ const ContentContainer = styled.div`
 const ListSection = styled.div`
   overflow: hidden;
   width: 0;
-  
+  border-right: 1px solid #1c4c7c;
   @media (max-width: 768px) {
     width: 100%;
     height: auto;
@@ -58,10 +58,6 @@ const MainContent = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 
-  & > ${ListSection} {
-    border-right: 1px solid #1c4c7c;
-  }
-
   @media (max-width: 768px) {
     flex-direction: column;
     border-radius: 0;
@@ -81,7 +77,7 @@ export default function App() {
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
-  const { Layout, navigateTo, currentRoute } = useTransitionLayout({
+  const { Layout, navigateTo, currentRoute, hasListContent } = useTransitionLayout({
     duration: 700,
     containerRef,
     listRef,
