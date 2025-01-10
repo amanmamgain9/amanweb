@@ -87,13 +87,17 @@ const useLayoutTransition = (options: TransitionOptions) => {
         const content = options.contentRef.current;
         if (!list || !content) return;
 
-        const hasListView = !!options.layouts[route].list;
+        const currentHasList = !!options.layouts[currentRoute].list;
+        const nextHasList = !!options.layouts[route].list;
         
-        // Update border state immediately for the new route
-        setHasListContent(hasListView);
+        // If transitioning TO a route with list, show border immediately
+        // If transitioning FROM a route with list, remove border after transition
+        if (!currentHasList && nextHasList) {
+            setHasListContent(true);
+        }
         
-        // Then start the width transition
-        if (hasListView) {
+        // Start the width transition
+        if (nextHasList) {
             list.style.width = '38.2%';
             content.style.width = '61.8%';
         } else {
@@ -107,6 +111,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
             setCurrentRoute(route);
             runAfter(contentDuration, () => {
                 setIsRouteTransition(false);
+                // If transitioning FROM a route with list, now remove the border
+                if (currentHasList && !nextHasList) {
+                    setHasListContent(false);
+                }
             });
         });
     };
