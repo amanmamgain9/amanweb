@@ -82,7 +82,7 @@ export default function App() {
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
-  const { Layout, navigateTo, currentRoute, isTransitioning } = useTransitionLayout({
+  const { Layout, navigateTo, currentRoute } = useTransitionLayout({
     duration: 3000,
     containerRef,
     listRef,
@@ -101,7 +101,6 @@ export default function App() {
           <ShowcaseDetail
             item={selectedItem}
             onClose={() => setSelectedItemId(null)}
-            isProjectsPage={true}
           />
         )
       },
@@ -118,7 +117,6 @@ export default function App() {
               technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
             }}
             onClose={() => {}}
-            isProjectsPage={false}
           />
         )
       },
@@ -134,7 +132,6 @@ export default function App() {
               technologies: []
             }}
             onClose={() => {}}
-            isProjectsPage={false}
           />
         )
       }
@@ -160,11 +157,10 @@ export default function App() {
           <ListSection 
             ref={listRef}
           >
-            {currentRoute === 'PROJECTS' && <Layout type="list" />}
+            <Layout type="list" />
           </ListSection>
           <DetailSection 
             ref={contentRef}
-            $isProjectsPage={currentRoute === 'PROJECTS'}
           >
             <Layout type="content" />
           </DetailSection>

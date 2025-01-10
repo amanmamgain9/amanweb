@@ -73,12 +73,10 @@ const ItemLink = styled.a`
 interface ShowcaseDetailProps {
   item: ShowcaseItem
   onClose: () => void
-  isProjectsPage: boolean
 }
 
 export function ShowcaseDetail({ 
-  item, 
-  isProjectsPage
+  item
 }: ShowcaseDetailProps) {
   return (
     <DetailContainer>
