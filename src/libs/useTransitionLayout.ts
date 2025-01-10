@@ -82,7 +82,8 @@ const useLayoutTransition = (options: TransitionOptions) => {
       
       // Phase 2: Width adjustment
       setTimeout(() => {
-        if (route === 'PROJECTS') {
+        const hasListView = !!options.layouts[route].list;
+        if (hasListView) {
           list.style.width = '38.2%';
           list.style.opacity = '1';
           content.style.width = '61.8%';
