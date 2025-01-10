@@ -13,7 +13,7 @@ type RouteLayouts = {
 
 interface TransitionOptions {
     duration?: number;
-    contentDuration?: number;  // New duration for content animation
+    contentDuration?: number;
     easing?: string;
     containerRef: React.RefObject<HTMLElement>;
     listRef: React.RefObject<HTMLElement>;
@@ -24,8 +24,9 @@ interface TransitionOptions {
 
 const useLayoutTransition = (options: TransitionOptions) => {
     const [currentRoute, setCurrentRoute] = useState<string>(options.initialRoute);
+    const [isRouteTransition, setIsRouteTransition] = useState(false);
     const duration = options.duration || 300;
-    const contentDuration = options.contentDuration || 500; // Slightly longer for content animation
+    const contentDuration = options.contentDuration || 500;
     const easing = options.easing || 'ease-in-out';
 
     useEffect(() => {
@@ -80,7 +81,7 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
     const navigateTo = (route: string) => {
         if (route === currentRoute || !options.layouts[route]) return;
-
+        
         const list = options.listRef.current;
         const content = options.contentRef.current;
         if (!list || !content) return;
@@ -94,8 +95,13 @@ const useLayoutTransition = (options: TransitionOptions) => {
             content.style.width = '100%';
         }
 
+        // Wait for width transition to complete before starting content animation
         runAfter(duration, () => {
+            setIsRouteTransition(true);
             setCurrentRoute(route);
+            runAfter(contentDuration, () => {
+                setIsRouteTransition(false);
+            });
         });
     };
 
@@ -103,6 +109,8 @@ const useLayoutTransition = (options: TransitionOptions) => {
         const layout = options.layouts[currentRoute];
         
         if (type === 'list' && !layout.list) return null;
+        
+        const content = type === 'list' ? layout.list : layout.content;
 
         return (
             <div 
@@ -118,10 +126,10 @@ const useLayoutTransition = (options: TransitionOptions) => {
                         gridArea: '1 / 1',
                         width: '100%',
                         position: 'relative',
-                        animation: `animateTop ${contentDuration}ms ${easing}`
+                        animation: isRouteTransition ? `animateTop ${contentDuration}ms ${easing}` : 'none'
                     }}
                 >
-                    {type === 'list' ? layout.list : layout.content}
+                    {content}
                 </div>
             </div>
         );
