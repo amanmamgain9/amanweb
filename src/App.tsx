@@ -83,7 +83,7 @@ export default function App() {
     : null
 
   const { Layout, navigateTo, currentRoute, phase, isTransitioning } = useTransitionLayout({
-    duration: 300,
+    duration: 3000,
     containerRef,
     listRef,
     contentRef,

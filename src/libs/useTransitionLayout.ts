@@ -19,13 +19,10 @@ interface TransitionOptions {
   initialRoute: string;
 }
 
-export type TransitionPhase = 'initial' | 'expanding' | 'complete';
-
 const useLayoutTransition = (options: TransitionOptions) => {
   const [currentRoute, setCurrentRoute] = useState<string>(options.initialRoute);
   const [previousLayout, setPreviousLayout] = useState<LayoutState | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [phase, setPhase] = useState<TransitionPhase>('complete');
   const duration = options.duration || 300;
   const easing = options.easing || 'ease-in-out';
 
@@ -68,7 +65,6 @@ const useLayoutTransition = (options: TransitionOptions) => {
     setPreviousLayout(getCurrentLayout());
     setCurrentRoute(route);
     setIsTransitioning(true);
-    setPhase('initial');
 
     const list = options.listRef.current;
     const content = options.contentRef.current;
@@ -78,7 +74,6 @@ const useLayoutTransition = (options: TransitionOptions) => {
     requestAnimationFrame(() => {
       // Phase 1: Initial fade out
       content.style.opacity = '0.5';
-      setPhase('expanding');
       
       // Phase 2: Width adjustment
       setTimeout(() => {
@@ -96,7 +91,6 @@ const useLayoutTransition = (options: TransitionOptions) => {
 
       // Phase 3: Complete transition
       setTimeout(() => {
-        setPhase('complete');
         content.style.opacity = '1';
         
         setTimeout(() => {
@@ -122,7 +116,6 @@ const useLayoutTransition = (options: TransitionOptions) => {
     Layout,
     navigateTo,
     currentRoute,
-    phase,
     isTransitioning
   };
 };
