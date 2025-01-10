@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+const runAfter = (ms: number, fn: () => void) => setTimeout(fn, ms);
+
 type LayoutState = {
     list?: React.ReactNode;
     content: React.ReactNode;
@@ -69,33 +71,29 @@ const useLayoutTransition = (options: TransitionOptions) => {
         const content = options.contentRef.current;
         if (!list || !content) return;
 
-        // Start transition sequence
-        requestAnimationFrame(() => {
-            // Phase 1: Initial fade out
-            content.style.opacity = '0.5';
+        // Phase 1: Initial fade out
+        content.style.opacity = '0.5';
 
-            // Phase 2: Width adjustment
-            setTimeout(() => {
-                const hasListView = !!options.layouts[route].list;
-                if (hasListView) {
-                    list.style.width = '38.2%';
-                    list.style.opacity = '1';
-                    content.style.width = '61.8%';
-                } else {
-                    list.style.width = '0';
-                    list.style.opacity = '0';
-                    content.style.width = '100%';
-                }
-            }, duration * 0.1);
+        // Phase 2: Width adjustment
+        runAfter(duration * 0.1, () => {
+            const hasListView = !!options.layouts[route].list;
+            if (hasListView) {
+                list.style.width = '38.2%';
+                list.style.opacity = '1';
+                content.style.width = '61.8%';
+            } else {
+                list.style.width = '0';
+                list.style.opacity = '0';
+                content.style.width = '100%';
+            }
+        });
 
-            // Phase 3: Complete transition
-            setTimeout(() => {
-                content.style.opacity = '1';
-
-                setTimeout(() => {
-                    setIsTransitioning(false);
-                }, duration * 0.2);
-            }, duration * 0.8);
+        // Phase 3: Complete transition
+        runAfter(duration * 0.8, () => {
+            content.style.opacity = '1';
+            runAfter(duration * 0.2, () => {
+                setIsTransitioning(false);
+            });
         });
     };
 
