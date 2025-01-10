@@ -3,6 +3,7 @@ import useTransitionLayout from './libs/useTransitionLayout'
 import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
+import { AboutPage } from './components/AboutPage'
 import { showcaseItems } from './data/showcaseItems'
 import styled from 'styled-components'
 
@@ -102,7 +103,7 @@ export default function App() {
           />
         )
       },
-      ABOUT: {
+      RANTS: {
         content: (
           <ShowcaseDetail
             item={{
@@ -120,17 +121,7 @@ export default function App() {
       },
       HOME: {
         content: (
-          <ShowcaseDetail
-            item={{
-              id: -1,
-              title: "Welcome",
-              description: "Welcome to my portfolio. Browse through my projects and articles to learn more about my work.",
-              image: "/welcome-image.png",
-              category: "home",
-              technologies: []
-            }}
-            onClose={() => {}}
-          />
+          <AboutPage/>
         )
       }
     }
