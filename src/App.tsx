@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import useTransitionLayout, { TransitionPhase } from './libs/useTransitionLayout'
+import useTransitionLayout from './libs/useTransitionLayout'
 import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
