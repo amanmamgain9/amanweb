@@ -172,6 +172,27 @@ function AppContent() {
 
   const hasListContent = ['PROJECTS', 'WDYGDTW'].includes(currentRoute)
 
+  const renderList = () => {
+    switch (currentRoute) {
+      case 'PROJECTS':
+        return (
+          <ShowcaseList
+            items={showcaseItems}
+            onItemSelect={handleItemSelect}
+            isVisible={true}
+          />
+        )
+      case 'WDYGDTW':
+        return (
+          <WDYGDTWList
+            onWeekSelect={handleItemSelect}
+          />
+        )
+      default:
+        return null
+    }
+  }
+
   const renderContent = () => {
     switch (currentRoute) {
       case 'PROJECTS':
@@ -237,17 +258,7 @@ function AppContent() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  {currentRoute === 'PROJECTS' ? (
-                    <ShowcaseList
-                      items={showcaseItems}
-                      onItemSelect={handleItemSelect}
-                      isVisible={true}
-                    />
-                  ) : (
-                    <WDYGDTWList
-                      onWeekSelect={handleItemSelect}
-                    />
-                  )}
+                  {renderList()}
                 </ContentSlot>
               )}
             </AnimatePresence>
