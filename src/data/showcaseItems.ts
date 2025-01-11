@@ -46,8 +46,7 @@ export const showcaseItems: ShowcaseItem[] = [
   {
     title: "Project Tab Manager",
     description: "Chrome extension for project-based tab organization. Built using React and Chrome Extension APIs to help users manage their browser tabs more effectively.",
-    image: "/placeholder-tab-manager.png",
-    category: "projects",
+    category: "extension",
     link: "https://github.com/amanmamgain9/project-tab-manager",
     technologies: ["React", "Chrome Extension API", "JavaScript"]
   },
@@ -55,6 +54,7 @@ export const showcaseItems: ShowcaseItem[] = [
     title: "B2B E-commerce Platform",
     description: "Developed a full-stack e-commerce platform connecting manufacturers to consumers. Implemented comprehensive features including order-management, BOM, inventory tracking with warehouse-specific monitoring. Scaled to serve 30+ enterprise clients.",
     category: "web",
-    technologies: ["Angular", "Android", "Django", "AWS", "RabbitMQ", "Celery"]
+    technologies: ["Angular", "Android", "Django", "AWS", "RabbitMQ", "Celery"],
+    link: "https://www.back2stores.com/"
   }
 ];
