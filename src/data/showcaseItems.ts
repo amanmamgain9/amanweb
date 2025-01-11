@@ -19,7 +19,7 @@ export const showcaseItems: ShowcaseItem[] = [
     title: "XNet Platform",
     description: "Developed a comprehensive NFT platform for game moments. Created electron app for game capture using OBS APIs, web-based crypto wallet, and task completion system with crypto rewards.",
     category: "web",
-    technologies: ["Electron", "React", "Node.js", "OBS APIs", "Blockchain", "NFT"]
+    technologies: ["React", "Node.js", "NFT"]
   },
   {
     title: "Kauri Captioner",
