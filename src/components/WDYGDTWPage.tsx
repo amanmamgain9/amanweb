@@ -6,7 +6,27 @@ import 'react-calendar/dist/Calendar.css'
 const ListContainer = styled.div`
   width: 100%;
   height: 100%;
-  overflow-y: auto;
+  position: relative;
+  cursor: pointer;
+  
+  &:hover {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 240, 255, 0.1);
+      transition: background 0.2s ease;
+    }
+  }
+`
+
+const FullImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `
 
 const ContentContainer = styled.div`
@@ -51,88 +71,65 @@ const CalendarWrapper = styled.div`
   }
 `
 
-const WeeklyCardsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+const WeeksContainer = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  padding: 1rem 0;
 `
 
-const WeekCard = styled.div`
+const WeekEntry = styled.div`
   border: 1px solid #1c4c7c;
   border-radius: 8px;
   padding: 1.5rem;
   background: rgba(13, 35, 57, 0.95);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  transition: all 0.2s ease-in-out;
 
-  &:hover {
-    border-color: #00f0ff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 240, 255, 0.1);
+  h3 {
+    color: #00f0ff;
+    margin: 0 0 1rem 0;
+    border-bottom: 1px solid #1c4c7c;
+    padding-bottom: 0.5rem;
+  }
+
+  p {
+    color: #58a6ff;
+    margin: 0;
+    line-height: 1.5;
   }
 `
 
-const WeekHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #1c4c7c;
-  padding-bottom: 0.5rem;
-`
-
-const WeekTitle = styled.h3`
-  color: #00f0ff;
-  margin: 0;
-`
-
-const WeekDate = styled.span`
-  color: #58a6ff;
-  font-size: 0.9em;
-`
-
-const WeekImage = styled.img`
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 4px;
-`
-
-interface WeekData {
-  id: number;
-  date: string;
-  image: string;
+interface MonthData {
+  [key: string]: {
+    weeks: {
+      dates: string;
+      content: string;
+    }[];
+  };
 }
 
-// Mock data - replace with real data later
-const mockWeeks: WeekData[] = [
-  { id: 1, date: 'Jan 1-7, 2024', image: '/wdygdtw.jpeg' },
-  { id: 2, date: 'Jan 8-14, 2024', image: '/wdygdtw.jpeg' },
-  { id: 3, date: 'Jan 15-21, 2024', image: '/wdygdtw.jpeg' },
-  // Add more weeks as needed
-]
+const monthlyData: MonthData = {
+  'January 2025': {
+    weeks: [
+      { dates: 'Dec 30 - Jan 5', content: 'Week 1 achievements and progress...' },
+      { dates: 'Jan 6 - Jan 12', content: 'Week 2 progress and milestones...' },
+      { dates: 'Jan 13 - Jan 19', content: 'Week 3 accomplishments...' },
+      { dates: 'Jan 20 - Jan 26', content: 'Week 4 developments...' },
+      { dates: 'Jan 27 - Feb 2', content: 'Week 5 wrap-up...' }
+    ]
+  }
+  // Add more months as needed
+}
 
 export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: number) => void }) {
   return (
-    <ListContainer>
-      <WeeklyCardsContainer>
-        {mockWeeks.map(week => (
-          <WeekCard key={week.id} onClick={() => onWeekSelect(week.id)}>
-            <WeekHeader>
-              <WeekTitle>Week {week.id}</WeekTitle>
-              <WeekDate>{week.date}</WeekDate>
-            </WeekHeader>
-            <WeekImage src={week.image} alt={`Week ${week.id}`} />
-          </WeekCard>
-        ))}
-      </WeeklyCardsContainer>
+    <ListContainer onClick={() => onWeekSelect(1)}>
+      <FullImage src="/wdygdtw.jpeg" alt="What Did You Get Done This Week" />
     </ListContainer>
   )
 }
 
 export function WDYGDTWContent({ weekId }: { weekId: number }) {
+  const [currentMonth, setCurrentMonth] = useState('January 2025')
   const [date, setDate] = useState(new Date())
   
   return (
@@ -141,14 +138,24 @@ export function WDYGDTWContent({ weekId }: { weekId: number }) {
       
       <CalendarWrapper>
         <Calendar 
-          onChange={setDate} 
+          onChange={(newDate: Date) => {
+            setDate(newDate)
+            setCurrentMonth(newDate.toLocaleString('default', { month: 'long', year: 'numeric' }))
+          }}
           value={date}
           maxDetail="month"
           minDetail="month"
         />
       </CalendarWrapper>
-      
-      {/* Add specific week content here based on weekId */}
+
+      <WeeksContainer>
+        {monthlyData[currentMonth]?.weeks.map((week, index) => (
+          <WeekEntry key={index}>
+            <h3>Week {index + 1} ({week.dates})</h3>
+            <p>{week.content}</p>
+          </WeekEntry>
+        ))}
+      </WeeksContainer>
     </ContentContainer>
   )
 }
