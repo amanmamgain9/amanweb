@@ -11,13 +11,6 @@ export type ShowcaseItem = {
 
 export const showcaseItems: ShowcaseItem[] = [
   {
-    title: "Glip Game Capture",
-    description: "Developed a low-latency game capture application using OBS APIs. Created an Electron + React application for NFT creation and auction from captured game moments. Implemented a web-based crypto wallet and task completion system with crypto rewards.",
-    image: "/placeholder-glip.png",
-    category: "desktop",
-    technologies: ["Electron", "React", "Node.js", "OBS APIs", "Blockchain", "NFT"]
-  },
-  {
     title: "BTX Game Development",
     description: "Contributed to a multiplayer extraction shooter game in Unity. Implemented core gameplay mechanics including crouch mechanics, character integration, scoreboard system, and vault system with loadout customization. Integrated proximity-based voice chat using Dissonance and developed a quick sell feature with infinite scroll selection.",
     image: "/placeholder-btx.png",
@@ -25,6 +18,14 @@ export const showcaseItems: ShowcaseItem[] = [
     link: "https://play.google.com/store/apps/details?id=glip.studio.btx.android",
     technologies: ["Unity", "C#", "Multiplayer", "Game Development", "Dissonance"]
   },
+  {
+    title: "Glip Game Capture",
+    description: "Developed a low-latency game capture application using OBS APIs. Created an Electron + React application for NFT creation and auction from captured game moments. Implemented a web-based crypto wallet and task completion system with crypto rewards.",
+    image: "/placeholder-glip.png",
+    category: "desktop",
+    technologies: ["Electron", "React", "Node.js", "OBS APIs", "Blockchain", "NFT"]
+  },
+  
   {
     title: "Game Character Chatbot",
     description: "Developed an AI-powered game character chatbot with monetization features. Deployed OobaBooga text generation as a backend service and created a React-based chat interface with voice features using tortoise-tts.",
