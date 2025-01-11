@@ -71,39 +71,81 @@ const CalendarWrapper = styled.div`
     border: 1px solid #1c4c7c;
     border-radius: 8px;
     font-size: 0.9em;
+    padding: 1rem;
     
     button {
       color: #00f0ff;
+      border-radius: 4px;
+      transition: all 0.2s ease;
       
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: rgba(0, 240, 255, 0.1);
+        transform: scale(1.05);
       }
 
       &:disabled {
-        color: rgba(0, 240, 255, 0.3);
+        color: rgba(0, 240, 255, 0.1);
+        background-color: rgba(13, 35, 57, 0.5);
+        cursor: not-allowed;
+        opacity: 0.5;
       }
     }
     
-    .react-calendar__tile--active {
-      background: rgba(0, 240, 255, 0.2);
+    .react-calendar__tile {
+      padding: 0.75em 0.5em;
+      
+      &--active {
+        background: rgba(0, 240, 255, 0.2) !important;
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+      }
+      
+      &--now {
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.3);
+      }
     }
     
     .react-calendar__month-view__days__day--weekend {
       color: #ff6b6b;
+      
+      &:disabled {
+        color: rgba(255, 107, 107, 0.3);
+      }
     }
 
     .react-calendar__navigation {
-      height: 35px;
-      margin-bottom: 0.5em;
-    }
-
-    .react-calendar__navigation button {
-      min-width: 35px;
-      background: none;
+      height: 40px;
+      margin-bottom: 1em;
+      
+      button {
+        min-width: 40px;
+        background: none;
+        font-size: 1.2em;
+        
+        &:disabled {
+          opacity: 0.3;
+        }
+        
+        &:hover:not(:disabled) {
+          background-color: rgba(0, 240, 255, 0.1);
+        }
+      }
     }
 
     .react-calendar__month-view__weekdays {
       font-size: 0.8em;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: rgba(0, 240, 255, 0.7);
+      
+      abbr {
+        text-decoration: none;
+        border: none;
+      }
+    }
+    
+    .react-calendar__year-view__months {
+      gap: 0.5rem;
     }
   }
 `
