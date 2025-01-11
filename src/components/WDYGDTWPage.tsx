@@ -3,7 +3,13 @@ import styled from 'styled-components'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 
-const Container = styled.div`
+const ListContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+`
+
+const ContentContainer = styled.div`
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -108,11 +114,29 @@ const mockWeeks: WeekData[] = [
   // Add more weeks as needed
 ]
 
-export function WDYGDTWPage() {
-  const [date, setDate] = useState(new Date())
-
+export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: number) => void }) {
   return (
-    <Container>
+    <ListContainer>
+      <WeeklyCardsContainer>
+        {mockWeeks.map(week => (
+          <WeekCard key={week.id} onClick={() => onWeekSelect(week.id)}>
+            <WeekHeader>
+              <WeekTitle>Week {week.id}</WeekTitle>
+              <WeekDate>{week.date}</WeekDate>
+            </WeekHeader>
+            <WeekImage src={week.image} alt={`Week ${week.id}`} />
+          </WeekCard>
+        ))}
+      </WeeklyCardsContainer>
+    </ListContainer>
+  )
+}
+
+export function WDYGDTWContent({ weekId }: { weekId: number }) {
+  const [date, setDate] = useState(new Date())
+  
+  return (
+    <ContentContainer>
       <Title>What Did You Get Done This Week?</Title>
       
       <CalendarWrapper>
@@ -123,18 +147,8 @@ export function WDYGDTWPage() {
           minDetail="month"
         />
       </CalendarWrapper>
-
-      <WeeklyCardsContainer>
-        {mockWeeks.map(week => (
-          <WeekCard key={week.id}>
-            <WeekHeader>
-              <WeekTitle>Week {week.id}</WeekTitle>
-              <WeekDate>{week.date}</WeekDate>
-            </WeekHeader>
-            <WeekImage src={week.image} alt={`Week ${week.id}`} />
-          </WeekCard>
-        ))}
-      </WeeklyCardsContainer>
-    </Container>
+      
+      {/* Add specific week content here based on weekId */}
+    </ContentContainer>
   )
 }

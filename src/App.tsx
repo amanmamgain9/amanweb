@@ -4,7 +4,7 @@ import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
 import { AboutPage } from './components/AboutPage'
-import { WDYGDTWPage } from './components/WDYGDTWPage'
+import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage'
 import { showcaseItems } from './data/showcaseItems'
 import styled from 'styled-components'
 
@@ -163,7 +163,7 @@ export default function App() {
     ? showcaseItems.find(item => item.title === selectedItemId)
     : null
 
-  const hasListContent = currentRoute === 'PROJECTS'
+  const hasListContent = ['PROJECTS', 'WDYGDTW'].includes(currentRoute)
 
   const renderContent = () => {
     switch (currentRoute) {
@@ -191,7 +191,7 @@ export default function App() {
       case 'HOME':
         return <AboutPage />
       case 'WDYGDTW':
-        return <WDYGDTWPage />
+        return <WDYGDTWContent weekId={selectedItemId ? parseInt(selectedItemId) : 1} />
       default:
         return null
     }
@@ -242,11 +242,17 @@ export default function App() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <ShowcaseList
-                    items={showcaseItems}
-                    onItemSelect={handleItemSelect}
-                    isVisible={true}
-                  />
+                  {currentRoute === 'PROJECTS' ? (
+                    <ShowcaseList
+                      items={showcaseItems}
+                      onItemSelect={handleItemSelect}
+                      isVisible={true}
+                    />
+                  ) : (
+                    <WDYGDTWList
+                      onWeekSelect={handleItemSelect}
+                    />
+                  )}
                 </ContentSlot>
               )}
             </AnimatePresence>
