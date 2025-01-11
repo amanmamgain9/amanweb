@@ -36,7 +36,7 @@ const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?
   @media (max-width: 768px) {
     width: 100%;
     height: auto;
-    display: ${props => props.isMobileView && props.showingContent ? 'none' : 'block'};
+    display: ${props => props.showingContent ? 'none' : 'block'};
   }
 `
 
@@ -247,7 +247,7 @@ function AppContent() {
 
   const handleItemSelect = (id: number) => {
     if (id === selectedItemId) return
-    setSelectedItemId(id)
+    setSelectedItemId(id.toString())
     if (isMobileView) {
       setShowingContent(true)
     }
