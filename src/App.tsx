@@ -108,7 +108,7 @@ const listVariants = {
     transition: { duration: 0.7, ease: "easeInOut" }
   },
   collapsed: {
-    width: 0,
+    width: "100%",
     borderRightWidth: 0,
     borderRightColor: "rgba(28, 76, 124, 0)",
     transition: { duration: 0.7, ease: "easeInOut" }
@@ -277,7 +277,7 @@ function AppContent() {
       <ContentContainer>
         <MainContent>
           <ListSection
-            initial="collapsed"
+            initial={isMobileView ? "collapsed" : "expanded"}
             animate={hasListContent && !isMobileView ? "expanded" : "collapsed"}
             variants={listVariants}
             style={{ borderRightStyle: 'solid' }}
