@@ -15,6 +15,10 @@ const Container = styled.div`
   min-height: 100vh;
   background-color: #0a1929;
   color: #00f0ff;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+  }
 `
 
 const ContentContainer = styled.div`
@@ -35,8 +39,11 @@ const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?
   overflow: hidden;
   @media (max-width: 768px) {
     width: 100%;
-    height: auto;
+    height: calc(100vh - 4rem);
     display: ${props => props.showingContent ? 'none' : 'block'};
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 `
 
@@ -67,6 +74,7 @@ const MainContent = styled(motion.div)`
     border-radius: 0;
     height: calc(100vh - 4rem);
     border: none;
+    position: relative;
   }
 `
 
@@ -83,10 +91,8 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean; showingConten
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    min-height: calc(100vh - 4rem);
-    transform: translateX(${props => props.showingContent ? '0' : '100%'});
-    transition: transform 0.3s ease-in-out;
+    height: calc(100vh - 4rem);
+    display: ${props => props.showingContent ? 'block' : 'none'};
   }
 `
 
