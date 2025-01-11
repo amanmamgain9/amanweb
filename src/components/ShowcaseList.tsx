@@ -24,12 +24,16 @@ const ListContent = styled.div`
 `
 
 const Card = styled.div`
+  height: 140px;
   border: 1px solid #1c4c7c;
-  padding: 1rem;
+  padding: 1.25rem;
   background-color: rgba(13, 35, 57, 0.95);
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   &:hover {
     border-color: #00f0ff;
@@ -42,7 +46,8 @@ const Card = styled.div`
 const Title = styled.h3`
   font-size: 1.5em;
   color: #00f0ff;
-  margin: 0 0 1rem 0;
+  margin: 0;
+  line-height: 1.2;
 
   &::before {
     content: '>';
@@ -55,6 +60,8 @@ const TechnologiesContainer = styled.div`
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  align-items: flex-end;
+  margin-top: auto;
 `
 
 const TechTag = styled.span`
