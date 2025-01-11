@@ -2,6 +2,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
+import { weekData, isDateInWeeks } from '../data/weekData'
 
 const ListContainer = styled.div`
   width: 100%;
@@ -64,17 +65,22 @@ const Title = styled.h1`
 const CalendarWrapper = styled.div`
   .react-calendar {
     width: 100%;
-    max-width: 400px;
+    max-width: 300px;
     margin: 0 auto;
     background: rgba(13, 35, 57, 0.95);
     border: 1px solid #1c4c7c;
     border-radius: 8px;
+    font-size: 0.9em;
     
     button {
       color: #00f0ff;
       
       &:hover {
         background-color: rgba(0, 240, 255, 0.1);
+      }
+
+      &:disabled {
+        color: rgba(0, 240, 255, 0.3);
       }
     }
     
@@ -84,6 +90,20 @@ const CalendarWrapper = styled.div`
     
     .react-calendar__month-view__days__day--weekend {
       color: #ff6b6b;
+    }
+
+    .react-calendar__navigation {
+      height: 35px;
+      margin-bottom: 0.5em;
+    }
+
+    .react-calendar__navigation button {
+      min-width: 35px;
+      background: none;
+    }
+
+    .react-calendar__month-view__weekdays {
+      font-size: 0.8em;
     }
   }
 `
@@ -115,27 +135,6 @@ const WeekEntry = styled.div`
   }
 `
 
-interface MonthData {
-  [key: string]: {
-    weeks: {
-      dates: string;
-      content: string;
-    }[];
-  };
-}
-
-const monthlyData: MonthData = {
-  'January 2025': {
-    weeks: [
-      { dates: 'Dec 30 - Jan 5', content: 'Week 1 achievements and progress...' },
-      { dates: 'Jan 6 - Jan 12', content: 'Week 2 progress and milestones...' },
-      { dates: 'Jan 13 - Jan 19', content: 'Week 3 accomplishments...' },
-      { dates: 'Jan 20 - Jan 26', content: 'Week 4 developments...' },
-      { dates: 'Jan 27 - Feb 2', content: 'Week 5 wrap-up...' }
-    ]
-  }
-  // Add more months as needed
-}
 
 export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: number) => void }) {
   return (
@@ -156,19 +155,22 @@ export function WDYGDTWContent({ weekId }: { weekId: number }) {
       <CalendarWrapper>
         <Calendar 
           onChange={(newDate: Date) => {
-            setDate(newDate)
-            setCurrentMonth(newDate.toLocaleString('default', { month: 'long', year: 'numeric' }))
+            if (isDateInWeeks(newDate, weekData)) {
+              setDate(newDate)
+              setCurrentMonth(newDate.toLocaleString('default', { month: 'long', year: 'numeric' }))
+            }
           }}
           value={date}
           maxDetail="year"
           minDetail="month"
           showNavigation={true}
           view="year"
+          tileDisabled={({date}) => !isDateInWeeks(date, weekData)}
         />
       </CalendarWrapper>
 
       <WeeksContainer>
-        {monthlyData[currentMonth]?.weeks.map((week, index) => (
+        {weekData[currentMonth]?.weeks.map((week, index) => (
           <WeekEntry key={index}>
             <h3>Week {index + 1} ({week.dates})</h3>
             <p>{week.content}</p>
