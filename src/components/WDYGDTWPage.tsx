@@ -27,7 +27,8 @@ const ListContainer = styled.div`
 const FullImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
+  flex: 1;
 `
 
 const ContentContainer = styled.div`
@@ -159,8 +160,10 @@ export function WDYGDTWContent({ weekId }: { weekId: number }) {
             setCurrentMonth(newDate.toLocaleString('default', { month: 'long', year: 'numeric' }))
           }}
           value={date}
-          maxDetail="month"
+          maxDetail="year"
           minDetail="month"
+          showNavigation={true}
+          view="year"
         />
       </CalendarWrapper>
 
