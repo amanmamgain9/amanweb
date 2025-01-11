@@ -71,7 +71,7 @@ const CalendarWrapper = styled.div`
     border: 1px solid #1c4c7c;
     border-radius: 8px;
     font-size: 0.9em;
-    padding: 1rem;
+    padding: 1.5rem;
     box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
     
     button {
@@ -155,10 +155,12 @@ const CalendarWrapper = styled.div`
     
     .react-calendar__year-view__months {
       gap: 0.5rem;
+      padding: 0 0.5rem;
       
       button {
-        padding: 1em 0.5em;
+        padding: 1.2em 0.5em;
         font-size: 1em;
+        margin: 0.2rem;
       }
     }
   }
