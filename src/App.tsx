@@ -26,8 +26,8 @@ const ContentContainer = styled.div`
   padding-top: 6rem;
 
   @media (max-width: 768px) {
-    padding: 1rem;
-    padding-bottom: 5rem;
+    padding: 0;
+    padding-top: 4rem;
   }
 `
 
@@ -52,7 +52,7 @@ const ContentLayer = styled(motion.div)`
 const MainContent = styled(motion.div)`
   width: 100%;
   max-width: 1200px;
-  height: calc(100vh - 12rem); // Fixed height accounting for padding and navbar
+  height: calc(100vh - 12rem);
   display: flex;
   flex-direction: row;
   background: rgba(10, 25, 41, 0.8);
@@ -64,6 +64,8 @@ const MainContent = styled(motion.div)`
   @media (max-width: 768px) {
     flex-direction: column;
     border-radius: 0;
+    height: calc(100vh - 4rem);
+    border: none;
   }
 `
 
@@ -73,9 +75,11 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean; showingConten
   min-height: 500px;
   display: flex;
   flex-direction: column;
+  flex: 1;
   
   @media (max-width: 768px) {
     width: 100%;
+    min-height: 100%;
     display: ${props => !props.isMobileView || props.showingContent ? 'flex' : 'none'};
   }
 `
