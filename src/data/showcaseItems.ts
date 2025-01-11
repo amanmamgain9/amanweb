@@ -13,12 +13,14 @@ export const showcaseItems: ShowcaseItem[] = [
     title: "BTX Game",
     description: "Multiplayer extraction shooter game built in Unity. Implemented core gameplay mechanics including crouch, character integration, scoreboard and vault system with loadout customization. Added proximity voice chat using Dissonance and quick sell feature with infinite scroll selection.",
     category: "game",
+    link: "https://github.com/amanmamgain9/btx-game",
     technologies: ["Unity", "C#", "Dissonance", "Multiplayer", "Game Development"]
   },
   {
     title: "XNet Platform",
     description: "Developed a comprehensive NFT platform for game moments. Created electron app for game capture using OBS APIs, web-based crypto wallet, and task completion system with crypto rewards.",
     category: "web",
+    link: "https://github.com/amanmamgain9/xnet-platform",
     technologies: ["React", "Node.js", "NFT"]
   },
   {
