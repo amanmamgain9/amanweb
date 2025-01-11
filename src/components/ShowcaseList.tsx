@@ -73,7 +73,7 @@ const TechTag = styled.span`
 
 interface ShowcaseListProps {
   items: ShowcaseItem[]
-  onItemSelect: (id: number) => void
+  onItemSelect: (id: string) => void
   isVisible?: boolean
 }
 
