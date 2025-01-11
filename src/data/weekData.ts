@@ -52,11 +52,11 @@ export const isDateInWeeks = (date: Date, monthData: MonthData): boolean => {
   const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
   const month = monthData[monthKey];
   
-  if (!month) return false;
+  if (!month || month.weeks.length === 0) return false;
   
-  return month.weeks.some(week => {
-    const startDate = week.startDate;
-    const endDate = week.endDate;
-    return date >= startDate && date <= endDate;
-  });
+  // If the month has any entries, make the whole month selectable
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  
+  return date >= firstDayOfMonth && date <= lastDayOfMonth;
 };
