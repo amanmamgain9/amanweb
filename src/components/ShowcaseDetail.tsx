@@ -63,9 +63,14 @@ const ItemLink = styled.a`
   border: 1px solid #00f0ff;
   padding: 0.75rem 1.5rem;
   font-size: 0.9em;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 240, 255, 0.1);
 
   &:hover {
-    background-color: rgba(0, 240, 255, 0.1);
+    background-color: rgba(0, 240, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 240, 255, 0.2);
   }
 `
 
