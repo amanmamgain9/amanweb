@@ -51,6 +51,18 @@ export const showcaseItems: ShowcaseItem[] = [
     technologies: ["React", "Chrome Extension API", "JavaScript"]
   },
   {
+    title: "Spinny Tech Platform",
+    description: "Led development of loan application automation workflow and client management systems. Implemented dynamic questionnaire system for user profiling and loan approval prediction. Developed React Native iOS applications for streamlined client management.",
+    category: "web",
+    technologies: ["Django", "React", "React Native", "Python", "iOS"]
+  },
+  {
+    title: "Healthcare Coordination System",
+    description: "At Innovaccer, unified multi-client patient-care coordinator system into single codebase. Developed Elasticsearch query generator and containerized application for local testing, eliminating staging API dependencies.",
+    category: "web",
+    technologies: ["Django", "Pyramid", "Elasticsearch", "Python", "Docker"]
+  },
+  {
     title: "B2B E-commerce Platform",
     description: "Developed a full-stack e-commerce platform connecting manufacturers to consumers. Implemented comprehensive features including order-management, BOM, inventory tracking with warehouse-specific monitoring. Scaled to serve 30+ enterprise clients.",
     category: "web",
