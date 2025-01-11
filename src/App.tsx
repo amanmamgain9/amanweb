@@ -149,7 +149,6 @@ const slotVariants = {
   }
 }
 
-import { ShowcaseItem } from './types/showcase'
 
 export default function App() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(showcaseItems[0].title)
