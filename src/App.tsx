@@ -63,8 +63,6 @@ const MainContent = styled(motion.div)`
   @media (max-width: 768px) {
     flex-direction: column;
     border-radius: 0;
-    border-left: none;
-    border-right: none;
   }
 `
 
@@ -181,20 +179,6 @@ function AppContent() {
           <ShowcaseDetail
             item={selectedItem}
             onClose={() => setSelectedItemId(null)}
-          />
-        )
-      case 'RANTS':
-        return (
-          <ShowcaseDetail
-            item={{
-              id: 0,
-              title: "Aman Mamgain",
-              description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
-              category: "about",
-              link: "/cv.pdf",
-              technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
-            }}
-            onClose={() => {}}
           />
         )
       case 'HOME':
