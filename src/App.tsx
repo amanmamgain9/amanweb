@@ -181,7 +181,6 @@ export default function App() {
               id: 0,
               title: "Aman Mamgain",
               description: `Hi, I'm Aman! I'm a Full Stack Developer with 10 years of experience building web applications and distributed systems. I'm passionate about creating efficient, scalable solutions and staying current with emerging technologies.`,
-              image: "/profile-image.png",
               category: "about",
               link: "/cv.pdf",
               technologies: ["Full Stack Development", "System Architecture", "Cloud Computing", "DevOps"]
