@@ -60,17 +60,39 @@ const ItemLink = styled.a`
   display: inline-block;
   color: #00f0ff;
   text-decoration: none;
-  border: 1px solid #00f0ff;
+  background: linear-gradient(45deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.05));
+  border: 1px solid rgba(0, 240, 255, 0.3);
   padding: 0.75rem 1.5rem;
   font-size: 0.9em;
-  border-radius: 8px;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0, 240, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.1),
+              inset 0 0 0 rgba(0, 240, 255, 0);
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
 
   &:hover {
-    background-color: rgba(0, 240, 255, 0.15);
+    background: linear-gradient(45deg, rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.1));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 240, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.2),
+                inset 0 0 20px rgba(0, 240, 255, 0.1);
+    border-color: rgba(0, 240, 255, 0.5);
+    
+    &:before {
+      transform: translateX(100%);
+    }
   }
 `
 
