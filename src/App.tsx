@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
 import { AboutPage } from './components/AboutPage'
@@ -151,9 +152,16 @@ const slotVariants = {
 }
 
 
-export default function App() {
+function AppContent() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(showcaseItems[0].title)
-  const [currentRoute, setCurrentRoute] = useState('PROJECTS')
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [currentRoute, setCurrentRoute] = useState(location.pathname.slice(1).toUpperCase() || 'HOME')
+
+  useEffect(() => {
+    const path = location.pathname.slice(1).toUpperCase() || 'HOME'
+    setCurrentRoute(path)
+  }, [location])
   
   // Slot management using refs
   const activeSlotIndex = useRef(0)
@@ -207,13 +215,13 @@ export default function App() {
     
     // Start transition
     isTransitioning.current = true
-    setCurrentRoute(page)
+    navigate(`/${page.toLowerCase()}`)
     
     // Update active slot after animation
     setTimeout(() => {
       activeSlotIndex.current = inactiveSlotIndex
       isTransitioning.current = false
-    }, 800) // Slightly longer than animation duration to ensure completion
+    }, 800)
   }
 
   const handleItemSelect = (id: number) => {
@@ -222,7 +230,9 @@ export default function App() {
   }
 
   return (
-    <Container>
+    <Routes>
+      <Route path="*" element={
+        <Container>
       <Navbar 
         activePage={currentRoute}
         onPageChange={handlePageChange}
@@ -279,5 +289,15 @@ export default function App() {
         </MainContent>
       </ContentContainer>
     </Container>
+      } />
+    </Routes>
+  )
+}
+
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   )
 }

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Link, useLocation } from 'react-router-dom'
 
 const TopBarContainer = styled.div`
   position: fixed;
@@ -40,7 +41,8 @@ const NavContainer = styled.div`
   }
 `
 
-const NavButton = styled.button<{ $active?: boolean }>`
+const NavButton = styled(Link)<{ $active?: boolean }>`
+  text-decoration: none;
   background: transparent;
   color: ${props => props.$active ? '#00f0ff' : '#58a6ff'};
   border: none;
@@ -92,7 +94,11 @@ export function Navbar({ activePage, onPageChange }: NavbarProps) {
           <NavButton
             key={page}
             $active={activePage === page}
-            onClick={() => onPageChange(page)}
+            to={`/${page.toLowerCase()}`}
+            onClick={(e) => {
+              e.preventDefault();
+              onPageChange(page);
+            }}
           >
             {page}
           </NavButton>
