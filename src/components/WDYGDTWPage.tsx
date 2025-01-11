@@ -8,6 +8,7 @@ const ListContainer = styled.div`
   height: 100%;
   position: relative;
   cursor: pointer;
+  display: flex;
   
   &:hover {
     &::after {
@@ -35,6 +36,21 @@ const ContentContainer = styled.div`
   flex-direction: column;
   gap: 2rem;
   width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(13, 35, 57, 0.95);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #1c4c7c;
+    border-radius: 4px;
+  }
 `
 
 const Title = styled.h1`

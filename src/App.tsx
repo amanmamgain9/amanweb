@@ -50,6 +50,7 @@ const ContentLayer = styled(motion.div)`
 const MainContent = styled(motion.div)`
   width: 100%;
   max-width: 1200px;
+  height: calc(100vh - 12rem); // Fixed height accounting for padding and navbar
   display: flex;
   flex-direction: row;
   background: rgba(10, 25, 41, 0.8);
