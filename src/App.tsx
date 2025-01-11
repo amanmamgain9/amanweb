@@ -60,6 +60,7 @@ const MainContent = styled(motion.div)`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  position: relative;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -78,10 +79,14 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean; showingConten
   flex: 1;
   
   @media (max-width: 768px) {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
     min-height: calc(100vh - 4rem);
-    display: flex;
-    visibility: ${props => !props.isMobileView || props.showingContent ? 'visible' : 'hidden'};
+    transform: translateX(${props => props.showingContent ? '0' : '100%'});
+    transition: transform 0.3s ease-in-out;
   }
 `
 
