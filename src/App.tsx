@@ -20,6 +20,7 @@ const Container = styled.div`
     flex-direction: column-reverse;
     height: 100vh;
     overflow: hidden;
+    position: relative;
   }
 `
 
@@ -33,8 +34,9 @@ const ContentContainer = styled.div`
 
   @media (max-width: 768px) {
     padding: 0;
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 64px);
     overflow: hidden;
+    padding-bottom: 64px;
   }
 `
 
