@@ -36,6 +36,7 @@ const ListSection = styled(motion.div)`
   @media (max-width: 768px) {
     width: 100%;
     height: auto;
+    display: ${props => props.isMobileView && props.showingContent ? 'none' : 'block'};
   }
 `
 
@@ -70,11 +71,12 @@ const DetailSection = styled(motion.div)`
   background-color: #0a1929;
   position: relative;
   min-height: 500px;
-  display: flex;  // Add this
-  flex-direction: column; // Add this
+  display: flex;
+  flex-direction: column;
   
   @media (max-width: 768px) {
     width: 100%;
+    display: ${props => !props.isMobileView || props.showingContent ? 'flex' : 'none'};
   }
 `
 
@@ -151,7 +153,17 @@ const slotVariants = {
 
 
 function AppContent() {
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(showcaseItems[0].title)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768)
+  const [showingContent, setShowingContent] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
   const location = useLocation()
   const navigate = useNavigate()
   const [currentRoute, setCurrentRoute] = useState(location.pathname.slice(1).toUpperCase() || 'HOME')
@@ -232,6 +244,15 @@ function AppContent() {
   const handleItemSelect = (id: number) => {
     if (id === selectedItemId) return
     setSelectedItemId(id)
+    if (isMobileView) {
+      setShowingContent(true)
+    }
+  }
+
+  const handleBackToList = () => {
+    if (isMobileView) {
+      setShowingContent(false)
+    }
   }
 
   return (
@@ -246,9 +267,11 @@ function AppContent() {
         <MainContent>
           <ListSection
             initial="collapsed"
-            animate={hasListContent ? "expanded" : "collapsed"}
+            animate={hasListContent && !isMobileView ? "expanded" : "collapsed"}
             variants={listVariants}
             style={{ borderRightStyle: 'solid' }}
+            isMobileView={isMobileView}
+            showingContent={showingContent}
           >
             <AnimatePresence mode="wait">
               {hasListContent && (
@@ -266,8 +289,10 @@ function AppContent() {
           
           <DetailSection
             initial="full"
-            animate={hasListContent ? "expanded" : "full"}
+            animate={hasListContent && !isMobileView ? "expanded" : "full"}
             variants={contentVariants}
+            isMobileView={isMobileView}
+            showingContent={showingContent}
           >
             <AnimatePresence mode="wait">
               <ContentSlot
