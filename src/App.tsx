@@ -282,7 +282,10 @@ function AppContent() {
             initial={isMobileView ? "collapsed" : "expanded"}
             animate={hasListContent && !isMobileView ? "expanded" : "collapsed"}
             variants={listVariants}
-            style={{ borderRightStyle: 'solid' }}
+            style={{ 
+              borderRightStyle: 'solid',
+              display: isMobileView && showingContent ? 'none' : 'flex'
+            }}
             isMobileView={isMobileView}
             showingContent={showingContent}
           >
