@@ -79,8 +79,9 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean; showingConten
   
   @media (max-width: 768px) {
     width: 100%;
-    min-height: 100%;
-    display: ${props => !props.isMobileView || props.showingContent ? 'flex' : 'none'};
+    min-height: calc(100vh - 4rem);
+    display: flex;
+    visibility: ${props => !props.isMobileView || props.showingContent ? 'visible' : 'hidden'};
   }
 `
 
