@@ -154,9 +154,12 @@ const CalendarWrapper = styled.div`
     }
     
     .react-calendar__year-view__months {
-      gap: 0.25rem;
+      // gap: 0.25rem;
+      gap: 0 2.5rem ;
       padding: 0 0.25rem;
-      
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       button {
         padding: 0.75em 0.25em;
         font-size: 0.95em;
