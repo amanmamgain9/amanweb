@@ -96,7 +96,12 @@ export function ShowcaseDetail({
           target="_blank" 
           rel="noopener noreferrer"
         >
-          View {item.category === 'projects' ? 'Project' : item.category === 'articles' ? 'Article' : 'Post'} →
+          View {
+            item.category === 'desktop' || item.category === 'web' || item.category === 'extension' ? 'Project' :
+            item.category === 'game' ? 'Game' :
+            item.category === 'ai' ? 'Demo' :
+            'Profile'
+          } →
         </ItemLink>
       )}
     </DetailContainer>
