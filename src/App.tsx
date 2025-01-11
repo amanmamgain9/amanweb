@@ -152,7 +152,7 @@ import { ShowcaseItem } from './types/showcase'
 
 export default function App() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(showcaseItems[0].title)
-  const [currentRoute, setCurrentRoute] = useState('SIDE PROJECTS')
+  const [currentRoute, setCurrentRoute] = useState('PROJECTS')
   
   // Slot management using refs
   const activeSlotIndex = useRef(0)
@@ -163,11 +163,11 @@ export default function App() {
     ? showcaseItems.find(item => item.title === selectedItemId)
     : null
 
-  const hasListContent = currentRoute === 'SIDE PROJECTS'
+  const hasListContent = currentRoute === 'PROJECTS'
 
   const renderContent = () => {
     switch (currentRoute) {
-      case 'SIDE PROJECTS':
+      case 'PROJECTS':
         return selectedItem && (
           <ShowcaseDetail
             item={selectedItem}
