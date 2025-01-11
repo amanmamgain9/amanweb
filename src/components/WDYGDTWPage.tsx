@@ -25,7 +25,7 @@ const Title = styled.h1`
 export function WDYGDTWPage() {
   return (
     <Container>
-      <Title>What Do You Get Down To Wednesday</Title>
+      <Title>What Did You Get Done This Week?</Title>
       <Image src="/wdygdtw.jpeg" alt="WDYGDTW" />
     </Container>
   )
