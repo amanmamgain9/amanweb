@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import useTransitionLayout from './libs/useTransitionLayout'
+import { useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
@@ -29,25 +29,24 @@ const ContentContainer = styled.div`
   }
 `
 
-const ListSection = styled.div<{ showBorder: boolean }>`
+const ListSection = styled(motion.div)`
   overflow: hidden;
-  width: 0;
-  border-right: ${props => props.showBorder ? '1px solid #1c4c7c' : 'none'};
   @media (max-width: 768px) {
     width: 100%;
     height: auto;
   }
 `
 
-const DetailSection = styled.div`
-  background-color: #0a1929;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+
+
+const ContentLayer = styled(motion.div)`
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 `
 
-const MainContent = styled.div`
+const MainContent = styled(motion.div)`
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -66,41 +65,125 @@ const MainContent = styled.div`
   }
 `
 
+const DetailSection = styled(motion.div)`
+  background-color: #0a1929;
+  position: relative;
+  min-height: 500px;
+  display: flex;  // Add this
+  flex-direction: column; // Add this
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`
+
+const ContentSlot = styled(motion.div)`
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;  // Add this
+`
+
+// Animation variants
+const listVariants = {
+  expanded: {
+    width: "38.2%",
+    borderRightWidth: 1,
+    borderRightColor: "#1c4c7c",
+    transition: { duration: 0.7, ease: "easeInOut" }
+  },
+  collapsed: {
+    width: 0,
+    borderRightWidth: 0,
+    borderRightColor: "rgba(28, 76, 124, 0)",
+    transition: { duration: 0.7, ease: "easeInOut" }
+  }
+}
+
+const contentVariants = {
+  expanded: {
+    width: "61.8%",
+    transition: { duration: 0.7, ease: "easeInOut" }
+  },
+  full: {
+    width: "100%",
+    transition: { duration: 0.7, ease: "easeInOut" }
+  }
+}
+
+const slotVariants = {
+  pageTransition: {
+    enter: {
+      opacity: 0,
+      y: -300,
+    },
+    center: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        y: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.2 }
+      }
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        opacity: { duration: 0.7 }  // Match the width transition duration
+      }
+    }
+  },
+  itemTransition: {
+    enter: { opacity: 0 },
+    center: { 
+      opacity: 1,
+      transition: { duration: 0.3 }
+    },
+    exit: { 
+      opacity: 0,
+      transition: { 
+        opacity: { duration: 0.7 }  // Match the width transition duration
+      }
+    }
+  }
+}
+
+interface ShowcaseItem {
+  id: number
+  title: string
+  description: string
+  image: string
+  category: string
+  link: string
+  technologies: string[]
+}
+
 export default function App() {
   const [selectedItemId, setSelectedItemId] = useState<number | null>(showcaseItems[0].id)
+  const [currentRoute, setCurrentRoute] = useState('PROJECTS')
   
-  const containerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  // Slot management using refs
+  const activeSlotIndex = useRef(0)
+  const slots = useRef<[React.ReactNode | null, React.ReactNode | null]>([null, null])
+  const isTransitioning = useRef(false)
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.id === selectedItemId)
     : null
 
-  const { Layout, navigateTo, currentRoute, hasListContent } = useTransitionLayout({
-    duration: 700,
-    containerRef,
-    listRef,
-    contentRef,
-    initialRoute: 'PROJECTS',
-    layouts: {
-      PROJECTS: {
-        list: (
-          <ShowcaseList
-            items={showcaseItems}
-            onItemSelect={setSelectedItemId}
-            isVisible={true}
-          />
-        ),
-        content: selectedItem && (
+  const hasListContent = currentRoute === 'PROJECTS'
+
+  const renderContent = () => {
+    switch (currentRoute) {
+      case 'PROJECTS':
+        return selectedItem && (
           <ShowcaseDetail
             item={selectedItem}
             onClose={() => setSelectedItemId(null)}
           />
         )
-      },
-      RANTS: {
-        content: (
+      case 'RANTS':
+        return (
           <ShowcaseDetail
             item={{
               id: 0,
@@ -114,18 +197,34 @@ export default function App() {
             onClose={() => {}}
           />
         )
-      },
-      HOME: {
-        content: (
-          <AboutPage/>
-        )
-      }
+      case 'HOME':
+        return <AboutPage />
+      default:
+        return null
     }
-  });
+  }
 
   const handlePageChange = (page: string) => {
-    if (page === currentRoute) return;
-    navigateTo(page);
+    if (page === currentRoute || isTransitioning.current) return
+    
+    // Prepare the inactive slot with new content
+    const inactiveSlotIndex = activeSlotIndex.current === 0 ? 1 : 0
+    slots.current[inactiveSlotIndex] = renderContent()
+    
+    // Start transition
+    isTransitioning.current = true
+    setCurrentRoute(page)
+    
+    // Update active slot after animation
+    setTimeout(() => {
+      activeSlotIndex.current = inactiveSlotIndex
+      isTransitioning.current = false
+    }, 800) // Slightly longer than animation duration to ensure completion
+  }
+
+  const handleItemSelect = (id: number) => {
+    if (id === selectedItemId) return
+    setSelectedItemId(id)
   }
 
   return (
@@ -135,19 +234,47 @@ export default function App() {
         onPageChange={handlePageChange}
       />
       <ContentContainer>
-        <MainContent 
-          ref={containerRef}
-        >
-          <ListSection 
-            ref={listRef}
-            showBorder={hasListContent}
+        <MainContent>
+          <ListSection
+            initial="collapsed"
+            animate={hasListContent ? "expanded" : "collapsed"}
+            variants={listVariants}
+            style={{ borderRightStyle: 'solid' }}
           >
-            <Layout type="list" />
+            <AnimatePresence mode="wait">
+              {hasListContent && (
+                <ContentSlot
+                  key="list"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <ShowcaseList
+                    items={showcaseItems}
+                    onItemSelect={handleItemSelect}
+                    isVisible={true}
+                  />
+                </ContentSlot>
+              )}
+            </AnimatePresence>
           </ListSection>
-          <DetailSection 
-            ref={contentRef}
+          
+          <DetailSection
+            initial="full"
+            animate={hasListContent ? "expanded" : "full"}
+            variants={contentVariants}
           >
-            <Layout type="content" />
+            <AnimatePresence mode="wait">
+              <ContentSlot
+                key={currentRoute + selectedItemId}
+                variants={isTransitioning.current ? slotVariants.pageTransition : slotVariants.itemTransition}
+                initial="enter"
+                animate="center"
+                exit="exit"
+              >
+                {renderContent()}
+              </ContentSlot>
+            </AnimatePresence>
           </DetailSection>
         </MainContent>
       </ContentContainer>
