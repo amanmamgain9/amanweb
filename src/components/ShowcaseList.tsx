@@ -24,7 +24,7 @@ const ListContent = styled.div`
 
 const Card = styled.div`
   border: 1px solid #1c4c7c;
-  padding: 1.5rem;
+  padding: 1rem;
   background-color: rgba(13, 35, 57, 0.95);
   cursor: pointer;
   border-radius: 8px;
@@ -38,39 +38,16 @@ const Card = styled.div`
   }
 `
 
-const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-`
-
 const Title = styled.h3`
-  font-size: 1.8em;
+  font-size: 1.5em;
   color: #00f0ff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
+  margin: 0 0 1rem 0;
 
   &::before {
     content: '>';
     opacity: 0.7;
+    margin-right: 0.5rem;
   }
-`
-
-const Image = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  object-fit: cover;
-`
-
-const Description = styled.div`
-  color: #e6edf3;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-  font-size: 0.9em;
 `
 
 const TechnologiesContainer = styled.div`
@@ -108,27 +85,13 @@ export function ShowcaseList({
     <ListContainer $isVisible={isVisible}>
       <ListContent>
         {items.map(item => (
-        <Card 
-          key={item.id} 
-          onClick={() => onItemSelect(item.id)}
-        >
-          <CardHeader>
-            <Title>{item.title}</Title>
-            <Image src={item.image} alt={item.title} />
-          </CardHeader>
-          <Description>{item.description}</Description>
-          {item.technologies && (
-            <TechnologiesContainer>
-              {item.technologies.map(tech => (
-                <TechTag key={tech}>{tech}</TechTag>
-              ))}
-            </TechnologiesContainer>
-          )}
-          {item.date && (
-            <TechTag>
-              {new Date(item.date).toLocaleDateString()}
-            </TechTag>
-          )}
+        <Card key={item.id} onClick={() => onItemSelect(item.id)}>
+          <Title>{item.title}</Title>
+          <TechnologiesContainer>
+            {item.technologies?.map(tech => (
+              <TechTag key={tech}>{tech}</TechTag>
+            ))}
+          </TechnologiesContainer>
         </Card>
         ))}
       </ListContent>
