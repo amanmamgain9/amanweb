@@ -72,22 +72,27 @@ const CalendarWrapper = styled.div`
     border-radius: 8px;
     font-size: 0.9em;
     padding: 1rem;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
     
     button {
       color: #00f0ff;
       border-radius: 4px;
       transition: all 0.2s ease;
+      font-weight: 500;
+      background: rgba(28, 76, 124, 0.2);
+      margin: 2px;
       
       &:hover:not(:disabled) {
-        background-color: rgba(0, 240, 255, 0.1);
+        background-color: rgba(0, 240, 255, 0.2);
         transform: scale(1.05);
       }
 
       &:disabled {
-        color: rgba(0, 240, 255, 0.1);
-        background-color: rgba(13, 35, 57, 0.5);
+        color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(13, 35, 57, 0.8);
         cursor: not-allowed;
-        opacity: 0.5;
+        opacity: 1;
+        text-decoration: line-through;
       }
     }
     
@@ -95,13 +100,14 @@ const CalendarWrapper = styled.div`
       padding: 0.75em 0.5em;
       
       &--active {
-        background: rgba(0, 240, 255, 0.2) !important;
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        background: rgba(0, 240, 255, 0.3) !important;
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        font-weight: bold;
       }
       
       &--now {
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.3);
+        background: rgba(0, 240, 255, 0.15);
+        border: 2px solid rgba(0, 240, 255, 0.5);
       }
     }
     
@@ -109,7 +115,7 @@ const CalendarWrapper = styled.div`
       color: #ff6b6b;
       
       &:disabled {
-        color: rgba(255, 107, 107, 0.3);
+        color: rgba(255, 107, 107, 0.4);
       }
     }
 
@@ -119,15 +125,17 @@ const CalendarWrapper = styled.div`
       
       button {
         min-width: 40px;
-        background: none;
+        background: rgba(28, 76, 124, 0.3);
         font-size: 1.2em;
+        margin: 0 2px;
         
         &:disabled {
-          opacity: 0.3;
+          background: rgba(13, 35, 57, 0.8);
+          opacity: 0.5;
         }
         
         &:hover:not(:disabled) {
-          background-color: rgba(0, 240, 255, 0.1);
+          background-color: rgba(0, 240, 255, 0.2);
         }
       }
     }
@@ -136,7 +144,8 @@ const CalendarWrapper = styled.div`
       font-size: 0.8em;
       text-transform: uppercase;
       font-weight: bold;
-      color: rgba(0, 240, 255, 0.7);
+      color: #00f0ff;
+      margin-bottom: 0.5em;
       
       abbr {
         text-decoration: none;
@@ -146,6 +155,11 @@ const CalendarWrapper = styled.div`
     
     .react-calendar__year-view__months {
       gap: 0.5rem;
+      
+      button {
+        padding: 1em 0.5em;
+        font-size: 1em;
+      }
     }
   }
 `
