@@ -41,7 +41,7 @@ export const showcaseItems: ShowcaseItem[] = [
     title: "Kauri Captioner",
     description: "Built a video subtitling tool using Whisper model (transformers.js). Implemented video processing with Canvas API for rendering and ffmpeg.wasm for audio processing.",
     category: "project",
-    link: "https://amanmamgain9.github.io/sub_gen/",
+    links: "https://amanmamgain9.github.io/sub_gen/",
     technologies: ["React", "transformers.js", "Canvas API", "ffmpeg.wasm", "Whisper AI"]
   },
   {
