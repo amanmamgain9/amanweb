@@ -1,4 +1,4 @@
-export type ShowcaseItemCategory = 'desktop' | 'game' | 'ai' | 'web' | 'extension' | 'about';
+export type ShowcaseItemCategory = 'desktop' | 'game' | 'ai' | 'web' | 'extension' | 'about' | 'side-project';
 
 export type ShowcaseItem = {
   title: string;
@@ -46,7 +46,7 @@ export const showcaseItems: ShowcaseItem[] = [
   {
     title: "Project Tab Manager",
     description: "Chrome extension for project-based tab organization. Built using React and Chrome Extension APIs to help users manage their browser tabs more effectively.",
-    category: "extension",
+    category: "side-project",
     link: "https://github.com/amanmamgain9/project-tab-manager",
     technologies: ["React", "Chrome Extension API", "JavaScript"]
   },
