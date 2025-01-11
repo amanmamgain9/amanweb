@@ -19,6 +19,14 @@ export const showcaseItems: ShowcaseItem[] = [
     technologies: ["Unity", "C#", "Multiplayer", "Game Development", "Dissonance"]
   },
   {
+    title: "XtremeVerse NFT Platform",
+    description: "Contributed to XtremeVerse NFT platform development. Implemented raffle system and NFT display features. Enhanced platform functionality and user experience on xnet.xtremeverse.xyz.",
+    image: "/placeholder-xverse.png",
+    category: "web",
+    link: "https://xnet.xtremeverse.xyz/",
+    technologies: ["React", "Web3", "NFT", "Smart Contracts", "Blockchain"]
+  },
+  {
     title: "Glip Game Capture",
     description: "Developed a low-latency game capture application using OBS APIs. Created an Electron + React application for NFT creation and auction from captured game moments. Implemented a web-based crypto wallet and task completion system with crypto rewards.",
     image: "/placeholder-glip.png",
