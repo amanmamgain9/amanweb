@@ -31,7 +31,7 @@ const ContentContainer = styled.div`
   }
 `
 
-const ListSection = styled(motion.div)`
+const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?: boolean }>`
   overflow: hidden;
   @media (max-width: 768px) {
     width: 100%;
@@ -67,7 +67,7 @@ const MainContent = styled(motion.div)`
   }
 `
 
-const DetailSection = styled(motion.div)`
+const DetailSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?: boolean }>`
   background-color: #0a1929;
   position: relative;
   min-height: 500px;
