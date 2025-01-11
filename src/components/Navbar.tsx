@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
-import '@fontsource/press-start-2p'
 
 const TopBarContainer = styled.div`
   position: fixed;
