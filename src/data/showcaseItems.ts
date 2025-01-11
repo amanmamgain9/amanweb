@@ -4,7 +4,10 @@ export type ShowcaseItem = {
   title: string;
   description: string;
   category: ShowcaseItemCategory;
-  link?: string;
+  links?: Array<{
+    label: string;
+    url: string;
+  }>;
   technologies: string[];
 }
 
@@ -41,14 +44,24 @@ export const showcaseItems: ShowcaseItem[] = [
     title: "Kauri Captioner",
     description: "Built a video subtitling tool using Whisper model (transformers.js). Implemented video processing with Canvas API for rendering and ffmpeg.wasm for audio processing.",
     category: "project",
-    links: "https://amanmamgain9.github.io/sub_gen/",
+    links: [
+      {
+        label: "View Project",
+        url: "https://amanmamgain9.github.io/sub_gen/"
+      }
+    ],
     technologies: ["React", "transformers.js", "Canvas API", "ffmpeg.wasm", "Whisper AI"]
   },
   {
     title: "Project Tab Manager",
     description: "Chrome extension for project-based tab organization. Built using React and Chrome Extension APIs to help users manage their browser tabs more effectively.",
     category: "project",
-    link: "https://github.com/amanmamgain9/project-tab-manager",
+    links: [
+      {
+        label: "GitHub",
+        url: "https://github.com/amanmamgain9/project-tab-manager"
+      }
+    ],
     technologies: ["React", "Chrome Extension API", "JavaScript"]
   }
 ];
