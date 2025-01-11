@@ -74,9 +74,6 @@ export function ShowcaseDetail({
 }: ShowcaseDetailProps) {
   return (
     <DetailContainer>
-      <Header>
-        <Title>{item.title}</Title>
-      </Header>
       <Description>{item.description}</Description>
       {item.technologies && (
         <TechnologiesContainer>
