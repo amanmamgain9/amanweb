@@ -22,12 +22,6 @@ const Header = styled.div`
   border-bottom: 1px solid #1c4c7c;
 `
 
-const DetailImage = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 4px;
-`
-
 const Title = styled.h3`
   color: #00f0ff;
   font-size: 1.8em;
@@ -81,7 +75,6 @@ export function ShowcaseDetail({
   return (
     <DetailContainer>
       <Header>
-        <DetailImage src={item.image} alt={item.title} />
         <Title>{item.title}</Title>
       </Header>
       <Description>{item.description}</Description>
