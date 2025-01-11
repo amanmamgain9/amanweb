@@ -184,6 +184,11 @@ function AppContent() {
   useEffect(() => {
     const path = location.pathname.slice(1).toUpperCase() || 'HOME'
     setCurrentRoute(path)
+    
+    // Set showingContent to true for routes without list content
+    if (!['PROJECTS', 'WDYGDTW'].includes(path)) {
+      setShowingContent(true)
+    }
   }, [location])
   
   // Slot management using refs
