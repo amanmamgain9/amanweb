@@ -80,7 +80,7 @@ const MainContent = styled(motion.div)`
   }
 `
 
-const DetailSection = styled(motion.div)<{ isMobileView?: boolean }>`
+const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?: boolean }>`
   background-color: #0a1929;
   position: relative;
   min-height: 500px;
@@ -89,7 +89,7 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean }>`
   flex: 1;
   
   @media (max-width: 768px) {
-    display: ${props => hasListContent ? 'none' : 'flex'};
+    display: ${props => props.hideOnMobile ? 'none' : 'flex'};
   }
 `
 
