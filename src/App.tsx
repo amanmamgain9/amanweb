@@ -89,7 +89,7 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean }>`
   flex: 1;
   
   @media (max-width: 768px) {
-    display: none;
+    display: ${props => hasListContent ? 'none' : 'flex'};
   }
 `
 
@@ -306,6 +306,7 @@ function AppContent() {
             variants={contentVariants}
             isMobileView={isMobileView}
             showingContent={showingContent}
+            hideOnMobile={hasListContent}
           >
             <AnimatePresence mode="wait">
               <ContentSlot
