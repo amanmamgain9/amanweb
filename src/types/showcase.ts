@@ -9,7 +9,7 @@ export interface ShowcaseItem {
   date?: string
 }
 
-export type ShowcaseCategory = 'projects' | 'articles' | 'thoughts' | 'about' | 'home'
+export type ShowcaseCategory = 'projects' | 'articles' | 'thoughts' | 'about' | 'home' | 'rants' | 'desktop' | 'game' | 'ai' | 'web' | 'extension'
 
 export type NavigationPage = 'HOME' | 'PROJECTS' | 'RANTS'
 
