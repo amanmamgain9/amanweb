@@ -1,6 +1,5 @@
 import { ShowcaseItem } from '../types/showcase'
-import styled from 'styled-components'
-import { useState, useEffect } from 'react'
+import styled from 'styled-components';
 
 const DetailContainer = styled.div`
   padding: 2rem;
@@ -96,12 +95,7 @@ export function ShowcaseDetail({
           target="_blank" 
           rel="noopener noreferrer"
         >
-          View {
-            item.category === 'desktop' || item.category === 'web' || item.category === 'extension' ? 'Project' :
-            item.category === 'game' ? 'Game' :
-            item.category === 'ai' ? 'Demo' :
-            'Profile'
-          } →
+          View Project →
         </ItemLink>
       )}
     </DetailContainer>
