@@ -24,7 +24,7 @@ export const showcaseItems: ShowcaseItem[] = [
     image: "/placeholder-xverse.png",
     category: "web",
     link: "https://xnet.xtremeverse.xyz/",
-    technologies: ["React", "Web3", "NFT", "Smart Contracts", "Blockchain"]
+    technologies: ["React", "Web3", "NFT",]
   },
   {
     title: "Glip Game Capture",
