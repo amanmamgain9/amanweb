@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar'
 import { ShowcaseList } from './components/ShowcaseList'
 import { ShowcaseDetail } from './components/ShowcaseDetail'
 import { AboutPage } from './components/AboutPage'
+import { WDYGDTWPage } from './components/WDYGDTWPage'
 import { showcaseItems } from './data/showcaseItems'
 import styled from 'styled-components'
 
@@ -190,6 +191,8 @@ export default function App() {
         )
       case 'HOME':
         return <AboutPage />
+      case 'WDYGDTW':
+        return <WDYGDTWPage />
       default:
         return null
     }

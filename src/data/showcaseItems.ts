@@ -64,10 +64,4 @@ export const showcaseItems: ShowcaseItem[] = [
     ],
     technologies: ["React", "Chrome Extension API", "JavaScript"]
   }
-  {
-    title: "What Do You Get Down To Wednesday",
-    description: "Weekly music sharing initiative where team members share their current favorite tracks.",
-    category: "wdygdtw",
-    technologies: ["Music", "Team Building", "Culture"]
-  }
 ];
