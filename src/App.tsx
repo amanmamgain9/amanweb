@@ -151,7 +151,7 @@ const slotVariants = {
 import { ShowcaseItem } from './types/showcase'
 
 export default function App() {
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(showcaseItems[0].id)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(showcaseItems[0].title)
   const [currentRoute, setCurrentRoute] = useState('PROJECTS')
   
   // Slot management using refs
@@ -160,7 +160,7 @@ export default function App() {
   const isTransitioning = useRef(false)
 
   const selectedItem = selectedItemId 
-    ? showcaseItems.find(item => item.id === selectedItemId)
+    ? showcaseItems.find(item => item.title === selectedItemId)
     : null
 
   const hasListContent = currentRoute === 'PROJECTS'

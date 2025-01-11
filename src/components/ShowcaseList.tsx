@@ -73,7 +73,7 @@ const TechTag = styled.span`
 
 interface ShowcaseListProps {
   items: ShowcaseItem[]
-  onItemSelect: (id: string) => void
+  onItemSelect: (title: string) => void
   isVisible?: boolean
 }
 
@@ -86,7 +86,7 @@ export function ShowcaseList({
     <ListContainer $isVisible={isVisible}>
       <ListContent>
         {items.map(item => (
-        <Card key={item.id} onClick={() => onItemSelect(item.id)}>
+        <Card key={item.title} onClick={() => onItemSelect(item.title)}>
           <Title>{item.title}</Title>
           <TechnologiesContainer>
             {item.technologies?.map(tech => (
