@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
+import '@fontsource/press-start-2p'
 
 const TopBarContainer = styled.div`
   position: fixed;
@@ -48,7 +49,8 @@ const NavButton = styled(Link)<{ $active?: boolean }>`
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  font-size: 1em;
+  font-family: 'Press Start 2P';
+  font-size: 0.7em;
   transition: all 0.3s ease;
   position: relative;
 
@@ -75,7 +77,7 @@ const NavButton = styled(Link)<{ $active?: boolean }>`
   
   @media (max-width: 768px) {
     padding: 0.5rem;
-    font-size: 0.9em;
+    font-size: 0.6em;
   }
 `
 
