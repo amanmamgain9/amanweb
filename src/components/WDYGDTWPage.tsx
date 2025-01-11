@@ -9,6 +9,7 @@ const ListContainer = styled.div`
   position: relative;
   cursor: pointer;
   display: flex;
+  flex: 1;
   
   &:hover {
     &::after {
@@ -27,8 +28,8 @@ const ListContainer = styled.div`
 const FullImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: fill;
-  flex: 1;
+  object-fit: cover;
+  display: block;
 `
 
 const ContentContainer = styled.div`
