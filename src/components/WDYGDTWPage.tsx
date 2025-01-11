@@ -179,21 +179,43 @@ const WeeksContainer = styled.div`
 const WeekEntry = styled.div`
   border: 1px solid #1c4c7c;
   border-radius: 8px;
-  padding: 1.5rem;
   background: rgba(13, 35, 57, 0.95);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 240, 255, 0.2);
+  }
 
   h3 {
     color: #00f0ff;
-    margin: 0 0 1rem 0;
-    border-bottom: 1px solid #1c4c7c;
-    padding-bottom: 0.5rem;
-  }
-
-  p {
-    color: #58a6ff;
     margin: 0;
-    line-height: 1.5;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    &::after {
+      content: '▼';
+      font-size: 0.8em;
+      transition: transform 0.3s ease;
+      transform: ${props => props.$isExpanded ? 'rotate(180deg)' : 'rotate(0)'};
+    }
   }
+`
+
+const WeekContent = styled.div`
+  color: #58a6ff;
+  line-height: 1.5;
+  padding: 0 1rem 1rem 1rem;
+  border-top: 1px solid #1c4c7c;
+  margin-top: 0;
+  overflow: hidden;
+  max-height: ${props => props.$isExpanded ? '500px' : '0'};
+  opacity: ${props => props.$isExpanded ? '1' : '0'};
+  transition: all 0.3s ease;
+  padding: ${props => props.$isExpanded ? '1rem' : '0 1rem'};
 `
 
 
@@ -231,12 +253,21 @@ export function WDYGDTWContent({ weekId }: { weekId: number }) {
       </CalendarWrapper>
 
       <WeeksContainer>
-        {weekData[currentMonth]?.weeks.map((week, index) => (
-          <WeekEntry key={index}>
-            <h3>Week {index + 1} ({week.dates})</h3>
-            <p>{week.content}</p>
-          </WeekEntry>
-        ))}
+        {weekData[currentMonth]?.weeks.map((week, index) => {
+          const [isExpanded, setIsExpanded] = useState(false);
+          return (
+            <WeekEntry 
+              key={index} 
+              onClick={() => setIsExpanded(!isExpanded)}
+              $isExpanded={isExpanded}
+            >
+              <h3>Week {index + 1} ({week.dates})</h3>
+              <WeekContent $isExpanded={isExpanded}>
+                {week.content}
+              </WeekContent>
+            </WeekEntry>
+          );
+        })}
       </WeeksContainer>
     </ContentContainer>
   )
