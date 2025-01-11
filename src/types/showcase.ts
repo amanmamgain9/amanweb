@@ -4,7 +4,10 @@ export interface ShowcaseItem {
   title: string
   description: string
   technologies?: string[]
-  link?: string
+  links?: {
+    label: string;
+    url: string;
+  }[]
   image: string
   date?: string
 }
