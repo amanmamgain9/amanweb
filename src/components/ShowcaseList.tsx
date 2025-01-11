@@ -15,6 +15,7 @@ const ListContainer = styled.div<{ $isVisible?: boolean }>`
 const ListContent = styled.div`
   overflow-y: auto;
   height: 100%;
+  padding-top: 1rem;
   
   /* Add spacing between cards */
   & > *:not(:last-child) {
