@@ -49,9 +49,15 @@ const TechTag = styled.span`
   border: 1px solid rgba(0, 240, 255, 0.2);
 `
 
+const LinksContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+`
+
 const ItemLink = styled.a`
   display: inline-block;
-  margin-top: 1rem;
   color: #00f0ff;
   text-decoration: none;
   border: 1px solid #00f0ff;
@@ -89,14 +95,19 @@ export function ShowcaseDetail({
           {new Date(item.date).toLocaleDateString()}
         </TechTag>
       )}
-      {item.link && (
-        <ItemLink 
-          href={item.link} 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
-          View Project →
-        </ItemLink>
+      {item.links && item.links.length > 0 && (
+        <LinksContainer>
+          {item.links.map((link, index) => (
+            <ItemLink
+              key={index}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {link.label} →
+            </ItemLink>
+          ))}
+        </LinksContainer>
       )}
     </DetailContainer>
   )

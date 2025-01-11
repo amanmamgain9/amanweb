@@ -13,14 +13,28 @@ export const showcaseItems: ShowcaseItem[] = [
     title: "BTX Game",
     description: "Multiplayer extraction shooter game built in Unity. Implemented core gameplay mechanics including crouch, character integration, scoreboard and vault system with loadout customization. Added proximity voice chat using Dissonance and quick sell feature with infinite scroll selection.",
     category: "game",
-    link: "https://play.google.com/store/apps/details?id=glip.studio.btx.android&hl=en_IN",
+    links: [
+      {
+        label: "Play Store",
+        url: "https://play.google.com/store/apps/details?id=glip.studio.btx.android&hl=en_IN"
+      },
+      {
+        label: "App Store",
+        url: "https://apps.apple.com/us/app/btx-game/id1234567890"
+      }
+    ],
     technologies: ["Unity", "C#", "Dissonance", "Multiplayer", "Game Development"]
   },
   {
     title: "XNet Platform",
     description: "Developed a comprehensive NFT platform for game moments. Created electron app for game capture using OBS APIs, web-based crypto wallet, and task completion system with crypto rewards.",
     category: "web",
-    link: "https://xnet.xtremeverse.xyz/",
+    links: [
+      {
+        label: "View Project",
+        url: "https://xnet.xtremeverse.xyz/"
+      }
+    ],
     technologies: ["React", "Node.js", "NFT"]
   },
   {
