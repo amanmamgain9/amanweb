@@ -65,13 +65,13 @@ const Title = styled.h1`
 const CalendarWrapper = styled.div`
   .react-calendar {
     width: 100%;
-    max-width: 300px;
+    max-width: 280px;
     margin: 0 auto;
     background: rgba(13, 35, 57, 0.95);
     border: 1px solid #1c4c7c;
     border-radius: 8px;
-    font-size: 0.9em;
-    padding: 1.5rem;
+    font-size: 0.85em;
+    padding: 0.75rem;
     box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
     
     button {
@@ -97,7 +97,7 @@ const CalendarWrapper = styled.div`
     }
     
     .react-calendar__tile {
-      padding: 0.75em 0.5em;
+      padding: 0.5em 0.25em;
       
       &--active {
         background: rgba(0, 240, 255, 0.3) !important;
@@ -154,13 +154,13 @@ const CalendarWrapper = styled.div`
     }
     
     .react-calendar__year-view__months {
-      gap: 0.5rem;
-      padding: 0 0.5rem;
+      gap: 0.25rem;
+      padding: 0 0.25rem;
       
       button {
-        padding: 1.2em 0.5em;
-        font-size: 1em;
-        margin: 0.2rem;
+        padding: 0.75em 0.25em;
+        font-size: 0.95em;
+        margin: 0.1rem;
       }
     }
   }
