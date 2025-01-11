@@ -18,6 +18,8 @@ const Container = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column-reverse;
+    height: 100vh;
+    overflow: hidden;
   }
 `
 
@@ -31,7 +33,8 @@ const ContentContainer = styled.div`
 
   @media (max-width: 768px) {
     padding: 0;
-    padding-top: 4rem;
+    height: calc(100vh - 4rem);
+    overflow: hidden;
   }
 `
 
@@ -67,14 +70,13 @@ const MainContent = styled(motion.div)`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  position: relative;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    border-radius: 0;
-    height: calc(100vh - 4rem);
+    height: 100%;
     border: none;
-    position: relative;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 `
 
