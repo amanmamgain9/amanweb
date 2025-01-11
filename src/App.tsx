@@ -38,15 +38,13 @@ const ContentContainer = styled.div`
   }
 `
 
-const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?: boolean }>`
-  overflow: hidden;
+const ListSection = styled(motion.div)<{ isMobileView?: boolean }>`
+  overflow: auto;
+  width: 38.2%;
+
   @media (max-width: 768px) {
     width: 100%;
-    height: calc(100vh - 4rem);
-    display: ${props => props.showingContent ? 'none' : 'block'};
-    position: absolute;
-    top: 0;
-    left: 0;
+    height: 100%;
   }
 `
 
@@ -80,7 +78,7 @@ const MainContent = styled(motion.div)`
   }
 `
 
-const DetailSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?: boolean }>`
+const DetailSection = styled(motion.div)<{ isMobileView?: boolean }>`
   background-color: #0a1929;
   position: relative;
   min-height: 500px;
@@ -89,12 +87,7 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean; showingConten
   flex: 1;
   
   @media (max-width: 768px) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 4rem);
-    display: ${props => props.showingContent ? 'block' : 'none'};
+    display: none;
   }
 `
 
