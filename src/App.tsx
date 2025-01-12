@@ -255,12 +255,7 @@ function AppContent() {
       case 'HOME':
         return <AboutPage />
       case 'WDYGDTW':
-        return selectedItemId && (
-          <WDYGDTWContent 
-            weekId={selectedItemId}
-            onFocusSelect={focusItemSelect}
-          />
-        )
+        return <WDYGDTWContent onFocusSelect={focusItemSelect} />
       default:
         return null
     }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import Calendar from 'react-calendar'
@@ -397,36 +398,45 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
 `;
 
 export function WDYGDTWContent({ 
-  weekId, 
   onFocusSelect,
 }: { 
-  weekId: string;
   onFocusSelect: (id: string) => void;
 }) {
+  const location = useLocation();
+  const [weekId, setWeekId] = useState('');
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
   const [selectedWeek, setSelectedWeek] = useState<{ week: WeekDataType; index: number } | null>(null)
   const [showingDetail, setShowingDetail] = useState(false)
 
   useEffect(() => {
-    const [monthId, weekNum] = weekId.split('/');
-    const monthYear = monthId && getOriginalMonthFormat(monthId);
-    const currentMonthData = monthYear ? weekData[monthYear]?.weeks || [] : [];
+    const pathParts = location.pathname.split('/');
+    const monthId = pathParts[2];
+    const weekNum = pathParts[3];
     
-    if (weekNum && currentMonthData.length > 0) {
-      const weekIndex = parseInt(weekNum) - 1;
-      if (weekIndex >= 0 && weekIndex < currentMonthData.length) {
-        setSelectedWeek({
-          week: currentMonthData[weekIndex],
-          index: weekIndex
-        });
-        setShowingDetail(true);
+    if (monthId) {
+      setWeekId(weekNum ? `${monthId}/${weekNum}` : monthId);
+      
+      const monthYear = getOriginalMonthFormat(monthId);
+      const currentMonthData = monthYear ? weekData[monthYear]?.weeks || [] : [];
+      
+      if (weekNum && currentMonthData.length > 0) {
+        const weekIndex = parseInt(weekNum) - 1;
+        if (weekIndex >= 0 && weekIndex < currentMonthData.length) {
+          setSelectedWeek({
+            week: currentMonthData[weekIndex],
+            index: weekIndex
+          });
+          setShowingDetail(true);
+        }
+      } else {
+        setSelectedWeek(null);
+        setShowingDetail(false);
       }
     } else {
-      setSelectedWeek(null);
-      setShowingDetail(false);
+      setWeekId(getCurrentMonthDefault());
     }
-  }, [weekId]);
+  }, [location]);
   
   // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
   const monthYear = getOriginalMonthFormat(weekId);
