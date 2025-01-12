@@ -40,9 +40,28 @@ const ContentContainer = styled.div`
   }
 `
 
+const MobileHeader = styled.div`
+  display: none;
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 240, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    font-family: 'Press Start 2P';
+    color: #00f0ff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+`
+
 const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?: boolean }>`
   overflow: auto;
   width: 38.2%;
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -328,14 +347,19 @@ function AppContent() {
           >
             <AnimatePresence mode="wait">
               {hasListContent && (
-                <ContentSlot
-                  key="list"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {renderList()}
-                </ContentSlot>
+                <>
+                  <MobileHeader>
+                    {currentRoute}
+                  </MobileHeader>
+                  <ContentSlot
+                    key="list"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    {renderList()}
+                  </ContentSlot>
+                </>
               )}
             </AnimatePresence>
           </ListSection>
