@@ -2,7 +2,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import { WeekEntry as WeekDataType, MonthData, weekData, isDateInWeeks } from '../data/weekData'
+import { WeekEntry as WeekDataType, MonthData, weekData, isDateInWeeks, getCurrentMonthDefault, getOriginalMonthFormat } from '../data/weekData'
 
 // Base styles for common colors and transitions
 const baseTheme = {
@@ -261,9 +261,8 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
 
 export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: string) => void }) {
   const handleClick = () => {
-    const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' })
-    const firstWeekId = `${currentMonth}-1`
-    onWeekSelect(firstWeekId)
+    const monthId = getCurrentMonthDefault(); // Will return "jan-2025"
+    onWeekSelect(monthId);
   }
 
   return (
@@ -277,8 +276,9 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
   
-  const currentMonth = date.toLocaleString('default', { month: 'long', year: 'numeric' })
-  const currentMonthData = weekData[currentMonth]?.weeks || []
+  // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
+  const monthYear = getOriginalMonthFormat(weekId);
+  const currentMonthData = weekData[monthYear]?.weeks || [];
 
   const handleDateChange = (newDate: Date) => {
     if (isDateInWeeks(newDate, weekData)) {

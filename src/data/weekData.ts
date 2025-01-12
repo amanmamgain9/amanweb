@@ -26,11 +26,24 @@ export const weekData: MonthData = {
 
 export const getCurrentMonthDefault = () => {
   const date = new Date();
-  const monthYear = date.toLocaleString('default', { 
-    month: 'short', // 'Jan', 'Feb', etc
+  return date.toLocaleString('default', { 
+    month: 'short', // 'Jan'
     year: 'numeric'  // '2025'
-  });
-  return monthYear.replace(' ', '-'); // Returns format like "Jan-2025"
+  }).replace(' ', '-').toLowerCase(); // Returns "jan-2025"
+}
+
+// Add a helper to convert month format
+export const formatMonthId = (monthYear: string) => {
+  // Convert "January 2025" to "jan-2025"
+  const [month, year] = monthYear.split(' ');
+  return `${month.slice(0,3).toLowerCase()}-${year}`;
+}
+
+// Add helper to get original format if needed
+export const getOriginalMonthFormat = (monthId: string) => {
+  // Convert "jan-2025" to "January 2025"
+  const [month, year] = monthId.split('-');
+  return `${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
 }
 
 export const isDateInWeeks = (date: Date, monthData: MonthData): boolean => {
