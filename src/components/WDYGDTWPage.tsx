@@ -252,7 +252,7 @@ const BackToListButton = styled.button`
   }
 `;
 
-const DetailWrapper = styled.div`
+const DetailWrapper = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
@@ -260,20 +260,8 @@ const DetailWrapper = styled.div`
   bottom: 0;
   padding: 2rem;
   background: rgba(13, 35, 57, 0.98);
-  animation: expandIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1000;
   overflow-y: auto;
-
-  @keyframes expandIn {
-    0% {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
 `;
 
 const DetailHeader = styled.div`
@@ -287,7 +275,12 @@ const DetailHeader = styled.div`
 
 const WeekDetail = ({ week, weekNumber, onClose }: WeekDetailProps) => {
   return (
-    <DetailWrapper>
+    <DetailWrapper
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+    >
       <DetailHeader>
         <Title style={{ margin: 0 }}>Week {weekNumber}</Title>
         <BackToListButton onClick={onClose}>
@@ -430,8 +423,7 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
 
   const handleCloseDetail = () => {
     setShowingDetail(false);
-    // Add small delay before cleanup to allow animation to complete
-    setTimeout(() => setSelectedWeek(null), 300);
+    setSelectedWeek(null);
   }
 
   return (
