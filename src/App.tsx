@@ -184,8 +184,11 @@ function AppContent() {
     const pathParts = location.pathname.slice(1).split('/')
     const path = pathParts[0].toUpperCase() || 'HOME'
     const id = pathParts[1]
+    const isFocused = pathParts[2] === 'focus'
     
     setCurrentRoute(path)
+    setSelectedItemId(id || null)
+    setHideList(isFocused)
     
     // Handle auto-selection for desktop view
     if (!id && !isMobileView) {
@@ -194,8 +197,6 @@ function AppContent() {
       } else if (path === 'PROJECTS') {
         setSelectedItemId(getDefaultShowcase())
       }
-    } else {
-      setSelectedItemId(id || null)
     }
     
     if (id || !['PROJECTS', 'WDYGDTW'].includes(path)) {
