@@ -3,6 +3,52 @@ import { Variants } from 'framer-motion';
 
 type TransitionType = 'route' | 'item';
 
+interface AnimationState {
+  initial: string;
+  animate: string;
+}
+
+export const getListAnimateInfo = (
+  hasListContent: boolean, 
+  isDesktop: boolean, 
+  showMobileDetail: boolean
+): AnimationState => {
+  return {
+    initial: (isDesktop && hasListContent) ? "visible" : "hidden",
+    animate: hasListContent 
+      ? (showMobileDetail && !isDesktop ? "hidden" : "visible") 
+      : "hidden"
+  };
+};
+
+export const getListContentInfo = (
+  hasContainerTransition: boolean
+): AnimationState => {
+  return {
+    initial: "initial",
+    animate: hasContainerTransition ? "animateWithDelay" : "animate"
+  };
+};
+
+export const getDetailSectionInfo = (
+  hasListContent: boolean, 
+  isDesktop: boolean
+): AnimationState => {
+  return {
+    initial: "fullWidth",
+    animate: hasListContent && isDesktop ? "partialWidth" : "fullWidth"
+  };
+};
+
+export const getDetailContentInfo = (
+  hasContainerTransition: boolean
+): AnimationState => {
+  return {
+    initial: "initial",
+    animate: hasContainerTransition ? "animateWithDelay" : "animate"
+  };
+};
+
 // Timing constants
 const CONTAINER_DURATION = 0.7;
 const DETAIL_CONTAINER_DURATION = 0.5;

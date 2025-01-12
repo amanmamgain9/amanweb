@@ -3,12 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { LIST_CONTENT_ROUTES } from './utils/constants';
 import { parseRoute, getDefaultSelection } from './utils/routeParser';
-import { 
-  getListAnimateInfo, 
-  getListContentInfo, 
-  getDetailSectionInfo,
-  getDetailContentInfo 
-} from './utils/animationUtils';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
 import { AboutPage } from './components/AboutPage'
@@ -20,7 +14,11 @@ import {
   getListContainerVariants, 
   getListContentVariants,
   getDetailContainerVariants,
-  getDetailContentVariants
+  getDetailContentVariants,
+  getListAnimateInfo,
+  getListContentInfo,
+  getDetailSectionInfo,
+  getDetailContentInfo
 } from './libs/mainPageAnimate'
 
 // Styled Components
