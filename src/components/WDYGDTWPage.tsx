@@ -421,20 +421,6 @@ export function WDYGDTWContent({
     }
   }
 
-  // Handle initial focus week if provided
-  useEffect(() => {
-    if (initialFocusWeek) {
-      const weekIndex = parseInt(initialFocusWeek) - 1;
-      if (weekIndex >= 0 && weekIndex < currentMonthData.length) {
-        const week = currentMonthData[weekIndex];
-        setSelectedWeek({ week, index: weekIndex });
-        setShowingDetail(true);
-      }
-    } else {
-      setShowingDetail(false);
-      setSelectedWeek(null);
-    }
-  }, [initialFocusWeek, currentMonthData]);
 
   const handleWeekToggle = (index: number) => {
     setExpandedWeekIndex(expandedWeekIndex === index ? null : index)
