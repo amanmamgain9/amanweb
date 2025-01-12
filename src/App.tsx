@@ -65,16 +65,16 @@ const MobileHeader = styled.div`
   }
 `
 
-const ListSection = styled(motion.div)<{ isMobileView?: boolean; showMobileDetail?: boolean }>`
+const ListSection = styled(motion.div)<{ isMobileView?: boolean; showMobileDetail?: boolean; hideList?: boolean }>`
   overflow: auto;
   width: 38.2%;
-  display: flex;
+  display: ${props => props.hideList ? 'none' : 'flex'};
   flex-direction: column;
 
   @media (max-width: 768px) {
     width: 100%;
     height: 100%;
-    display: ${props => props.isMobileView && props.showMobileDetail ? 'none' : 'flex'};
+    display: ${props => (props.isMobileView && props.showMobileDetail) || props.hideList ? 'none' : 'flex'};
   }
 `;
 
@@ -293,7 +293,8 @@ function AppContent() {
                   borderRightStyle: isDesktop ? 'solid' : 'none'
                 }}
                 isMobileView={!isDesktop}
-                showMobileDetail={showMobileDetail || hideList}
+                showMobileDetail={showMobileDetail}
+                hideList={hideList}
               >
                 <AnimatePresence mode="wait">
                   {hasListContent && (
