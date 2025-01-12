@@ -266,10 +266,12 @@ function AppContent() {
   const focusItemSelect = (id: string) => {
     setSelectedItemId(id);
     setHideList(true);
+    navigate(`/${currentRoute.toLowerCase()}/${id}/focus`);
   }
 
   const unsetFocus = () => {
     setHideList(false);
+    navigate(`/${currentRoute.toLowerCase()}/${selectedItemId}`);
   }
 
   const handleBackToList = () => {
