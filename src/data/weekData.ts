@@ -24,6 +24,15 @@ export const weekData: MonthData = {
   }
 };
 
+export const getCurrentMonthDefault = () => {
+  const date = new Date();
+  const monthYear = date.toLocaleString('default', { 
+    month: 'short', // 'Jan', 'Feb', etc
+    year: 'numeric'  // '2025'
+  });
+  return monthYear.replace(' ', '-'); // Returns format like "Jan-2025"
+}
+
 export const isDateInWeeks = (date: Date, monthData: MonthData): boolean => {
   const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
   const month = monthData[monthKey];

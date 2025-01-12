@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from
 import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
 import { AboutPage } from './components/AboutPage'
 import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage'
-import { showcaseItems } from './data/showcaseItems'
+import { showcaseItems, getDefaultShowcase } from './data/showcaseItems'
+import { getCurrentMonthDefault } from './data/weekData'
 import styled from 'styled-components'
 import { 
   getListContainerVariants, 
@@ -188,9 +189,9 @@ function AppContent() {
     // Handle auto-selection for desktop view
     if (!id && !isMobileView) {
       if (path === 'WDYGDTW') {
-        setSelectedItemId('1')
-      } else if (path === 'PROJECTS' && showcaseItems.length > 0) {
-        setSelectedItemId(showcaseItems[0].slug)
+        setSelectedItemId(getCurrentMonthDefault())
+      } else if (path === 'PROJECTS') {
+        setSelectedItemId(getDefaultShowcase())
       }
     } else {
       setSelectedItemId(id || null)

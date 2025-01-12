@@ -12,6 +12,8 @@ export type ShowcaseItem = {
   technologies: string[];
 }
 
+export const getDefaultShowcase = () => showcaseItems[0]?.slug;
+
 export const showcaseItems: ShowcaseItem[] = [
   {
     title: "BTX Game",
