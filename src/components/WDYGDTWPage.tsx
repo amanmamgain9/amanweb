@@ -180,24 +180,18 @@ const WeeksContainer = styled.div`
   gap: 1.5rem;
 `
 
-const WeekItemButton = styled.button`
+const WeekItemContainer = styled.div`
   width: 100%;
   text-align: left;
   border: 1px solid ${baseTheme.border};
   border-radius: 8px;
   background: ${baseTheme.background};
-  cursor: pointer;
   transition: ${baseTheme.hoverTransition};
   padding: 0;
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 240, 255, 0.2);
-  }
-
-  &:focus {
-    outline: 2px solid ${baseTheme.primary};
-    outline-offset: 2px;
   }
 `
 
@@ -294,11 +288,12 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
   }
 
   return (
-    <WeekItemButton 
-      onClick={handleToggle}
-      onKeyPress={handleKeyPress}
-    >
-      <WeekHeader $isExpanded={isExpanded}>
+    <WeekItemContainer>
+      <WeekHeader 
+        $isExpanded={isExpanded}
+        onClick={handleToggle}
+        style={{ cursor: 'pointer' }}
+      >
         <span>Week {index + 1} ({week.dates})</span>
         <ViewDetailButton onClick={handleViewDetail}>
           View Details →
@@ -307,7 +302,7 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
       <WeekContent $isExpanded={isExpanded}>
         {week.content}
       </WeekContent>
-    </WeekItemButton>
+    </WeekItemContainer>
   )
 }
 
