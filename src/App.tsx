@@ -183,8 +183,18 @@ function AppContent() {
   useEffect(() => {
     const pathParts = location.pathname.slice(1).split('/')
     const path = pathParts[0].toUpperCase() || 'HOME'
-    const id = pathParts[1]
-    const isFocused = pathParts[2] === 'focus'
+    let id = null
+    let isFocused = false
+    
+    if (path === 'WDYGDTW' && pathParts[1] && pathParts[2]) {
+      // Handle format: wdygdtw/jan-2025/1
+      id = pathParts[1]
+      isFocused = true
+    } else if (pathParts[1]) {
+      // Handle other routes
+      id = pathParts[1]
+      isFocused = pathParts[2] === 'focus'
+    }
     
     setCurrentRoute(path)
     setSelectedItemId(id || null)
@@ -267,7 +277,12 @@ function AppContent() {
   const focusItemSelect = (id: string) => {
     setSelectedItemId(id);
     setHideList(true);
-    navigate(`/${currentRoute.toLowerCase()}/${id}/focus`);
+    if (currentRoute === 'WDYGDTW') {
+      const [monthId, weekNum] = id.split('/');
+      navigate(`/${currentRoute.toLowerCase()}/${monthId}/${weekNum}`);
+    } else {
+      navigate(`/${currentRoute.toLowerCase()}/${id}/focus`);
+    }
   }
 
   const unsetFocus = () => {

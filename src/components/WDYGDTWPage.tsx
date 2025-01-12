@@ -428,7 +428,7 @@ export function WDYGDTWContent({
   const handleShowDetail = (week: WeekDataType, index: number) => {
     setSelectedWeek({ week, index });
     setShowingDetail(true);
-    onFocusSelect(`${weekId}-week${index + 1}`);
+    onFocusSelect(`${weekId}/${index + 1}`);
   }
 
   const handleCloseDetail = () => {
