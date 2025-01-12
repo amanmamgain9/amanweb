@@ -93,7 +93,7 @@ export function ShowcaseList({
     <ListContainer $isVisible={isVisible}>
       <ListContent>
         {items.map(item => (
-        <Card key={item.title} onClick={() => onItemSelect(item.title)}>
+        <Card key={item.title} onClick={() => onItemSelect(item.slug)}>
           <Title>{item.title}</Title>
           <TechnologiesContainer>
             {item.technologies?.map(tech => (

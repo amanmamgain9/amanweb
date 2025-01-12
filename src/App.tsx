@@ -166,7 +166,10 @@ function AppContent() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768)
   const [showingContent, setShowingContent] = useState(false)
-  
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [currentRoute, setCurrentRoute] = useState(location.pathname.slice(1).toUpperCase() || 'HOME')
+  const transitionType = useTransitionType(currentRoute, selectedItemId);
 
   useEffect(() => {
     const handleResize = () => {
@@ -176,38 +179,38 @@ function AppContent() {
     return () => window.removeEventListener('resize', handleResize)
   }, []);
 
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [currentRoute, setCurrentRoute] = useState(location.pathname.slice(1).toUpperCase() || 'HOME')
-  const transitionType = useTransitionType(currentRoute, selectedItemId);
-
   useEffect(() => {
-    const path = location.pathname.slice(1).toUpperCase() || 'HOME'
+    const pathParts = location.pathname.slice(1).split('/')
+    const path = pathParts[0].toUpperCase() || 'HOME'
+    const id = pathParts[1]
+    
     setCurrentRoute(path)
     
-    if (!['PROJECTS', 'WDYGDTW'].includes(path)) {
+    // Handle auto-selection for desktop view
+    if (!id && !isMobileView) {
+      if (path === 'WDYGDTW') {
+        setSelectedItemId('1')
+      } else if (path === 'PROJECTS' && showcaseItems.length > 0) {
+        setSelectedItemId(showcaseItems[0].slug)
+      }
+    } else {
+      setSelectedItemId(id || null)
+    }
+    
+    if (id || !['PROJECTS', 'WDYGDTW'].includes(path)) {
       setShowingContent(true)
-      setSelectedItemId(null)
     } else {
       setShowingContent(false)
-      if (!isMobileView) {
-        if (path === 'PROJECTS' && showcaseItems.length > 0) {
-          setSelectedItemId(showcaseItems[0].title)
-        } else if (path === 'WDYGDTW') {
-          setSelectedItemId('1')
-        }
-      } else {
-        setSelectedItemId(null)
-      }
     }
   }, [location, isMobileView])
-
+  
   const selectedItem = selectedItemId 
-    ? showcaseItems.find(item => item.title === selectedItemId)
-    : null
+    ? showcaseItems.find(item => item.slug === selectedItemId)
+    : null;
 
   const hasListContent = ['PROJECTS', 'WDYGDTW'].includes(currentRoute)
   const prevHasListContent = usePrevious(hasListContent);
+
   const renderList = () => {
     switch (currentRoute) {
       case 'PROJECTS':
@@ -235,7 +238,7 @@ function AppContent() {
         return selectedItem && (
           <ShowcaseDetail
             item={selectedItem}
-            onClose={() => setSelectedItemId(null)}
+            onClose={handleBackToList}
           />
         )
       case 'HOME':
@@ -253,25 +256,16 @@ function AppContent() {
   }
 
   const handleItemSelect = (id: string) => {
-    if (id === selectedItemId) return
-    setSelectedItemId(id.toString())
-    if (isMobileView) {
-      setShowingContent(true)
-    }
+    if (id === selectedItemId) return;
+    navigate(`/${currentRoute.toLowerCase()}/${id}`)
   }
 
   const handleBackToList = () => {
-    if (isMobileView) {
-      setShowingContent(false)
-      setSelectedItemId(null)
-    }
+    navigate(`/${currentRoute.toLowerCase()}`)
   }
 
   const isDesktop = !isMobileView;
-  
   const hasContainerTransition = prevHasListContent !== hasListContent && prevHasListContent !== undefined;
-
-  // [Previous handlers and state management remain the same...]
 
   return (
     <Routes>
