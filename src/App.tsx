@@ -232,12 +232,21 @@ function AppContent() {
     switch (currentRoute) {
       case 'PROJECTS':
         return selectedItemId && (
-          <ShowcaseDetail onClose={handleBackToList} selectedId={selectedItemId} />
+          <ShowcaseDetail 
+            onClose={handleBackToList} 
+            selectedId={selectedItemId}
+            onFocusSelect={focusItemSelect} 
+          />
         )
       case 'HOME':
         return <AboutPage />
       case 'WDYGDTW':
-        return selectedItemId && <WDYGDTWContent weekId={selectedItemId} />
+        return selectedItemId && (
+          <WDYGDTWContent 
+            weekId={selectedItemId}
+            onFocusSelect={focusItemSelect}
+          />
+        )
       default:
         return null
     }
@@ -251,6 +260,10 @@ function AppContent() {
   const handleItemSelect = (id: string) => {
     if (id === selectedItemId) return;
     navigate(`/${currentRoute.toLowerCase()}/${id}`)
+  }
+
+  const focusItemSelect = (id: string) => {
+    setSelectedItemId(id);
   }
 
   const handleBackToList = () => {
