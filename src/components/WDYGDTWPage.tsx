@@ -222,8 +222,7 @@ export function WDYGDTWContent({
   const currentMonthData = weekData[monthYear]?.weeks || [];
 
   const handleDateChange = (
-    value: Date | Date[] | null,
-    event: React.MouseEvent<HTMLButtonElement>
+    value: Date | [Date, Date] | null | any
   ) => {
     if (value instanceof Date && isDateInWeeks(value, weekData)) {
       setDate(value)
