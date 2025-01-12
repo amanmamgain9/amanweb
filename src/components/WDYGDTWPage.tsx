@@ -387,11 +387,12 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
 export function WDYGDTWContent({ 
   onFocusSelect,
   onUnsetFocus,
+  pathname
 }: { 
   onFocusSelect: (id: string) => void;
   onUnsetFocus: () => void;
+  pathname: string;
 }) {
-  const location = useLocation();
   const [weekId, setWeekId] = useState('');
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
@@ -399,7 +400,7 @@ export function WDYGDTWContent({
   const [showingDetail, setShowingDetail] = useState(false)
 
   useEffect(() => {
-    const pathParts = location.pathname.split('/');
+    const pathParts = pathname.split('/');
     const monthId = pathParts[2];
     const weekNum = pathParts[3];
     
@@ -425,7 +426,7 @@ export function WDYGDTWContent({
     } else {
       setWeekId(getCurrentMonthDefault());
     }
-  }, [location]);
+  }, [pathname]);
   
   // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
   const monthYear = getOriginalMonthFormat(weekId);

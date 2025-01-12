@@ -262,9 +262,11 @@ function AppContent() {
         return <AboutPage />;
       case 'WDYGDTW':
         return (
-          <WDYGDTWContent 
+          <WDYGDTWContent
+            key={location.pathname}
             onFocusSelect={focusItemSelect}
             onUnsetFocus={unsetFocus}
+            pathname={location.pathname}
           />
         );
       default:
