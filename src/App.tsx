@@ -102,7 +102,7 @@ const BackButton = styled.button`
   }
 `
 
-const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?: boolean }>`
+const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?: boolean; showingContent?: boolean }>`
   background-color: #0a1929;
   position: relative;
   min-height: 500px;
@@ -111,7 +111,7 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?
   flex: 1;
   
   @media (max-width: 768px) {
-    display: ${props => props.hideOnMobile ? 'none' : 'flex'};
+    display: ${props => (props.hideOnMobile && !props.showingContent) ? 'none' : 'flex'};
   }
 `
 
