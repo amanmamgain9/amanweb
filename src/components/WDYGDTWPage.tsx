@@ -280,9 +280,9 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
   const monthYear = getOriginalMonthFormat(weekId);
   const currentMonthData = weekData[monthYear]?.weeks || [];
 
-  const handleDateChange = (newDate: Date) => {
-    if (isDateInWeeks(newDate, weekData)) {
-      setDate(newDate)
+  const handleDateChange = (value: Date | null) => {
+    if (value && isDateInWeeks(value, weekData)) {
+      setDate(value)
       setExpandedWeekIndex(null)
     }
   }
