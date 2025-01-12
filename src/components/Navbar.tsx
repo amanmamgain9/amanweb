@@ -52,6 +52,9 @@ const NavButton = styled(Link)<{ $active?: boolean }>`
   font-size: 0.7em;
   transition: all 0.3s ease;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     color: #00f0ff;
