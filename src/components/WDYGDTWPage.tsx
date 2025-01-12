@@ -311,15 +311,15 @@ const ViewDetailButton = styled.button`
   background: rgba(0, 240, 255, 0.1);
   border: 1px solid rgba(0, 240, 255, 0.3);
   color: #00f0ff;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
   margin-top: 1rem;
+  margin-left: auto;
   display: block;
-  width: 100%;
   transition: all 0.2s ease;
   font-family: 'Press Start 2P';
-  font-size: 0.8em;
+  font-size: 0.7em;
 
   &:hover {
     background: rgba(0, 240, 255, 0.2);
