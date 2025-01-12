@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { LIST_CONTENT_ROUTES } from './utils/constants';
+import { parseRoute, getDefaultSelection } from './utils/routeParser';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
 import { AboutPage } from './components/AboutPage'
@@ -182,39 +183,19 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
-    const pathParts = location.pathname.slice(1).split('/')
-    const path = pathParts[0].toUpperCase() || 'HOME'
-    let id = null
-    let isFocused = false
+    const { currentRoute, selectedId, isFocused, showMobileDetail } = parseRoute(location.pathname);
     
-    if (path === 'WDYGDTW' && pathParts[1]) {
-      id = pathParts[1]
-      if (pathParts[2]) {
-        id = `${pathParts[1]}/${pathParts[2]}`
-        isFocused = true
-      }
-    } else if (pathParts[1]) {
-      id = pathParts[1]
-      isFocused = pathParts[2] === 'focus'
-    }
-    
-    setCurrentRoute(path)
-    setSelectedItemId(id || null)
-    setHideList(isFocused)
-    
+    setCurrentRoute(currentRoute);
+    setSelectedItemId(selectedId);
+    setHideList(isFocused);
+    setShowMobileDetail(showMobileDetail);
+
     // Handle auto-selection for desktop view
-    if (!id && !isMobileView) {
-      if (path === 'WDYGDTW') {
-        setSelectedItemId(getCurrentMonthDefault())
-      } else if (path === 'PROJECTS') {
-        setSelectedItemId(getDefaultShowcase())
+    if (!selectedId) {
+      const defaultId = getDefaultSelection(currentRoute, isMobileView);
+      if (defaultId) {
+        setSelectedItemId(defaultId);
       }
-    }
-    
-    if (id || !['PROJECTS', 'WDYGDTW'].includes(path)) {
-      setShowMobileDetail(true)
-    } else {
-      setShowMobileDetail(false)
     }
   }, [location, isMobileView])
 
