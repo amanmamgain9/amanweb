@@ -255,7 +255,10 @@ function AppContent() {
       case 'HOME':
         return <AboutPage />
       case 'WDYGDTW':
-        return <WDYGDTWContent onFocusSelect={focusItemSelect} />
+        return <WDYGDTWContent 
+          onFocusSelect={focusItemSelect}
+          onUnsetFocus={unsetFocus}
+        />
       default:
         return null
     }

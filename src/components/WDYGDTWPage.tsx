@@ -399,8 +399,10 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
 
 export function WDYGDTWContent({ 
   onFocusSelect,
+  onUnsetFocus,
 }: { 
   onFocusSelect: (id: string) => void;
+  onUnsetFocus: () => void;
 }) {
   const location = useLocation();
   const [weekId, setWeekId] = useState('');
@@ -500,10 +502,7 @@ export function WDYGDTWContent({
           <WeekDetail 
             week={selectedWeek.week}
             weekNumber={selectedWeek.index + 1}
-            onClose={() => {
-              onFocusSelect(weekId);
-              window.history.pushState({}, '', `/wdygdtw/${weekId}`);
-            }}
+            onClose={() => onUnsetFocus()}
           />
         )}
       </AnimatePresence>
