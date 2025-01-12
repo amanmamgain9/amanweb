@@ -354,12 +354,17 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
         <span>Week {index + 1} ({week.dates})</span>
       </WeekHeader>
       <WeekContent $isExpanded={isExpanded}>
-        {week.content}
-        <ViewDetailButton onClick={handleViewDetail}>
-          View Details →
-        </ViewDetailButton>
+        {!showDetail ? (
+          <>
+            {week.content}
+            <ViewDetailButton onClick={handleViewDetail}>
+              View Details →
+            </ViewDetailButton>
+          </>
+        ) : (
+          <WeekDetail week={week} weekNumber={index + 1} />
+        )}
       </WeekContent>
-      {showDetail && <WeekDetail week={week} weekNumber={index + 1} />}
     </WeekItemContainer>
   )
 }
