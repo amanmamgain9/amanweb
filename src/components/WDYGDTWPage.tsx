@@ -373,13 +373,6 @@ const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemP
           View Full Details →
         </ViewDetailButton>
       </WeekContent>
-      {showDetail && (
-        <WeekDetail 
-          week={week} 
-          weekNumber={index + 1}
-          onClose={() => setShowDetail(false)}
-        />
-      )}
     </WeekItemContainer>
   )
 }
