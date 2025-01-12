@@ -96,7 +96,7 @@ const BackButton = styled.button`
     top: 16px;
     left: 16px;
     z-index: 10;
-    
+    font-family: 'Press Start 2P';
     &:hover {
       background: rgba(0, 240, 255, 0.2);
     }
@@ -348,7 +348,7 @@ function AppContent() {
           >
             {isMobileView && hasListContent && (
               <BackButton onClick={handleBackToList}>
-                ← Back
+               {`<`} Back
               </BackButton>
             )}
             <AnimatePresence mode="wait">
