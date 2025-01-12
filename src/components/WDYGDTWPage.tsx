@@ -399,19 +399,16 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
 export function WDYGDTWContent({ 
   weekId, 
   onFocusSelect,
-  onUnsetFocus,
-  initialFocusWeek
+  selectedWeek,
+  showingDetail
 }: { 
   weekId: string;
   onFocusSelect: (id: string) => void;
-  onUnsetFocus?: () => void;
-  initialFocusWeek?: string;
+  selectedWeek?: { week: WeekDataType; index: number } | null;
+  showingDetail?: boolean;
 }) {
-  console.log('initialFocusWeek', initialFocusWeek);
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
-  const [showingDetail, setShowingDetail] = useState(false)
-  const [selectedWeek, setSelectedWeek] = useState<{ week: WeekDataType; index: number } | null>(null)
   
   // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
   const monthYear = getOriginalMonthFormat(weekId);
