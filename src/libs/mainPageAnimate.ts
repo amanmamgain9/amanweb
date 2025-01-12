@@ -1,22 +1,22 @@
-// animations.ts
 import { Variants } from 'framer-motion';
-
-type TransitionType = 'route' | 'item';
 
 interface AnimationState {
   initial: string;
   animate: string;
 }
 
-export const getListAnimateInfo = (
-  hasListContent: boolean, 
-  isDesktop: boolean, 
+const CONTAINER_DURATION = 0.6;
+// const DETAIL_CONTAINER_DURATION = 4.7;
+
+
+export const getListContainerAnimateInfo = (
+  hasListContent: boolean,
   showMobileDetail: boolean
 ): AnimationState => {
   return {
-    initial: (isDesktop && hasListContent) ? "visible" : "hidden",
+    initial: "hidden",
     animate: hasListContent 
-      ? (showMobileDetail && !isDesktop ? "hidden" : "visible") 
+      ? (showMobileDetail ? "hidden" : "visible") 
       : "hidden"
   };
 };
@@ -25,18 +25,26 @@ export const getListContentInfo = (
   hasContainerTransition: boolean
 ): AnimationState => {
   return {
-    initial: "initial",
-    animate: hasContainerTransition ? "animateWithDelay" : "animate"
+    initial: "hidden",
+    animate: hasContainerTransition ? "visibleWithDelay" : "visible"
   };
 };
 
-export const getDetailSectionInfo = (
-  hasListContent: boolean, 
-  isDesktop: boolean
+export const getDetailContainerAnimateInfo = (
+  hasListContent: boolean,
+  isDesktop: boolean,
+  isHidden: boolean
 ): AnimationState => {
+  if (isHidden) {
+    return {
+      initial: "hidden",
+      animate: "hidden"
+    };
+  }
+  
   return {
-    initial: "fullWidth",
-    animate: hasListContent && isDesktop ? "partialWidth" : "fullWidth"
+    initial: "expanded",
+    animate: hasListContent && isDesktop ? "collapsed" : "expanded"
   };
 };
 
@@ -44,14 +52,10 @@ export const getDetailContentInfo = (
   hasContainerTransition: boolean
 ): AnimationState => {
   return {
-    initial: "initial",
-    animate: hasContainerTransition ? "animateWithDelay" : "animate"
+    initial: "hidden",
+    animate: hasContainerTransition ? "visibleWithDelay" : "visible"
   };
 };
-
-// Timing constants
-const CONTAINER_DURATION = 0.7;
-const DETAIL_CONTAINER_DURATION = 0.5;
 
 export const getListContainerVariants = (isDesktop: boolean): Variants => {
   if (isDesktop) {
@@ -88,11 +92,11 @@ export const getListContainerVariants = (isDesktop: boolean): Variants => {
 };
 
 export const getListContentVariants = (isDesktop: boolean): Variants => ({
-  initial: {
+  hidden: {
     opacity: 0,
     y: isDesktop ? -50 : 50
   },
-  animate: {
+  visible: {
     opacity: 1,
     y: 0,
     transition: {
@@ -100,7 +104,7 @@ export const getListContentVariants = (isDesktop: boolean): Variants => ({
       opacity: { duration: 0.2 }
     }
   },
-  animateWithDelay: {
+  visibleWithDelay: {
     opacity: 1,
     y: 0,
     transition: {
@@ -115,24 +119,26 @@ export const getListContentVariants = (isDesktop: boolean): Variants => ({
 });
 
 export const getDetailContainerVariants = (isDesktop: boolean): Variants => ({
-  fullWidth: {
+  expanded: {
     width: "100%",
-    transition: { duration: DETAIL_CONTAINER_DURATION, ease: "easeInOut" }
+    transition: { duration: CONTAINER_DURATION, ease: "easeInOut" }
   },
-  partialWidth: {
+  collapsed: {
     width: isDesktop ? "61.8%" : "100%",
-    transition: { duration: DETAIL_CONTAINER_DURATION, ease: "easeInOut" }
-  }
+    transition: { duration: CONTAINER_DURATION, ease: "easeInOut" }
+  },
+  hidden: {
+    width: "0%"
+  },
 });
 
-export const getDetailContentVariants = (isDesktop: boolean, transitionType: TransitionType): Variants => {
-  if (transitionType === 'route') {
+export const getDetailContentVariants = (isDesktop: boolean): Variants => {
     return {
-      initial: {
+      hidden: {
         opacity: 0,
         y: -300
       },
-      animate: {
+      visible: {
         opacity: 1,
         y: 0,
         transition: {
@@ -140,51 +146,17 @@ export const getDetailContentVariants = (isDesktop: boolean, transitionType: Tra
           opacity: { duration: 0.2 }
         }
       },
-      animateWithDelay: {
+      visibleWithDelay: {
         opacity: 1,
         y: 0,
         transition: {
-          y: { type: "spring", stiffness: 300, damping: 30, delay: DETAIL_CONTAINER_DURATION },
-          opacity: { duration: 0.2, delay: DETAIL_CONTAINER_DURATION }
+          y: { type: "spring", stiffness: 300, damping: 30, delay: CONTAINER_DURATION },
+          opacity: { duration: 0.2, delay: CONTAINER_DURATION }
         }
       },
       exit: {
         opacity: 0,
-        transition: { duration: 0.7 }
+        transition: { duration: 0.3 }
       }
     };
-  }
-
-  return {
-    initial: {
-      opacity: 0,
-      x: isDesktop ? 0 : 300
-    },
-    animate: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        x: isDesktop ? undefined : { type: "spring", stiffness: 300, damping: 30 },
-        duration: 0.3
-      }
-    },
-    animateWithDelay: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        x: isDesktop ? undefined : { 
-          type: "spring", 
-          stiffness: 300, 
-          damping: 30,
-          delay: DETAIL_CONTAINER_DURATION 
-        },
-        opacity: { duration: 0.3, delay: DETAIL_CONTAINER_DURATION }
-      }
-    },
-    exit: {
-      opacity: 0,
-      x: isDesktop ? 0 : -300,
-      transition: { duration: 0.3 }
-    }
-  };
 };

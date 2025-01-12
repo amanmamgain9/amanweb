@@ -7,9 +7,10 @@ interface RouteState {
   selectedId: string | null;
   isFocused: boolean;
   showMobileDetail: boolean;
+  fullRoute: string;
 }
 
-export const parseRoute = (pathname: string): RouteState => {
+export const parseRoute = (pathname: string, isMobileView:boolean): RouteState => {
   const pathParts = pathname.slice(1).split('/');
   const path = pathParts[0].toUpperCase() || 'HOME';
   let selectedId = null;
@@ -26,8 +27,10 @@ export const parseRoute = (pathname: string): RouteState => {
     isFocused = pathParts[2] === 'focus';
   }
 
-  const showMobileDetail = !!(selectedId || !LIST_CONTENT_ROUTES.includes(path as any));
-
+  let showMobileDetail = !!(selectedId || !LIST_CONTENT_ROUTES.includes(path as any));
+  if(!isMobileView) {
+    showMobileDetail = false;
+  }
   return {
     currentRoute: path,
     selectedId,

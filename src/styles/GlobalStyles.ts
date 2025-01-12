@@ -6,6 +6,11 @@ export const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    &::-webkit-scrollbar {  /* Chrome, Safari and Opera */
+      display: none;
+    }
   }
 
   body {
@@ -47,4 +52,5 @@ export const GlobalStyles = createGlobalStyle`
   ::-webkit-scrollbar-thumb:hover {
     background: #58a6ff;
   }
+  
 `

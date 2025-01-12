@@ -1,25 +1,23 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'
-import { Navbar } from './components/Navbar'
+import { motion, AnimatePresence } from 'framer-motion';
+import { Navbar } from './components/Navbar';
 import { LIST_CONTENT_ROUTES } from './utils/constants';
 import { parseRoute, getDefaultSelection } from './utils/routeParser';
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
-import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
-import { AboutPage } from './components/AboutPage'
-import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage'
-import { getDefaultShowcase } from './data/showcaseItems'
-import { getCurrentMonthDefault } from './data/weekData'
-import styled from 'styled-components'
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { ShowcaseList, ShowcaseDetail } from './components/Showcase';
+import { AboutPage } from './components/AboutPage';
+import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage';
+import styled from 'styled-components';
 import { 
   getListContainerVariants, 
   getListContentVariants,
   getDetailContainerVariants,
   getDetailContentVariants,
-  getListAnimateInfo,
+  getListContainerAnimateInfo,
   getListContentInfo,
-  getDetailSectionInfo,
+  getDetailContainerAnimateInfo,
   getDetailContentInfo
-} from './libs/mainPageAnimate'
+} from './libs/mainPageAnimate';
 
 // Styled Components
 const Container = styled.div`
@@ -35,7 +33,7 @@ const Container = styled.div`
     overflow: hidden;
     position: relative;
   }
-`
+`;
 
 const ContentContainer = styled.div`
   display: flex;
@@ -51,7 +49,7 @@ const ContentContainer = styled.div`
     overflow: hidden;
     padding-bottom: 64px;
   }
-`
+`;
 
 const MobileHeader = styled.div`
   display: none;
@@ -69,18 +67,16 @@ const MobileHeader = styled.div`
     top: 0;
     z-index: 10;
   }
-`
+`;
 
-const ListSection = styled(motion.div)<{ isMobileView?: boolean; showMobileDetail?: boolean; hideList?: boolean }>`
+const ListSection = styled(motion.div)`
   overflow: auto;
   width: 38.2%;
-  display: ${props => props.hideList ? 'none' : 'flex'};
   flex-direction: column;
 
   @media (max-width: 768px) {
     width: 100%;
     height: 100%;
-    display: ${props => (props.isMobileView && props.showMobileDetail) || props.hideList ? 'none' : 'flex'};
   }
 `;
 
@@ -127,18 +123,14 @@ const BackButton = styled.button`
   }
 `;
 
-const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?: boolean; showingContent?: boolean }>`
+const DetailSection = styled(motion.div)`
   background-color: #0a1929;
   position: relative;
   min-height: 500px;
   display: flex;
   flex-direction: column;
   flex: 1;
-  
-  @media (max-width: 768px) {
-    display: ${props => (props.hideOnMobile && !props.showingContent) ? 'none' : 'flex'};
-  }
-`
+`;
 
 const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
   width: 100%;
@@ -150,7 +142,16 @@ const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
   @media (max-width: 768px) {
     padding-top: ${props => props.hasBackButton ? '60px' : '0'};
   }
-`
+`;
+
+// Types for state management
+interface AppState {
+  currentRoute: string;
+  selectedItemId: string | null;
+  isFocused: boolean;
+  showMobileDetail: boolean;
+  hasListContent: boolean;
+}
 
 // Custom hooks
 const usePrevious = <T,>(value: T): T | undefined => {
@@ -161,200 +162,188 @@ const usePrevious = <T,>(value: T): T | undefined => {
   return ref.current;
 };
 
-const useTransitionType = (currentRoute: string, selectedItemId: string | null): 'route' | 'item' => {
-  const prevRoute = usePrevious(currentRoute);
-  const prevItemId = usePrevious(selectedItemId);
-  
-  return prevRoute !== currentRoute ? 'route' : 'item';
-};
-
 function AppContent() {
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768)
-  const [showMobileDetail, setShowMobileDetail] = useState(false)
-  const [hideList, setHideList] = useState(false)
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [currentRoute, setCurrentRoute] = useState(location.pathname.slice(1).toUpperCase() || 'HOME')
-  const transitionType = useTransitionType(currentRoute, selectedItemId);
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Batch all related state into a single object
+  const [state, setState] = useState<AppState>(() => {
+    const initialRoute = location.pathname.slice(1).toUpperCase() || 'HOME';
+    return {
+      currentRoute: initialRoute,
+      selectedItemId: null,
+      isFocused: false,
+      showMobileDetail: false,
+      hasListContent: LIST_CONTENT_ROUTES.includes(initialRoute as any)
+    };
+  });
+
+  const prevHasListContent = usePrevious(state.hasListContent);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth <= 768)
-    }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    const handleResize = () => setIsMobileView(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
-    const { currentRoute, selectedId, isFocused, showMobileDetail } = parseRoute(location.pathname);
+    const { currentRoute, selectedId, isFocused, showMobileDetail } = parseRoute(location.pathname, isMobileView);
     
-    setCurrentRoute(currentRoute);
-    setSelectedItemId(selectedId);
-    setHideList(isFocused);
-    setShowMobileDetail(showMobileDetail);
-
-    // Handle auto-selection for desktop view
-    if (!selectedId) {
-      const defaultId = getDefaultSelection(currentRoute, isMobileView);
-      if (defaultId) {
-        setSelectedItemId(defaultId);
-      }
-    }
-  }, [location, isMobileView])
-
-  const hasListContent = LIST_CONTENT_ROUTES.includes(currentRoute as any) && !hideList
-  const prevHasListContent = usePrevious(hasListContent);
-
-  const renderList = () => {
-    switch (currentRoute) {
-      case 'PROJECTS':
-        return (
-          <ShowcaseList
-            onItemSelect={handleItemSelect}
-            isVisible={true}
-          />
-        )
-      case 'WDYGDTW':
-        return (
-          <WDYGDTWList
-            onWeekSelect={handleItemSelect}
-          />
-        )
-      default:
-        return null
-    }
-  }
-
-  const renderContent = () => {
-    switch (currentRoute) {
-      case 'PROJECTS':
-        return selectedItemId && (
-          <ShowcaseDetail 
-            onClose={handleBackToList} 
-            selectedId={selectedItemId}
-          />
-        )
-      case 'HOME':
-        return <AboutPage />
-      case 'WDYGDTW':
-        return <WDYGDTWContent 
-          onFocusSelect={focusItemSelect}
-          onUnsetFocus={unsetFocus}
-        />
-      default:
-        return null
-    }
-  }
+    // Batch all state updates together
+    setState(prevState => {
+      const newState = {
+        currentRoute,
+        selectedItemId: selectedId || (
+          !selectedId ? getDefaultSelection(currentRoute, isMobileView) : null
+        ),
+        isFocused,
+        showMobileDetail,
+        hasListContent: LIST_CONTENT_ROUTES.includes(currentRoute as any) && !isFocused
+      };
+      
+      return newState;
+    });
+  }, [location, isMobileView]);
 
   const handlePageChange = (page: string) => {
-    if (page === currentRoute) return
-    navigate(`/${page.toLowerCase()}`)
-  }
+    if (page === state.currentRoute) return;
+    navigate(`/${page.toLowerCase()}`);
+  };
 
   const handleItemSelect = (id: string) => {
-    if (id === selectedItemId) return;
-    navigate(`/${currentRoute.toLowerCase()}/${id}`)
-  }
+    if (id === state.selectedItemId) return;
+    navigate(`/${state.currentRoute.toLowerCase()}/${id}`);
+  };
 
   const focusItemSelect = (id: string) => {
-    setSelectedItemId(id);
-    setHideList(true);
-    if (currentRoute === 'WDYGDTW') {
+    if (state.currentRoute === 'WDYGDTW') {
       const [monthId, weekNum] = id.split('/');
-      navigate(`/${currentRoute.toLowerCase()}/${monthId}/${weekNum}`);
+      navigate(`/${state.currentRoute.toLowerCase()}/${monthId}/${weekNum}`);
     } else {
-      navigate(`/${currentRoute.toLowerCase()}/${id}/focus`);
+      navigate(`/${state.currentRoute.toLowerCase()}/${id}/focus`);
     }
-  }
+  };
 
   const unsetFocus = () => {
-    setHideList(false);
-    const monthId = selectedItemId?.split('/')[0];
+    const monthId = state.selectedItemId?.split('/')[0];
     if (monthId) {
       navigate(`/wdygdtw/${monthId}`);
     } else {
       navigate('/wdygdtw');
     }
-  }
+  };
 
   const handleBackToList = () => {
-    navigate(`/${currentRoute.toLowerCase()}`)
-  }
+    navigate(`/${state.currentRoute.toLowerCase()}`);
+  };
+
+  const renderList = () => {
+    switch (state.currentRoute) {
+      case 'PROJECTS':
+        return <ShowcaseList onItemSelect={handleItemSelect} isVisible={true} />;
+      case 'WDYGDTW':
+        return <WDYGDTWList onWeekSelect={handleItemSelect} />;
+      default:
+        return null;
+    }
+  };
+
+  const renderContent = () => {
+    switch (state.currentRoute) {
+      case 'PROJECTS':
+        return state.selectedItemId && (
+          <ShowcaseDetail 
+            onClose={handleBackToList} 
+            selectedId={state.selectedItemId}
+          />
+        );
+      case 'HOME':
+        return <AboutPage />;
+      case 'WDYGDTW':
+        return (
+          <WDYGDTWContent 
+            onFocusSelect={focusItemSelect}
+            onUnsetFocus={unsetFocus}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   const isDesktop = !isMobileView;
-  const hasContainerTransition = prevHasListContent !== hasListContent && prevHasListContent !== undefined;
+  const hasContainerTransition = prevHasListContent !== state.hasListContent && 
+    prevHasListContent !== undefined;
+  const isDetailContainerHidden = !isDesktop && state.hasListContent && !state.showMobileDetail;
 
   return (
     <Routes>
-      <Route path="*" element={
-        <Container>
-          <Navbar 
-            activePage={currentRoute}
-            onPageChange={handlePageChange}
-          />
-          <ContentContainer>
-            <MainContent>
-              <ListSection
-                key={!isDesktop ? (showMobileDetail ? 'detail' : 'list') : 'persistent'}
-                {...getListAnimateInfo(hasListContent, isDesktop, showMobileDetail)}
-                variants={getListContainerVariants(isDesktop)}
-                style={{ 
-                  borderRightStyle: isDesktop ? 'solid' : 'none'
-                }}
-                isMobileView={!isDesktop}
-                showMobileDetail={showMobileDetail}
-                hideList={hideList}
-              >
-                <AnimatePresence mode="wait">
-                  {hasListContent && (
-                    <>
-                      <MobileHeader>
-                        {currentRoute}
-                      </MobileHeader>
-                      <ContentSlot
-                        key="list"
-                        variants={getListContentVariants(isDesktop)}
-                        {...getListContentInfo(hasContainerTransition)}
-                        exit="exit"
-                      >
-                        {renderList()}
-                      </ContentSlot>
-                    </>
+      <Route 
+        path="*" 
+        element={
+          <Container>
+            <Navbar 
+              activePage={state.currentRoute}
+              onPageChange={handlePageChange}
+            />
+            <ContentContainer>
+              <MainContent>
+                <ListSection
+                  key="list"
+                  {...getListContainerAnimateInfo(state.hasListContent, state.showMobileDetail)}
+                  variants={getListContainerVariants(isDesktop)}
+                  style={{ 
+                    borderRightStyle: isDesktop ? 'solid' : 'none',
+                  }}
+                >
+                  <AnimatePresence mode="wait">
+                    {state.hasListContent && (
+                      <>
+                        <MobileHeader>
+                          {state.currentRoute}
+                        </MobileHeader>
+                        <ContentSlot
+                          key={state.currentRoute}
+                          variants={getListContentVariants(isDesktop)}
+                          {...getListContentInfo(hasContainerTransition)}
+                          exit="exit"
+                        >
+                          {renderList()}
+                        </ContentSlot>
+                      </>
+                    )}
+                  </AnimatePresence>
+                </ListSection>
+                
+                <DetailSection
+                  {...getDetailContainerAnimateInfo(state.hasListContent, isDesktop, isDetailContainerHidden)}
+                  variants={getDetailContainerVariants(isDesktop)}
+                >
+                  {!isDesktop && state.hasListContent && state.showMobileDetail && (
+                    <BackButton onClick={handleBackToList}>
+                      {`<`} Back
+                    </BackButton>
                   )}
-                </AnimatePresence>
-              </ListSection>
-              
-              <DetailSection
-                {...getDetailSectionInfo(hasListContent, isDesktop)}
-                variants={getDetailContainerVariants(isDesktop)}
-                isMobileView={!isDesktop}
-                showingContent={showMobileDetail}
-                hideOnMobile={hasListContent}
-              >
-                {!isDesktop && hasListContent && (
-                  <BackButton onClick={handleBackToList}>
-                    {`<`} Back
-                  </BackButton>
-                )}
-                <AnimatePresence mode="wait">
-                  <ContentSlot
-                    key={currentRoute + selectedItemId}
-                    variants={getDetailContentVariants(isDesktop, transitionType)}
-                    {...getDetailContentInfo(hasContainerTransition)}
-                    exit="exit"
-                    hasBackButton={!isDesktop && hasListContent}
-                  >
-                    {renderContent()}
-                  </ContentSlot>
-                </AnimatePresence>
-              </DetailSection>
-            </MainContent>
-          </ContentContainer>
-        </Container>
-      } />
+                  <AnimatePresence mode="wait">
+                    <ContentSlot
+                      key={location.pathname}
+                      variants={getDetailContentVariants(isDesktop)}
+                      {...getDetailContentInfo(hasContainerTransition)}
+                      hasBackButton={!isDesktop && state.hasListContent}
+                      exit="exit"
+                    >
+                      {renderContent()}
+                    </ContentSlot>
+                  </AnimatePresence>
+                </DetailSection>
+              </MainContent>
+            </ContentContainer>
+          </Container>
+        } 
+      />
     </Routes>
-  )
+  );
 }
 
 export default function App() {
