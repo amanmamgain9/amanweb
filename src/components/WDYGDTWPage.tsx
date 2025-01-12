@@ -400,8 +400,12 @@ export function WDYGDTWContent({
   weekId, 
   onFocusSelect,
   onUnsetFocus,
-  initialFocusWeek?: string
+  initialFocusWeek
 }: { 
+  weekId: string;
+  onFocusSelect: (id: string) => void;
+  onUnsetFocus?: () => void;
+  initialFocusWeek?: string;
   weekId: string, 
   onFocusSelect: (id: string) => void,
   onUnsetFocus?: () => void,
