@@ -238,7 +238,7 @@ export function WDYGDTWContent({
     setExpandedWeekIndex(expandedWeekIndex === index ? -1 : index)
   }
 
-  const handleShowDetail = (week: WeekDataType, index: number) => {
+  const handleShowDetail = (index: number) => {
     onFocusSelect(`${weekId}/${index + 1}`);
   }
 
@@ -272,7 +272,7 @@ export function WDYGDTWContent({
                 index={index}
                 isExpanded={expandedWeekIndex === index}
                 onToggle={() => handleWeekToggle(index)}
-                onViewDetail={() => handleShowDetail(week, index)}
+                onViewDetail={() => handleShowDetail(index)}
               />
             ))
           )}

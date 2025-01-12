@@ -335,7 +335,7 @@ function AppContent() {
                     <ContentSlot
                       key={location.pathname}
                       // key={isDesktop ? location.pathname : state.currentRoute}
-                      variants={getDetailContentVariants(isDesktop)}
+                      variants={getDetailContentVariants()}
                       {...getDetailContentInfo(hasContainerTransition)}
                       hasBackButton={!isDesktop && state.hasListContent}
                       exit="exit"

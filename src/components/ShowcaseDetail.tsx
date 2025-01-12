@@ -116,11 +116,6 @@ export function ShowcaseDetail({ }: ShowcaseDetailProps) {
           ))}
         </TechnologiesContainer>
       )}
-      {item.date && (
-        <TechTag>
-          {new Date(item.date).toLocaleDateString()}
-        </TechTag>
-      )}
       {item.links && item.links.length > 0 && (
         <LinksContainer>
           {item.links.map((link, index) => (
