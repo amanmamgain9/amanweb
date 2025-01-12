@@ -141,9 +141,9 @@ export const AboutPage: React.FC = () => {
           <Name>Aman Mamgain</Name>
           <Title>Full Stack Developer</Title>
           <Bio>
-            Hey there! 👋 I've been coding full-stack for 10 years, currently living in Goa, India. 
-            Recently, I've been diving into AI to create some fun stuff. When I'm not coding, you'll find me exploring electronic music. 
-            I believe in being a useful contributor to the team and building software that makes people's lives easier.
+            Hey there! 👋 I'm Aman been coding full-stack for 10 years<br />
+            Currently living in Goa, India. <br />
+            Love all kinds of electronic music 🎧 and ☕️ <br/>
           </Bio>
           <SocialLinks>
             <SocialLink href="https://github.com/amanmamgain9" target="_blank" title="GitHub">

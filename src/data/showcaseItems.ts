@@ -17,7 +17,7 @@ export const getDefaultShowcase = () => showcaseItems[0]?.slug;
 export const showcaseItems: ShowcaseItem[] = [
   {
     title: "BTX Game",
-    description: "Multiplayer extraction shooter game built in Unity. Implemented core gameplay mechanics including crouch, character integration, scoreboard and vault system with loadout customization. Added proximity voice chat using Dissonance and quick sell feature with infinite scroll selection.",
+    description: "Multiplayer extraction shooter game built in Unity. Implemented gameplay mechanics including crouch, new character integration scoreboard and vault system with loadout customization. Added proximity voice chat using Dissonance and quick sell feature with infinite scroll selection.",
     slug: "btx-game",
     category: "game",
     links: [
