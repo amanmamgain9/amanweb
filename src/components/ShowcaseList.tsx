@@ -88,6 +88,8 @@ export function ShowcaseList({
   isVisible
 }: ShowcaseListProps) {
   const { items } = useShowcase();
+  
+  if (!items) return null;
   return (
     <ListContainer $isVisible={isVisible}>
       <ListContent>

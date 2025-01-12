@@ -214,7 +214,6 @@ function AppContent() {
       case 'PROJECTS':
         return (
           <ShowcaseList
-            items={showcaseItems}
             onItemSelect={handleItemSelect}
             isVisible={true}
           />
