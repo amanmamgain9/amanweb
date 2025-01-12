@@ -23,6 +23,7 @@ import {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  max-height: 100vh;
   min-height: 100vh;
   background-color: #0a1929;
   color: #00f0ff;
@@ -141,6 +142,7 @@ const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
 
   @media (max-width: 768px) {
     padding-top: ${props => props.hasBackButton ? '60px' : '0'};
+    min-height: calc(100vh - 123px);
   }
 `;
 

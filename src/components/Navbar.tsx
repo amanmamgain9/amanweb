@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
+import { act } from 'react'
 
 const TopBarContainer = styled.div`
   position: fixed;
@@ -91,6 +92,7 @@ interface NavbarProps {
 export function Navbar({ activePage, onPageChange }: NavbarProps) {
   const pages = ['HOME', 'PROJECTS', 'WDYGDTW'];
   
+  console.log("activePage", activePage);
   return (
     <TopBarContainer>
       <NavContainer>
