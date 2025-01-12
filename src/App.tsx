@@ -186,10 +186,13 @@ function AppContent() {
     let id = null
     let isFocused = false
     
-    if (path === 'WDYGDTW' && pathParts[1] && pathParts[2]) {
+    if (path === 'WDYGDTW' && pathParts[1]) {
       // Handle format: wdygdtw/jan-2025/1
       id = pathParts[1]
-      isFocused = true
+      if (pathParts[2]) {
+        id = `${pathParts[1]}/${pathParts[2]}`
+        isFocused = true
+      }
     } else if (pathParts[1]) {
       // Handle other routes
       id = pathParts[1]
