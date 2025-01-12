@@ -228,6 +228,7 @@ interface WeekItemProps {
   index: number;
   isExpanded: boolean;
   onToggle: () => void;
+  onViewDetail: () => void;
 }
 
 interface WeekDetailProps {
@@ -252,30 +253,28 @@ const BackToListButton = styled.button`
 `;
 
 const DetailWrapper = styled.div`
-  position: fixed;
-  top: 64px;
+  position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   padding: 2rem;
   background: rgba(13, 35, 57, 0.98);
-  animation: expandIn 0.3s ease-out;
+  animation: expandIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
   overflow-y: auto;
 
   @keyframes expandIn {
     from {
       opacity: 0;
-      transform: scale(0.95);
+      transform: scale(0.98) translateY(20px);
+      backdrop-filter: blur(0px);
     }
     to {
       opacity: 1;
-      transform: scale(1);
+      transform: scale(1) translateY(0);
+      backdrop-filter: blur(10px);
     }
-  }
-
-  @media (max-width: 768px) {
-    top: 0;
   }
 `;
 
@@ -348,7 +347,7 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
 
   const handleViewDetail = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowDetail(true);
+    onViewDetail();
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -400,9 +399,25 @@ export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: string) =
   )
 }
 
+const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease-out;
+  
+  ${props => props.$isDetailView && `
+    filter: blur(5px);
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+  `}
+`;
+
 export function WDYGDTWContent({ weekId }: { weekId: string }) {
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
+  const [showingDetail, setShowingDetail] = useState(false)
+  const [selectedWeek, setSelectedWeek] = useState<{ week: WeekDataType; index: number } | null>(null)
   
   // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
   const monthYear = getOriginalMonthFormat(weekId);
@@ -419,39 +434,60 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
     setExpandedWeekIndex(expandedWeekIndex === index ? null : index)
   }
 
+  const handleShowDetail = (week: WeekDataType, index: number) => {
+    setSelectedWeek({ week, index });
+    setShowingDetail(true);
+  }
+
+  const handleCloseDetail = () => {
+    setShowingDetail(false);
+    setTimeout(() => setSelectedWeek(null), 300); // Clear after animation
+  }
+
   return (
     <ContentContainer>
-      <Title>What Did You Get Done This Week?</Title>
-      
-      <CalendarWrapper>
-        <Calendar 
-          onChange={handleDateChange}
-          value={date}
-          maxDetail="year"
-          minDetail="month"
-          showNavigation={true}
-          view="year"
-          tileDisabled={({date}) => !isDateInWeeks(date, weekData)}
-        />
-      </CalendarWrapper>
-
-      <WeeksContainer>
-        {currentMonthData.length === 0 ? (
-          <div style={{ textAlign: 'center', color: baseTheme.primary }}>
-            No entries available for {monthYear}
-          </div>
-        ) : (
-          currentMonthData.map((week, index) => (
-          <WeekItem
-            key={index}
-            week={week}
-            index={index}
-            isExpanded={expandedWeekIndex === index}
-            onToggle={() => handleWeekToggle(index)}
+      <MainContentWrapper $isDetailView={showingDetail}>
+        <Title>What Did You Get Done This Week?</Title>
+        
+        <CalendarWrapper>
+          <Calendar 
+            onChange={handleDateChange}
+            value={date}
+            maxDetail="year"
+            minDetail="month"
+            showNavigation={true}
+            view="year"
+            tileDisabled={({date}) => !isDateInWeeks(date, weekData)}
           />
-          ))
-        )}
-      </WeeksContainer>
+        </CalendarWrapper>
+
+        <WeeksContainer>
+          {currentMonthData.length === 0 ? (
+            <div style={{ textAlign: 'center', color: baseTheme.primary }}>
+              No entries available for {monthYear}
+            </div>
+          ) : (
+            currentMonthData.map((week, index) => (
+            <WeekItem
+              key={index}
+              week={week}
+              index={index}
+              isExpanded={expandedWeekIndex === index}
+              onToggle={() => handleWeekToggle(index)}
+              onViewDetail={() => handleShowDetail(week, index)}
+            />
+            ))
+          )}
+        </WeeksContainer>
+      </MainContentWrapper>
+      
+      {selectedWeek && (
+        <WeekDetail 
+          week={selectedWeek.week}
+          weekNumber={selectedWeek.index + 1}
+          onClose={handleCloseDetail}
+        />
+      )}
     </ContentContainer>
   )
 }
