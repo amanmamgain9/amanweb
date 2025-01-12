@@ -472,7 +472,10 @@ export function WDYGDTWContent({
           <WeekDetail 
             week={selectedWeek.week}
             weekNumber={selectedWeek.index + 1}
-            onClose={() => onFocusSelect(weekId)}
+            onClose={() => {
+              onFocusSelect(weekId);
+              window.history.pushState({}, '', `/wdygdtw/${weekId}`);
+            }}
           />
         )}
       </AnimatePresence>
