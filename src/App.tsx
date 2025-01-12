@@ -193,7 +193,7 @@ function AppContent() {
     const { currentRoute, selectedId, isFocused, showMobileDetail } = parseRoute(location.pathname, isMobileView);
     
     // Batch all state updates together
-    setState(prevState => {
+    setState(() => {
       const newState = {
         currentRoute,
         selectedItemId: selectedId || (

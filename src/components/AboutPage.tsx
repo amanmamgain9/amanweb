@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaGithub, FaLinkedin, FaEnvelope, FaFilePdf, FaCode, FaUsers, FaRobot, FaHeadphones } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope, FaFilePdf, FaCode, FaUsers, FaRobot } from 'react-icons/fa';
 
 const AboutContainer = styled.div`
   padding: 2rem;

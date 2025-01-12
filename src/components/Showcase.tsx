@@ -160,7 +160,6 @@ interface ShowcaseListProps {
 }
 
 interface ShowcaseDetailProps {
-  onClose: () => void;
   selectedId?: string;
 }
 
@@ -184,7 +183,7 @@ export function ShowcaseList({ onItemSelect, isVisible }: ShowcaseListProps) {
   );
 }
 
-export function ShowcaseDetail({ onClose, selectedId }: ShowcaseDetailProps) {
+export function ShowcaseDetail({ selectedId }: ShowcaseDetailProps) {
   const item = showcaseItems.find(item => item.slug === selectedId);
 
   if (!item) return null;
@@ -200,11 +199,6 @@ export function ShowcaseDetail({ onClose, selectedId }: ShowcaseDetailProps) {
             <TechTag key={tech}>{tech}</TechTag>
           ))}
         </TechnologiesContainer>
-      )}
-      {item.date && (
-        <TechTag>
-          {new Date(item.date).toLocaleDateString()}
-        </TechTag>
       )}
       {item.links && item.links.length > 0 && (
         <LinksContainer>
