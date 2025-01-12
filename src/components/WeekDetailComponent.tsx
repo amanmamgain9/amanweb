@@ -113,7 +113,20 @@ const HighlightItem = styled.div`
   }
 `;
 
-const WeekDetail = ({ week, weekNumber, onClose }: WeekDetailProps) => {
+interface WeekDetailProps {
+  week: {
+    dates: string;
+    highlights: string[];
+    details: {
+      hoursWorked: number;
+      gymDays: number;
+      averageSteps: number;
+    };
+  };
+  onClose: () => void;
+}
+
+const WeekDetail = ({ week, onClose }: WeekDetailProps) => {
   return (
     <DetailWrapper>
       <DetailHeader>

@@ -31,11 +31,13 @@ export const parseRoute = (pathname: string, isMobileView:boolean): RouteState =
   if(!isMobileView) {
     showMobileDetail = false;
   }
+  const fullRoute = pathname.slice(1);
   return {
     currentRoute: path,
     selectedId,
     isFocused,
-    showMobileDetail
+    showMobileDetail,
+    fullRoute
   };
 };
 

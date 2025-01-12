@@ -1,6 +1,46 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import styled from 'styled-components';
 type PageLayout = 'split' | 'full'
+
+const ListSection = styled(motion.div)`
+  width: 300px;
+  height: 100%;
+  border-right: 1px solid rgba(0, 240, 255, 0.2);
+  overflow-y: auto;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 50%;
+  }
+`;
+
+const DetailSection = styled(motion.div)`
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+`;
+
+const ContentSlot = styled(motion.div)`
+  height: 100%;
+`;
+
+const listVariants: Variants = {
+  collapsed: { width: 0, opacity: 0 },
+  expanded: { width: '300px', opacity: 1 }
+};
+
+const contentVariants: Variants = {
+  full: { width: '100%' },
+  expanded: { width: 'calc(100% - 300px)' }
+};
+
+const slotVariants = {
+  itemTransition: {
+    enter: { opacity: 0, x: 20 },
+    center: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -20 }
+  }
+};
 
 
 const MainContent = styled(motion.div)`

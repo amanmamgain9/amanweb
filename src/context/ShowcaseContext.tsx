@@ -15,7 +15,7 @@ export function ShowcaseProvider({ children }: { children: ReactNode }) {
 
   const handleSetSelectedItem = (slug: string | null) => {
     const item = slug ? showcaseItems.find(item => item.slug === slug) : null;
-    setSelectedItem(item);
+    setSelectedItem(item || null);
   };
 
   return (
