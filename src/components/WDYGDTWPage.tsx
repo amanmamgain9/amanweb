@@ -283,7 +283,7 @@ const WeekDetail = ({ week, weekNumber, onClose }: WeekDetailProps) => {
       transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
     >
       <DetailHeader>
-        <Title style={{ margin: 0 }}>Week {weekNumber}</Title>
+        <Title style={{ margin: 0 }}>{week.dates}</Title>
         <BackToListButton onClick={onClose}>
           {`<`} Close
         </BackToListButton>
