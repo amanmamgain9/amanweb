@@ -317,12 +317,12 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
         style={{ cursor: 'pointer' }}
       >
         <span>Week {index + 1} ({week.dates})</span>
-        <ViewDetailButton onClick={handleViewDetail}>
-          View Details →
-        </ViewDetailButton>
       </WeekHeader>
       <WeekContent $isExpanded={isExpanded}>
         {week.content}
+        <ViewDetailButton onClick={handleViewDetail}>
+          View Details →
+        </ViewDetailButton>
       </WeekContent>
     </WeekItemContainer>
   )
