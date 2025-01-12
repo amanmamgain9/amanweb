@@ -250,22 +250,60 @@ const BackToListButton = styled.button`
   }
 `;
 
+const DetailWrapper = styled.div`
+  margin-top: 2rem;
+  padding: 2rem;
+  background: rgba(13, 35, 57, 0.95);
+  border: 1px solid ${baseTheme.border};
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.2);
+  }
+`;
+
+const DetailHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${baseTheme.border};
+`;
+
 const WeekDetail = ({ week, weekNumber }: WeekDetailProps) => {
   const handleBack = () => {
     setShowDetail(false);
   };
 
   return (
-    <ContentContainer>
-      <BackToListButton onClick={handleBack}>
-        {`<`} Back to List
-      </BackToListButton>
-      <Title>Week {weekNumber}</Title>
-      <div style={{ padding: '2rem' }}>
-        <h3 style={{ color: '#00f0ff', marginBottom: '1rem' }}>{week.dates}</h3>
-        <p style={{ color: '#58a6ff', lineHeight: 1.6 }}>{week.content}</p>
+    <DetailWrapper>
+      <DetailHeader>
+        <Title style={{ margin: 0 }}>Week {weekNumber}</Title>
+        <BackToListButton onClick={handleBack}>
+          {`<`} Close
+        </BackToListButton>
+      </DetailHeader>
+      <div>
+        <h3 style={{ 
+          color: '#00f0ff', 
+          marginBottom: '1rem',
+          fontSize: '1.2em',
+          fontWeight: 'normal' 
+        }}>
+          {week.dates}
+        </h3>
+        <p style={{ 
+          color: '#58a6ff', 
+          lineHeight: 1.8,
+          fontSize: '1.1em'
+        }}>
+          {week.content}
+        </p>
       </div>
-    </ContentContainer>
+    </DetailWrapper>
   );
 }
 
@@ -305,9 +343,6 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
     }
   }
 
-  if (showDetail) {
-    return <WeekDetail week={week} weekNumber={index + 1} />;
-  }
 
   return (
     <WeekItemContainer>
@@ -324,6 +359,7 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
           View Details →
         </ViewDetailButton>
       </WeekContent>
+      {showDetail && <WeekDetail week={week} weekNumber={index + 1} />}
     </WeekItemContainer>
   )
 }
