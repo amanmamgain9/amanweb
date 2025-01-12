@@ -165,7 +165,7 @@ const useTransitionType = (currentRoute: string, selectedItemId: string | null):
 function AppContent() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768)
-  const [showingContent, setShowingContent] = useState(false)
+  const [showMobileDetail, setShowMobileDetail] = useState(false)
   const [hideList, setHideList] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
@@ -199,9 +199,9 @@ function AppContent() {
     }
     
     if (id || !['PROJECTS', 'WDYGDTW'].includes(path)) {
-      setShowingContent(true)
+      setShowMobileDetail(true)
     } else {
-      setShowingContent(false)
+      setShowMobileDetail(false)
     }
   }, [location, isMobileView])
   
@@ -285,15 +285,15 @@ function AppContent() {
           <ContentContainer>
             <MainContent>
               <ListSection
-                key={!isDesktop ? (showingContent ? 'detail' : 'list') : 'persistent'}
+                key={!isDesktop ? (showMobileDetail ? 'detail' : 'list') : 'persistent'}
                 initial={isDesktop ? "visible" : "hidden"}
-                animate={hasListContent ? (showingContent && !isDesktop ? "hidden" : "visible") : "hidden"}
+                animate={hasListContent ? (showMobileDetail && !isDesktop ? "hidden" : "visible") : "hidden"}
                 variants={getListContainerVariants(isDesktop)}
                 style={{ 
                   borderRightStyle: isDesktop ? 'solid' : 'none'
                 }}
                 isMobileView={!isDesktop}
-                showingContent={showingContent || hideList}
+                showingContent={showMobileDetail || hideList}
               >
                 <AnimatePresence mode="wait">
                   {hasListContent && (
@@ -320,7 +320,7 @@ function AppContent() {
                 animate={hasListContent && isDesktop ? "partialWidth" : "fullWidth"}
                 variants={getDetailContainerVariants(isDesktop)}
                 isMobileView={!isDesktop}
-                showingContent={showingContent}
+                showingContent={showMobileDetail}
                 hideOnMobile={hasListContent}
               >
                 {!isDesktop && hasListContent && (
