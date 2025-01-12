@@ -263,6 +263,7 @@ function AppContent() {
 
   const focusItemSelect = (id: string) => {
     setSelectedItemId(id);
+    setShowingContent(true);
   }
 
   const handleBackToList = () => {
