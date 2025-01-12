@@ -211,6 +211,7 @@ function AppContent() {
   useEffect(() => {
     const path = location.pathname.slice(1).toUpperCase() || 'HOME'
     setCurrentRoute(path)
+    setSelectedItemId(null)
     
     // Set showingContent to true for routes without list content
     if (!['PROJECTS', 'WDYGDTW'].includes(path)) {
@@ -301,6 +302,7 @@ function AppContent() {
   const handleBackToList = () => {
     if (isMobileView) {
       setShowingContent(false)
+      setSelectedItemId(null)
     }
   }
 
