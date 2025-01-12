@@ -3,14 +3,10 @@ import styled from 'styled-components';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { WeekEntry as WeekDataType, weekData, isDateInWeeks, getCurrentMonthDefault, getOriginalMonthFormat } from '../data/weekData';
-import {baseTheme, CalendarWrapper} from '../libs/calendarStyles';
+import { baseTheme, CalendarWrapper } from '../libs/calendarStyles';
 import { WDYGDTWList } from './WDYGDTWList';
-// Base styles for common colors and transitions
+import { WeekDetail } from './WeekDetailComponent';
 export { WDYGDTWList };
-
-
-
-
 
 const ContentContainer = styled.div`
   padding: 2rem;
@@ -36,8 +32,11 @@ const Title = styled.h1`
   text-align: center;
   font-size: 2em;
   margin-bottom: 1rem;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
 `
-
 
 const WeeksContainer = styled.div`
   margin-top: 2rem;
@@ -89,85 +88,19 @@ const WeekContent = styled.div<{ $isExpanded: boolean }>`
   padding: ${props => props.$isExpanded ? '1rem' : '0 1rem'};
 `
 
-interface WeekItemProps {
-  week: WeekDataType;
-  index: number;
-  isExpanded: boolean;
-  onToggle: () => void;
-  onViewDetail: () => void;
-}
+const HighlightsList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+`
 
-interface WeekDetailProps {
-  week: WeekDataType;
-  weekNumber: number;
-  onClose: () => void;
-}
-
-const BackToListButton = styled.button`
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  color: #00f0ff;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Press Start 2P';
-  margin-bottom: 1rem;
+const HighlightItem = styled.li`
+  padding: 0.5rem 0;
   
-  &:hover {
-    background: rgba(0, 240, 255, 0.2);
+  &:last-child {
+    border-bottom: none;
   }
-`;
-
-const DetailWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 2rem;
-  background: rgba(13, 35, 57, 0.98);
-  z-index: 1000;
-  overflow-y: auto;
-`;
-
-const DetailHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid ${baseTheme.border};
-`;
-
-const WeekDetail = ({ week, weekNumber, onClose }: WeekDetailProps) => {
-  return (
-    <DetailWrapper>
-      <DetailHeader>
-        <Title style={{ margin: 0 }}>{week.dates}</Title>
-        <BackToListButton onClick={onClose}>
-          {`<`} Close
-        </BackToListButton>
-      </DetailHeader>
-      <div>
-        <h3 style={{ 
-          color: '#00f0ff', 
-          marginBottom: '1rem',
-          fontSize: '1.2em',
-          fontWeight: 'normal' 
-        }}>
-          {week.dates}
-        </h3>
-        <p style={{ 
-          color: '#b3e5fc', 
-          lineHeight: 1.8,
-          fontSize: '1.1em'
-        }}>
-          {week.content}
-        </p>
-      </div>
-    </DetailWrapper>
-  );
-}
+`
 
 const ViewDetailButton = styled.button`
   background: rgba(0, 240, 255, 0.1);
@@ -187,7 +120,22 @@ const ViewDetailButton = styled.button`
     background: rgba(0, 240, 255, 0.2);
     transform: translateY(-1px);
   }
-`;
+`
+
+const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: ${props => props.$isDetailView ? 'none' : 'block'};
+`
+
+interface WeekItemProps {
+  week: WeekDataType;
+  index: number;
+  isExpanded: boolean;
+  onToggle: () => void;
+  onViewDetail: () => void;
+}
 
 const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemProps) => {
   const handleToggle = (e: React.MouseEvent) => {
@@ -207,7 +155,6 @@ const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemP
     }
   }
 
-
   return (
     <WeekItemContainer>
       <WeekHeader 
@@ -218,9 +165,13 @@ const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemP
         <span>Week {index + 1} ({week.dates})</span>
       </WeekHeader>
       <WeekContent $isExpanded={isExpanded}>
-        <div>
-          {week.content}
-        </div>
+        <HighlightsList>
+          {week.highlights.map((highlight, idx) => (
+            <HighlightItem key={idx}>
+              {highlight}
+            </HighlightItem>
+          ))}
+        </HighlightsList>
         <ViewDetailButton onClick={handleViewDetail}>
           View Full Details →
         </ViewDetailButton>
@@ -228,15 +179,6 @@ const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemP
     </WeekItemContainer>
   )
 }
-
-
-
-const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: ${props => props.$isDetailView ? 'none' : 'block'};
-`;
 
 export function WDYGDTWContent({ 
   onFocusSelect,
@@ -249,7 +191,7 @@ export function WDYGDTWContent({
 }) {
   const [weekId, setWeekId] = useState('');
   const [date, setDate] = useState(new Date())
-  const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
+  const [expandedWeekIndex, setExpandedWeekIndex] = useState<number>(0)
   const [selectedWeek, setSelectedWeek] = useState<{ week: WeekDataType; index: number } | null>(null)
   const [showingDetail, setShowingDetail] = useState(false)
 
@@ -281,21 +223,19 @@ export function WDYGDTWContent({
       setWeekId(getCurrentMonthDefault());
     }
   }, [pathname]);
-  
-  // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
+
   const monthYear = getOriginalMonthFormat(weekId);
   const currentMonthData = weekData[monthYear]?.weeks || [];
 
   const handleDateChange = (value: Date | null) => {
     if (value && isDateInWeeks(value, weekData)) {
       setDate(value)
-      setExpandedWeekIndex(null)
+      setExpandedWeekIndex(0)
     }
   }
 
-
   const handleWeekToggle = (index: number) => {
-    setExpandedWeekIndex(expandedWeekIndex === index ? null : index)
+    setExpandedWeekIndex(expandedWeekIndex === index ? -1 : index)
   }
 
   const handleShowDetail = (week: WeekDataType, index: number) => {
@@ -326,14 +266,14 @@ export function WDYGDTWContent({
             </div>
           ) : (
             currentMonthData.map((week, index) => (
-            <WeekItem
-              key={index}
-              week={week}
-              index={index}
-              isExpanded={expandedWeekIndex === index}
-              onToggle={() => handleWeekToggle(index)}
-              onViewDetail={() => handleShowDetail(week, index)}
-            />
+              <WeekItem
+                key={index}
+                week={week}
+                index={index}
+                isExpanded={expandedWeekIndex === index}
+                onToggle={() => handleWeekToggle(index)}
+                onViewDetail={() => handleShowDetail(week, index)}
+              />
             ))
           )}
         </WeeksContainer>

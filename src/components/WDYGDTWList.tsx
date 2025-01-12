@@ -46,7 +46,7 @@ const ActionButton = styled.button`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 240, 255, 0.1);
+    background: rgba(13, 35, 57, 0.95);
     border: 1px solid rgba(0, 240, 255, 0.6);
     color: #00f0ff;
     padding: 0.75rem 1.5rem;
@@ -81,7 +81,7 @@ export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: string) =
       <FullImage src="/wdygdtw.jpeg" alt="What Did You Get Done This Week" />
       <ButtonWrapper>
         <ActionButton onClick={handleClick}>
-          View Details →
+          View My Week
         </ActionButton>
       </ButtonWrapper>
     </ListContainer>

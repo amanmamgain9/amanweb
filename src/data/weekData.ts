@@ -1,8 +1,13 @@
 export interface WeekEntry {
   dates: string;
-  content: string;
   startDate: Date;
   endDate: Date;
+  highlights: string[];
+  details: {
+    hoursWorked: number;
+    gymDays: number;
+    averageSteps: number;
+  };
 }
 
 export interface MonthData {
@@ -19,9 +24,18 @@ export const weekData: MonthData = {
     weeks: [
       {
         dates: 'Jan 6 - Jan 12',
-        content: 'Completed the main navigation components. Added smooth transitions between different sections. Improved mobile responsiveness.',
         startDate: new Date(2025, 0, 6),
-        endDate: new Date(2025, 0, 12)
+        endDate: new Date(2025, 0, 12),
+        highlights: [
+          'Completed portfolio website',
+          'Setup CUDA and CUDNN installation with multiple version support',
+          'Trained faceswap model (results were suboptimal)'
+        ],
+        details: {
+          hoursWorked: 45,
+          gymDays: 4,
+          averageSteps: 5500
+        }
       }
     ]
   }
@@ -61,7 +75,6 @@ export const getOriginalMonthFormat = (monthId: string) => {
   };
   return `${months[month as keyof typeof months]} ${year}`;
 }
-
 
 export const isDateInWeeks = (date: Date, monthData: MonthData): boolean => {
   const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
