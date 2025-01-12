@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+import { motion, AnimatePresence } from 'framer-motion'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { WeekEntry as WeekDataType, MonthData, weekData, isDateInWeeks, getCurrentMonthDefault, getOriginalMonthFormat } from '../data/weekData'
@@ -463,13 +464,15 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
         </WeeksContainer>
       </MainContentWrapper>
       
-      {selectedWeek && (
-        <WeekDetail 
-          week={selectedWeek.week}
-          weekNumber={selectedWeek.index + 1}
-          onClose={handleCloseDetail}
-        />
-      )}
+      <AnimatePresence>
+        {selectedWeek && (
+          <WeekDetail 
+            week={selectedWeek.week}
+            weekNumber={selectedWeek.index + 1}
+            onClose={handleCloseDetail}
+          />
+        )}
+      </AnimatePresence>
     </ContentContainer>
   )
 }
