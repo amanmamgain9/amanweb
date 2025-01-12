@@ -35,6 +35,19 @@ const Title = styled.h1`
   }
 `;
 
+
+const MobileTitle = styled.h1`
+  color: ${baseTheme.primary};
+  text-align: center;
+  font-size: 1.2em;
+  margin: 0;
+  font-family: 'Press Start 2P';
+  
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
 const BackToListButton = styled.button`
   background: rgba(0, 240, 255, 0.1);
   border: 1px solid rgba(0, 240, 255, 0.3);
@@ -109,7 +122,7 @@ const WeekDetail = ({ week, weekNumber, onClose }: WeekDetailProps) => {
           {`<`} Close
         </BackToListButton>
       </DetailHeader>
-
+      <MobileTitle>{week.dates} Scoreboard</MobileTitle>
       <ScoreboardContainer>
         <ScoreRow>
           <ScoreLabel>HOURS WORKED</ScoreLabel>
