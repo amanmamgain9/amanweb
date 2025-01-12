@@ -46,11 +46,12 @@ const MobileHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 20px;
     background: rgba(0, 240, 255, 0.1);
     border-bottom: 1px solid rgba(0, 240, 255, 0.2);
     font-family: 'Press Start 2P';
     color: #00f0ff;
+    font-size: 1.1em;
     position: sticky;
     top: 0;
     z-index: 10;
@@ -68,15 +69,6 @@ const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?
     height: 100%;
     display: ${props => props.isMobileView && props.showingContent ? 'none' : 'flex'};
   }
-`
-
-
-
-const ContentLayer = styled(motion.div)`
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
 `
 
 const MainContent = styled(motion.div)`
