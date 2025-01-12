@@ -11,6 +11,9 @@ export interface MonthData {
   };
 }
 
+// Add a type for valid month keys
+export type ValidMonth = keyof typeof weekData;
+
 export const weekData: MonthData = {
   'January 2025': {
     weeks: [
