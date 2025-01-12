@@ -474,6 +474,7 @@ export function WDYGDTWContent({
             weekNumber={selectedWeek.index + 1}
             onClose={() => {
               onFocusSelect(weekId);
+              window.history.pushState({}, '', `/wdygdtw/${weekId}`);
             }}
           />
         )}

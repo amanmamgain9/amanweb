@@ -307,11 +307,11 @@ function AppContent() {
 
   const unsetFocus = () => {
     setHideList(false);
-    if (currentRoute === 'WDYGDTW') {
-      const monthId = selectedItemId?.split('/')[0];
-      navigate(`/${currentRoute.toLowerCase()}/${monthId}`);
+    const monthId = selectedItemId?.split('/')[0];
+    if (monthId) {
+      navigate(`/wdygdtw/${monthId}`);
     } else {
-      navigate(`/${currentRoute.toLowerCase()}/${selectedItemId}`);
+      navigate('/wdygdtw');
     }
   }
 
