@@ -293,7 +293,7 @@ function AppContent() {
             <MainContent>
               <ListSection
                 key={!isDesktop ? (showMobileDetail ? 'detail' : 'list') : 'persistent'}
-                initial={isDesktop ? "visible" : "hidden"}
+                initial={(isDesktop && hasListContent) ? "visible" : "hidden"}
                 animate={hasListContent ? (showMobileDetail && !isDesktop ? "hidden" : "visible") : "hidden"}
                 variants={getListContainerVariants(isDesktop)}
                 style={{ 
