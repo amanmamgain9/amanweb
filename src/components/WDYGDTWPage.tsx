@@ -314,8 +314,12 @@ const ViewDetailButton = styled.button`
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
-  margin-left: auto;
+  margin-top: 1rem;
+  display: block;
+  width: 100%;
   transition: all 0.2s ease;
+  font-family: 'Press Start 2P';
+  font-size: 0.8em;
 
   &:hover {
     background: rgba(0, 240, 255, 0.2);
@@ -356,9 +360,11 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
       <WeekContent $isExpanded={isExpanded}>
         {!showDetail ? (
           <>
-            {week.content}
+            <div>
+              {week.content}
+            </div>
             <ViewDetailButton onClick={handleViewDetail}>
-              View Details →
+              View Full Details →
             </ViewDetailButton>
           </>
         ) : (
