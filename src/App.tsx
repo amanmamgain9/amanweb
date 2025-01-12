@@ -9,6 +9,7 @@ import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage'
 import { showcaseItems } from './data/showcaseItems'
 import styled from 'styled-components'
 
+// Styled Components
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -181,13 +182,29 @@ const contentVariants = {
   }
 }
 
-const slotVariants = {
-  pageTransition: {
-    enter: {
+// Custom hooks for transition handling
+type TransitionType = 'route' | 'item';
+
+const usePrevious = <T,>(value: T): T | undefined => {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
+const useTransitionType = (currentRoute: string, selectedItemId: string | null): TransitionType => {
+  const prevRoute = usePrevious(currentRoute);
+  return prevRoute !== currentRoute ? 'route' : 'item';
+};
+
+const getSlotVariants = (transitionType: TransitionType) => ({
+  route: {
+    initial: {
       opacity: 0,
       y: -300,
     },
-    center: {
+    animate: {
       opacity: 1,
       y: 0,
       transition: {
@@ -197,26 +214,21 @@ const slotVariants = {
     },
     exit: {
       opacity: 0,
-      transition: {
-        opacity: { duration: 0.7 }  // Match the width transition duration
-      }
+      transition: { duration: 0.7 }
     }
   },
-  itemTransition: {
-    enter: { opacity: 0 },
-    center: { 
+  item: {
+    initial: { opacity: 0 },
+    animate: { 
       opacity: 1,
       transition: { duration: 0.3 }
     },
     exit: { 
       opacity: 0,
-      transition: { 
-        opacity: { duration: 0.7 }  // Match the width transition duration
-      }
+      transition: { duration: 0.7 }
     }
   }
-}
-
+}[transitionType]);
 
 function AppContent() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
@@ -229,39 +241,33 @@ function AppContent() {
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, []);
+
   const location = useLocation()
   const navigate = useNavigate()
   const [currentRoute, setCurrentRoute] = useState(location.pathname.slice(1).toUpperCase() || 'HOME')
+  const transitionType = useTransitionType(currentRoute, selectedItemId);
 
   useEffect(() => {
     const path = location.pathname.slice(1).toUpperCase() || 'HOME'
     setCurrentRoute(path)
     
-    // Set showingContent to true for routes without list content
     if (!['PROJECTS', 'WDYGDTW'].includes(path)) {
       setShowingContent(true)
       setSelectedItemId(null)
-    }
-    else {
+    } else {
       setShowingContent(false)
-      // Select first item if on desktop
       if (!isMobileView) {
         if (path === 'PROJECTS' && showcaseItems.length > 0) {
           setSelectedItemId(showcaseItems[0].title)
         } else if (path === 'WDYGDTW') {
-          setSelectedItemId('1') // First week
+          setSelectedItemId('1')
         }
       } else {
         setSelectedItemId(null)
       }
     }
   }, [location, isMobileView])
-  
-  // Slot management using refs
-  const activeSlotIndex = useRef(0)
-  const slots = useRef<[React.ReactNode | null, React.ReactNode | null]>([null, null])
-  const isTransitioning = useRef(false)
 
   const selectedItem = selectedItemId 
     ? showcaseItems.find(item => item.title === selectedItemId)
@@ -309,21 +315,8 @@ function AppContent() {
   }
 
   const handlePageChange = (page: string) => {
-    if (page === currentRoute || isTransitioning.current) return
-    
-    // Prepare the inactive slot with new content
-    const inactiveSlotIndex = activeSlotIndex.current === 0 ? 1 : 0
-    slots.current[inactiveSlotIndex] = renderContent()
-    
-    // Start transition
-    isTransitioning.current = true
+    if (page === currentRoute) return
     navigate(`/${page.toLowerCase()}`)
-    
-    // Update active slot after animation
-    setTimeout(() => {
-      activeSlotIndex.current = inactiveSlotIndex
-      isTransitioning.current = false
-    }, 800)
   }
 
   const handleItemSelect = (id: string) => {
@@ -345,70 +338,70 @@ function AppContent() {
     <Routes>
       <Route path="*" element={
         <Container>
-      <Navbar 
-        activePage={currentRoute}
-        onPageChange={handlePageChange}
-      />
-      <ContentContainer>
-        <MainContent>
-          <ListSection
-            initial={isMobileView ? "collapsed" : "expanded"}
-            animate={hasListContent ? (showingContent && isMobileView ? "collapsed" : "expanded") : "collapsed"}
-            variants={isMobileView ? mobileListVariants : desktopListVariants}
-            style={{ 
-              borderRightStyle: isMobileView ? 'none' : 'solid'
-            }}
-            isMobileView={isMobileView}
-            showingContent={showingContent}
-          >
-            <AnimatePresence mode="wait">
-              {hasListContent && (
-                <>
-                  <MobileHeader>
-                    {currentRoute}
-                  </MobileHeader>
-                  <ContentSlot
-                    key="list"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    {renderList()}
-                  </ContentSlot>
-                </>
-              )}
-            </AnimatePresence>
-          </ListSection>
-          
-          <DetailSection
-            initial="full"
-            animate={hasListContent && !isMobileView ? "expanded" : "full"}
-            variants={contentVariants}
-            isMobileView={isMobileView}
-            showingContent={showingContent}
-            hideOnMobile={hasListContent}
-          >
-            {isMobileView && hasListContent && (
-              <BackButton onClick={handleBackToList}>
-               {`<`} Back
-              </BackButton>
-            )}
-            <AnimatePresence mode="wait">
-              <ContentSlot
-                key={currentRoute + selectedItemId}
-                variants={isTransitioning.current ? slotVariants.pageTransition : slotVariants.itemTransition}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                hasBackButton={isMobileView && hasListContent}
+          <Navbar 
+            activePage={currentRoute}
+            onPageChange={handlePageChange}
+          />
+          <ContentContainer>
+            <MainContent>
+              <ListSection
+                initial={isMobileView ? "collapsed" : "expanded"}
+                animate={hasListContent ? (showingContent && isMobileView ? "collapsed" : "expanded") : "collapsed"}
+                variants={isMobileView ? mobileListVariants : desktopListVariants}
+                style={{ 
+                  borderRightStyle: isMobileView ? 'none' : 'solid'
+                }}
+                isMobileView={isMobileView}
+                showingContent={showingContent}
               >
-                {renderContent()}
-              </ContentSlot>
-            </AnimatePresence>
-          </DetailSection>
-        </MainContent>
-      </ContentContainer>
-    </Container>
+                <AnimatePresence mode="wait">
+                  {hasListContent && (
+                    <>
+                      <MobileHeader>
+                        {currentRoute}
+                      </MobileHeader>
+                      <ContentSlot
+                        key="list"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        {renderList()}
+                      </ContentSlot>
+                    </>
+                  )}
+                </AnimatePresence>
+              </ListSection>
+              
+              <DetailSection
+                initial="full"
+                animate={hasListContent && !isMobileView ? "expanded" : "full"}
+                variants={contentVariants}
+                isMobileView={isMobileView}
+                showingContent={showingContent}
+                hideOnMobile={hasListContent}
+              >
+                {isMobileView && hasListContent && (
+                  <BackButton onClick={handleBackToList}>
+                    {`<`} Back
+                  </BackButton>
+                )}
+                <AnimatePresence mode="wait">
+                  <ContentSlot
+                    key={currentRoute + selectedItemId}
+                    variants={getSlotVariants(transitionType)}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    hasBackButton={isMobileView && hasListContent}
+                  >
+                    {renderContent()}
+                  </ContentSlot>
+                </AnimatePresence>
+              </DetailSection>
+            </MainContent>
+          </ContentContainer>
+        </Container>
       } />
     </Routes>
   )
