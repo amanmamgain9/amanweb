@@ -254,7 +254,8 @@ function AppContent() {
       case 'WDYGDTW':
         return selectedItemId && (
           <WDYGDTWContent 
-            weekId={selectedItemId}
+            weekId={selectedItemId.split('/')[0]}
+            initialFocusWeek={selectedItemId.split('/')[1]}
             onFocusSelect={focusItemSelect}
             onUnsetFocus={unsetFocus}
           />

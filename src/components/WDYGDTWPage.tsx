@@ -399,11 +399,13 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
 export function WDYGDTWContent({ 
   weekId, 
   onFocusSelect,
-  onUnsetFocus
+  onUnsetFocus,
+  initialFocusWeek?: string
 }: { 
   weekId: string, 
   onFocusSelect: (id: string) => void,
-  onUnsetFocus?: () => void
+  onUnsetFocus?: () => void,
+  initialFocusWeek?: string
 }) {
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
