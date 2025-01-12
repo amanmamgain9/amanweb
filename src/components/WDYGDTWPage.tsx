@@ -253,18 +253,39 @@ const WeekDetail = ({ week, weekNumber }: WeekDetailProps) => {
   );
 }
 
+const ViewDetailButton = styled.button`
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 240, 255, 0.2);
+    transform: translateY(-1px);
+  }
+`;
+
 const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
   const [showDetail, setShowDetail] = useState(false);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
+    onToggle();
+  }
+
+  const handleViewDetail = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setShowDetail(true);
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      setShowDetail(true);
+      onToggle();
     }
   }
 
@@ -274,11 +295,14 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
 
   return (
     <WeekItemButton 
-      onClick={handleClick}
+      onClick={handleToggle}
       onKeyPress={handleKeyPress}
     >
       <WeekHeader $isExpanded={isExpanded}>
-        Week {index + 1} ({week.dates})
+        <span>Week {index + 1} ({week.dates})</span>
+        <ViewDetailButton onClick={handleViewDetail}>
+          View Details →
+        </ViewDetailButton>
       </WeekHeader>
       <WeekContent $isExpanded={isExpanded}>
         {week.content}
