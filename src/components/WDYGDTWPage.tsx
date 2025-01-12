@@ -148,12 +148,6 @@ const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemP
     onViewDetail();
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onToggle();
-    }
-  }
 
   return (
     <WeekItemContainer>
@@ -227,8 +221,11 @@ export function WDYGDTWContent({
   const monthYear = getOriginalMonthFormat(weekId);
   const currentMonthData = weekData[monthYear]?.weeks || [];
 
-  const handleDateChange = (value: Date | null) => {
-    if (value && isDateInWeeks(value, weekData)) {
+  const handleDateChange = (
+    value: Date | [Date, Date] | null,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    if (value instanceof Date && isDateInWeeks(value, weekData)) {
       setDate(value)
       setExpandedWeekIndex(0)
     }
