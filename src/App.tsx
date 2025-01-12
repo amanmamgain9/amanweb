@@ -308,7 +308,7 @@ function AppContent() {
       case 'HOME':
         return <AboutPage />
       case 'WDYGDTW':
-        return <WDYGDTWContent weekId={selectedItemId ? parseInt(selectedItemId) : 1} />
+        return selectedItemId && <WDYGDTWContent weekId={selectedItemId} />
       default:
         return null
     }

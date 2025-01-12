@@ -259,15 +259,21 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
   )
 }
 
-export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: number) => void }) {
+export function WDYGDTWList({ onWeekSelect }: { onWeekSelect: (weekId: string) => void }) {
+  const handleClick = () => {
+    const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' })
+    const firstWeekId = `${currentMonth}-1`
+    onWeekSelect(firstWeekId)
+  }
+
   return (
-    <ListContainer onClick={() => onWeekSelect(1)}>
+    <ListContainer onClick={handleClick}>
       <FullImage src="/wdygdtw.jpeg" alt="What Did You Get Done This Week" />
     </ListContainer>
   )
 }
 
-export function WDYGDTWContent() {
+export function WDYGDTWContent({ weekId }: { weekId: string }) {
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
   
