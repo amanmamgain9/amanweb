@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
@@ -8,6 +8,12 @@ import { AboutPage } from './components/AboutPage'
 import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage'
 import { showcaseItems } from './data/showcaseItems'
 import styled from 'styled-components'
+import { 
+  getListContainerVariants, 
+  getListContentVariants,
+  getDetailContainerVariants,
+  getDetailContentVariants
+} from './libs/mainPageAnimate'
 
 // Styled Components
 const Container = styled.div`
@@ -70,7 +76,7 @@ const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?
     height: 100%;
     display: ${props => props.isMobileView && props.showingContent ? 'none' : 'flex'};
   }
-`
+`;
 
 const MainContent = styled(motion.div)`
   width: 100%;
@@ -91,7 +97,7 @@ const MainContent = styled(motion.div)`
     background: transparent;
     box-shadow: none;
   }
-`
+`;
 
 const BackButton = styled.button`
   display: none;
@@ -113,7 +119,7 @@ const BackButton = styled.button`
       background: rgba(0, 240, 255, 0.2);
     }
   }
-`
+`;
 
 const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?: boolean; showingContent?: boolean }>`
   background-color: #0a1929;
@@ -140,51 +146,7 @@ const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
   }
 `
 
-// Animation variants
-const desktopListVariants = {
-  expanded: {
-    width: "38.2%",
-    borderRightWidth: 1,
-    borderRightColor: "#1c4c7c",
-    transition: { duration: 0.7, ease: "easeInOut" }
-  },
-  collapsed: {
-    width: "0%",
-    borderRightWidth: 0,
-    borderRightColor: "rgba(28, 76, 124, 0)",
-    transition: { duration: 0.7, ease: "easeInOut" }
-  }
-}
-
-const mobileListVariants = {
-  expanded: {
-    width: "100%",
-    opacity: 1,
-    display: "flex",
-    transition: { duration: 0.7, ease: "easeInOut" }
-  },
-  collapsed: {
-    width: "100%",
-    opacity: 0,
-    transitionEnd: { display: "none" },
-    transition: { duration: 0.7, ease: "easeInOut" }
-  }
-}
-
-const contentVariants = {
-  expanded: {
-    width: "61.8%",
-    transition: { duration: 0.5, ease: "easeInOut" }
-  },
-  full: {
-    width: "100%",
-    transition: { duration: 0.5, ease: "easeInOut" }
-  }
-}
-
-// Custom hooks for transition handling
-type TransitionType = 'route' | 'item';
-
+// Custom hooks
 const usePrevious = <T,>(value: T): T | undefined => {
   const ref = useRef<T>();
   useEffect(() => {
@@ -193,55 +155,18 @@ const usePrevious = <T,>(value: T): T | undefined => {
   return ref.current;
 };
 
-const useTransitionType = (currentRoute: string, selectedItemId: string | null): TransitionType => {
+const useTransitionType = (currentRoute: string, selectedItemId: string | null): 'route' | 'item' => {
   const prevRoute = usePrevious(currentRoute);
   const prevItemId = usePrevious(selectedItemId);
   
-  if (prevRoute !== currentRoute) {
-    return 'route';
-  }
-  if (prevItemId !== selectedItemId) {
-    return 'item';
-  }
-  return 'item';
+  return prevRoute !== currentRoute ? 'route' : 'item';
 };
-
-const getSlotVariants = (transitionType: TransitionType) => ({
-  route: {
-    initial: {
-      opacity: 0,
-      y: -300,
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        y: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 }
-      }
-    },
-    exit: {
-      opacity: 0,
-      transition: { duration: 0.7 }
-    }
-  },
-  item: {
-    initial: { opacity: 0 },
-    animate: { 
-      opacity: 1,
-      transition: { duration: 0.3 }
-    },
-    exit: { 
-      opacity: 0,
-      transition: { duration: 0.7 }
-    }
-  }
-}[transitionType]);
 
 function AppContent() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768)
   const [showingContent, setShowingContent] = useState(false)
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -282,7 +207,7 @@ function AppContent() {
     : null
 
   const hasListContent = ['PROJECTS', 'WDYGDTW'].includes(currentRoute)
-
+  const prevHasListContent = usePrevious(hasListContent);
   const renderList = () => {
     switch (currentRoute) {
       case 'PROJECTS':
@@ -342,6 +267,12 @@ function AppContent() {
     }
   }
 
+  const isDesktop = !isMobileView;
+  
+  const hasContainerTransition = prevHasListContent !== hasListContent && prevHasListContent !== undefined;
+
+  // [Previous handlers and state management remain the same...]
+
   return (
     <Routes>
       <Route path="*" element={
@@ -353,13 +284,13 @@ function AppContent() {
           <ContentContainer>
             <MainContent>
               <ListSection
-                initial={isMobileView ? "collapsed" : "expanded"}
-                animate={hasListContent ? (showingContent && isMobileView ? "collapsed" : "expanded") : "collapsed"}
-                variants={isMobileView ? mobileListVariants : desktopListVariants}
+                initial={isDesktop ? "visible" : "hidden"}
+                animate={hasListContent ? (showingContent && !isDesktop ? "hidden" : "visible") : "hidden"}
+                variants={getListContainerVariants(isDesktop)}
                 style={{ 
-                  borderRightStyle: isMobileView ? 'none' : 'solid'
+                  borderRightStyle: isDesktop ? 'solid' : 'none'
                 }}
-                isMobileView={isMobileView}
+                isMobileView={!isDesktop}
                 showingContent={showingContent}
               >
                 <AnimatePresence mode="wait">
@@ -370,9 +301,10 @@ function AppContent() {
                       </MobileHeader>
                       <ContentSlot
                         key="list"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        variants={getListContentVariants(isDesktop)}
+                        initial="initial"
+                        animate={hasContainerTransition ? "animateWithDelay" : "animate"}
+                        exit="exit"
                       >
                         {renderList()}
                       </ContentSlot>
@@ -382,14 +314,14 @@ function AppContent() {
               </ListSection>
               
               <DetailSection
-                initial="full"
-                animate={hasListContent && !isMobileView ? "expanded" : "full"}
-                variants={contentVariants}
-                isMobileView={isMobileView}
+                initial="fullWidth"
+                animate={hasListContent && isDesktop ? "partialWidth" : "fullWidth"}
+                variants={getDetailContainerVariants(isDesktop)}
+                isMobileView={!isDesktop}
                 showingContent={showingContent}
                 hideOnMobile={hasListContent}
               >
-                {isMobileView && hasListContent && (
+                {!isDesktop && hasListContent && (
                   <BackButton onClick={handleBackToList}>
                     {`<`} Back
                   </BackButton>
@@ -397,11 +329,11 @@ function AppContent() {
                 <AnimatePresence mode="wait">
                   <ContentSlot
                     key={currentRoute + selectedItemId}
-                    variants={getSlotVariants(transitionType)}
+                    variants={getDetailContentVariants(isDesktop, transitionType)}
                     initial="initial"
-                    animate="animate"
+                    animate={hasContainerTransition ? "animateWithDelay" : "animate"}
                     exit="exit"
-                    hasBackButton={isMobileView && hasListContent}
+                    hasBackButton={!isDesktop && hasListContent}
                   >
                     {renderContent()}
                   </ContentSlot>

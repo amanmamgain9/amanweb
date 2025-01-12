@@ -141,7 +141,7 @@ export const AboutPage: React.FC = () => {
           <Name>Aman Mamgain</Name>
           <Title>Full Stack Developer</Title>
           <Bio>
-            Hey there! 👋 I've been coding full-stack for 10 years, currently living the in Goa, India. 
+            Hey there! 👋 I've been coding full-stack for 10 years, currently living in Goa, India. 
             Recently, I've been diving into AI to create some fun stuff. When I'm not coding, you'll find me exploring electronic music. 
             I believe in being a useful contributor to the team and building software that makes people's lives easier.
           </Bio>
@@ -170,7 +170,7 @@ export const AboutPage: React.FC = () => {
               <FaUsers />
             </InterestIcon>
             <InterestText>
-              Being Useful
+              Being useful and trying out new technologies
             </InterestText>
           </InterestCard>
           <InterestCard>
@@ -178,7 +178,7 @@ export const AboutPage: React.FC = () => {
               <FaCode />
             </InterestIcon>
             <InterestText>
-              Building scalable web applications with modern tech stacks
+              Building web applications and software in general
             </InterestText>
           </InterestCard>
           <InterestCard>
@@ -186,7 +186,7 @@ export const AboutPage: React.FC = () => {
               <FaRobot />
             </InterestIcon>
             <InterestText>
-              Interested in the world of 3d though not games.
+              Currently interested in the AI
             </InterestText>
           </InterestCard>
         </InterestsGrid>
