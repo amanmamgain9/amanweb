@@ -62,26 +62,6 @@ export const getOriginalMonthFormat = (monthId: string) => {
   return `${months[month as keyof typeof months]} ${year}`;
 }
 
-// Add helper to get original format if needed
-export const getOriginalMonthFormat = (monthId: string) => {
-  // Convert "jan-2025" to "January 2025"
-  const [month, year] = monthId.split('-');
-  const months = {
-    'jan': 'January',
-    'feb': 'February',
-    'mar': 'March',
-    'apr': 'April',
-    'may': 'May',
-    'jun': 'June',
-    'jul': 'July',
-    'aug': 'August',
-    'sep': 'September',
-    'oct': 'October',
-    'nov': 'November',
-    'dec': 'December'
-  };
-  return `${months[month as keyof typeof months]} ${year}`;
-}
 
 export const isDateInWeeks = (date: Date, monthData: MonthData): boolean => {
   const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
