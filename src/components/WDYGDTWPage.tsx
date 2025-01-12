@@ -454,6 +454,8 @@ export function WDYGDTWContent({
     setSelectedWeek(null);
     if (onUnsetFocus) {
       onUnsetFocus();
+      // Navigate back to the month view
+      window.history.pushState({}, '', `/wdygdtw/${weekId}`);
     }
   }
 

@@ -291,7 +291,12 @@ function AppContent() {
 
   const unsetFocus = () => {
     setHideList(false);
-    navigate(`/${currentRoute.toLowerCase()}/${selectedItemId}`);
+    if (currentRoute === 'WDYGDTW') {
+      const monthId = selectedItemId?.split('/')[0];
+      navigate(`/${currentRoute.toLowerCase()}/${monthId}`);
+    } else {
+      navigate(`/${currentRoute.toLowerCase()}/${selectedItemId}`);
+    }
   }
 
   const handleBackToList = () => {
