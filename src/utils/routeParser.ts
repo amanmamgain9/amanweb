@@ -1,4 +1,6 @@
 import { ROUTES, LIST_CONTENT_ROUTES } from './constants';
+import { getCurrentMonthDefault } from '../data/weekData';
+import { getDefaultShowcase } from '../data/showcaseItems';
 
 interface RouteState {
   currentRoute: string;
