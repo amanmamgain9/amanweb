@@ -233,6 +233,7 @@ interface WeekItemProps {
 interface WeekDetailProps {
   week: WeekDataType;
   weekNumber: number;
+  onClose: () => void;
 }
 
 const BackToListButton = styled.button`
@@ -273,16 +274,12 @@ const DetailHeader = styled.div`
   border-bottom: 1px solid ${baseTheme.border};
 `;
 
-const WeekDetail = ({ week, weekNumber }: WeekDetailProps) => {
-  const handleBack = () => {
-    setShowDetail(false);
-  };
-
+const WeekDetail = ({ week, weekNumber, onClose }: WeekDetailProps) => {
   return (
     <DetailWrapper>
       <DetailHeader>
         <Title style={{ margin: 0 }}>Week {weekNumber}</Title>
-        <BackToListButton onClick={handleBack}>
+        <BackToListButton onClick={onClose}>
           {`<`} Close
         </BackToListButton>
       </DetailHeader>
@@ -368,7 +365,11 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
             </ViewDetailButton>
           </>
         ) : (
-          <WeekDetail week={week} weekNumber={index + 1} />
+          <WeekDetail 
+            week={week} 
+            weekNumber={index + 1}
+            onClose={() => setShowDetail(false)}
+          />
         )}
       </WeekContent>
     </WeekItemContainer>
