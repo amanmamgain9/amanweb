@@ -245,6 +245,7 @@ function AppContent() {
           <WDYGDTWContent 
             weekId={selectedItemId}
             onFocusSelect={focusItemSelect}
+            onUnsetFocus={unsetFocus}
           />
         )
       default:
@@ -265,6 +266,10 @@ function AppContent() {
   const focusItemSelect = (id: string) => {
     setSelectedItemId(id);
     setHideList(true);
+  }
+
+  const unsetFocus = () => {
+    setHideList(false);
   }
 
   const handleBackToList = () => {

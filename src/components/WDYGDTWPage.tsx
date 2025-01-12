@@ -396,7 +396,15 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
   `}
 `;
 
-export function WDYGDTWContent({ weekId, onFocusSelect }: { weekId: string, onFocusSelect: (id: string) => void }) {
+export function WDYGDTWContent({ 
+  weekId, 
+  onFocusSelect,
+  onUnsetFocus
+}: { 
+  weekId: string, 
+  onFocusSelect: (id: string) => void,
+  onUnsetFocus?: () => void
+}) {
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
   const [showingDetail, setShowingDetail] = useState(false)
@@ -426,6 +434,7 @@ export function WDYGDTWContent({ weekId, onFocusSelect }: { weekId: string, onFo
   const handleCloseDetail = () => {
     setShowingDetail(false);
     setSelectedWeek(null);
+    onUnsetFocus?.();
   }
 
   return (
