@@ -407,6 +407,7 @@ export function WDYGDTWContent({
   onUnsetFocus?: () => void;
   initialFocusWeek?: string;
 }) {
+  console.log('initialFocusWeek', initialFocusWeek);
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
   const [showingDetail, setShowingDetail] = useState(false)
