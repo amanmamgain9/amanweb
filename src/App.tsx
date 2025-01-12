@@ -235,7 +235,6 @@ function AppContent() {
           <ShowcaseDetail 
             onClose={handleBackToList} 
             selectedId={selectedItemId}
-            onFocusSelect={focusItemSelect} 
           />
         )
       case 'HOME':
