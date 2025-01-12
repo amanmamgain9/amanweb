@@ -140,7 +140,7 @@ const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
 `
 
 // Animation variants
-const listVariants = {
+const desktopListVariants = {
   expanded: {
     width: "38.2%",
     borderRightWidth: 1,
@@ -151,6 +151,21 @@ const listVariants = {
     width: "0%",
     borderRightWidth: 0,
     borderRightColor: "rgba(28, 76, 124, 0)",
+    transition: { duration: 0.7, ease: "easeInOut" }
+  }
+}
+
+const mobileListVariants = {
+  expanded: {
+    width: "100%",
+    opacity: 1,
+    display: "flex",
+    transition: { duration: 0.7, ease: "easeInOut" }
+  },
+  collapsed: {
+    width: "100%",
+    opacity: 0,
+    transitionEnd: { display: "none" },
     transition: { duration: 0.7, ease: "easeInOut" }
   }
 }
@@ -329,10 +344,10 @@ function AppContent() {
         <MainContent>
           <ListSection
             initial={isMobileView ? "collapsed" : "expanded"}
-            animate={hasListContent && !isMobileView ? "expanded" : "collapsed"}
-            variants={listVariants}
+            animate={hasListContent ? (showingContent && isMobileView ? "collapsed" : "expanded") : "collapsed"}
+            variants={isMobileView ? mobileListVariants : desktopListVariants}
             style={{ 
-              borderRightStyle: 'solid'
+              borderRightStyle: isMobileView ? 'none' : 'solid'
             }}
             isMobileView={isMobileView}
             showingContent={showingContent}
