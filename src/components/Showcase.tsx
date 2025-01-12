@@ -161,6 +161,7 @@ interface ShowcaseListProps {
 
 interface ShowcaseDetailProps {
   onClose: () => void;
+  selectedId?: string;
 }
 
 // ---- Component Exports ----

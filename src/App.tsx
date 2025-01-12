@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from
 import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
 import { AboutPage } from './components/AboutPage'
 import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage'
-import { showcaseItems, getDefaultShowcase } from './data/showcaseItems'
-import { getCurrentMonthDefault, getOriginalMonthFormat, weekData } from './data/weekData'
+import { getDefaultShowcase } from './data/showcaseItems'
+import { getCurrentMonthDefault } from './data/weekData'
 import styled from 'styled-components'
 import { 
   getListContainerVariants, 
@@ -187,14 +187,12 @@ function AppContent() {
     let isFocused = false
     
     if (path === 'WDYGDTW' && pathParts[1]) {
-      // Handle format: wdygdtw/jan-2025/1
       id = pathParts[1]
       if (pathParts[2]) {
         id = `${pathParts[1]}/${pathParts[2]}`
         isFocused = true
       }
     } else if (pathParts[1]) {
-      // Handle other routes
       id = pathParts[1]
       isFocused = pathParts[2] === 'focus'
     }
@@ -218,7 +216,6 @@ function AppContent() {
       setShowMobileDetail(false)
     }
   }, [location, isMobileView])
-  
 
   const hasListContent = ['PROJECTS', 'WDYGDTW'].includes(currentRoute)
   const prevHasListContent = usePrevious(hasListContent);
@@ -361,15 +358,8 @@ function AppContent() {
                   <ContentSlot
                     key={currentRoute + selectedItemId}
                     variants={getDetailContentVariants(isDesktop, transitionType)}
-                    initial={currentRoute === 'HOME' ? {
-                      opacity: 0,
-                      y: !isDesktop ? 20 : 0
-                    } : "initial"}
-                    animate={currentRoute === 'HOME' ? {
-                      opacity: 1,
-                      y: 0,
-                      transition: { duration: 0.3, ease: "easeOut" }
-                    } : hasContainerTransition ? "animateWithDelay" : "animate"}
+                    initial="initial"
+                    animate={hasContainerTransition ? "animateWithDelay" : "animate"}
                     exit="exit"
                     hasBackButton={!isDesktop && hasListContent}
                   >
