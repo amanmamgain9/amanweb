@@ -236,17 +236,45 @@ interface WeekItemProps {
   onToggle: () => void;
 }
 
+interface WeekDetailProps {
+  week: WeekDataType;
+  weekNumber: number;
+}
+
+const WeekDetail = ({ week, weekNumber }: WeekDetailProps) => {
+  return (
+    <ContentContainer>
+      <Title>Week {weekNumber}</Title>
+      <div style={{ padding: '2rem' }}>
+        <h3 style={{ color: '#00f0ff', marginBottom: '1rem' }}>{week.dates}</h3>
+        <p style={{ color: '#58a6ff', lineHeight: 1.6 }}>{week.content}</p>
+      </div>
+    </ContentContainer>
+  );
+}
+
 const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
+  const [showDetail, setShowDetail] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowDetail(true);
+  }
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      onToggle()
+      e.preventDefault();
+      setShowDetail(true);
     }
+  }
+
+  if (showDetail) {
+    return <WeekDetail week={week} weekNumber={index + 1} />;
   }
 
   return (
     <WeekItemButton 
-      onClick={onToggle}
+      onClick={handleClick}
       onKeyPress={handleKeyPress}
     >
       <WeekHeader $isExpanded={isExpanded}>
