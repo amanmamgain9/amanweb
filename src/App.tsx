@@ -174,11 +174,11 @@ const mobileListVariants = {
 const contentVariants = {
   expanded: {
     width: "61.8%",
-    transition: { duration: 0.7, ease: "easeInOut" }
+    transition: { duration: 0.5, ease: "easeInOut" }
   },
   full: {
     width: "100%",
-    transition: { duration: 0.7, ease: "easeInOut" }
+    transition: { duration: 0.5, ease: "easeInOut" }
   }
 }
 
@@ -195,7 +195,15 @@ const usePrevious = <T,>(value: T): T | undefined => {
 
 const useTransitionType = (currentRoute: string, selectedItemId: string | null): TransitionType => {
   const prevRoute = usePrevious(currentRoute);
-  return prevRoute !== currentRoute ? 'route' : 'item';
+  const prevItemId = usePrevious(selectedItemId);
+  
+  if (prevRoute !== currentRoute) {
+    return 'route';
+  }
+  if (prevItemId !== selectedItemId) {
+    return 'item';
+  }
+  return 'item';
 };
 
 const getSlotVariants = (transitionType: TransitionType) => ({
