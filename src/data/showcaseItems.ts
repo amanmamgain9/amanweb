@@ -3,6 +3,7 @@ export type ShowcaseItemCategory = 'desktop' | 'game' | 'ai' | 'web' | 'extensio
 export type ShowcaseItem = {
   title: string;
   description: string;
+  slug: string;
   category: ShowcaseItemCategory;
   links?: Array<{
     label: string;
@@ -15,6 +16,7 @@ export const showcaseItems: ShowcaseItem[] = [
   {
     title: "BTX Game",
     description: "Multiplayer extraction shooter game built in Unity. Implemented core gameplay mechanics including crouch, character integration, scoreboard and vault system with loadout customization. Added proximity voice chat using Dissonance and quick sell feature with infinite scroll selection.",
+    slug: "btx-game",
     category: "game",
     links: [
       {
@@ -30,6 +32,7 @@ export const showcaseItems: ShowcaseItem[] = [
   },
   {
     title: "XNet Platform",
+    slug: "xnet-platform",
     description: "Developed a comprehensive NFT platform for game moments. Created electron app for game capture using OBS APIs, web-based crypto wallet, and task completion system with crypto rewards.",
     category: "web",
     links: [
@@ -42,6 +45,7 @@ export const showcaseItems: ShowcaseItem[] = [
   },
   {
     title: "Kauri Captioner",
+    slug: "kauri-captioner",
     description: "Built a video subtitling tool using Whisper model (transformers.js). Implemented video processing with Canvas API for rendering and ffmpeg.wasm for audio processing.",
     category: "project",
     links: [
@@ -54,6 +58,7 @@ export const showcaseItems: ShowcaseItem[] = [
   },
   {
     title: "Project Tab Manager",
+    slug: "project-tab-manager",
     description: "Chrome extension for project-based tab organization. Built using React and Chrome Extension APIs to help users manage their browser tabs more effectively.",
     category: "project",
     links: [
