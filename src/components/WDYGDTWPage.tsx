@@ -252,16 +252,27 @@ const BackToListButton = styled.button`
 `;
 
 const DetailWrapper = styled.div`
-  margin-top: 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   padding: 2rem;
-  background: rgba(13, 35, 57, 0.95);
-  border: 1px solid ${baseTheme.border};
+  background: rgba(13, 35, 57, 0.98);
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 240, 255, 0.1);
-  transition: all 0.3s ease;
+  animation: fadeIn 0.3s ease-out;
+  z-index: 10;
 
-  &:hover {
-    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.2);
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 `;
 
