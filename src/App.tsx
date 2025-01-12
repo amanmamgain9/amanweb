@@ -148,7 +148,7 @@ const listVariants = {
     transition: { duration: 0.7, ease: "easeInOut" }
   },
   collapsed: {
-    width: "100%",
+    width: "0%",
     borderRightWidth: 0,
     borderRightColor: "rgba(28, 76, 124, 0)",
     transition: { duration: 0.7, ease: "easeInOut" }
