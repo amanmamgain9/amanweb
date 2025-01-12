@@ -252,27 +252,30 @@ const BackToListButton = styled.button`
 `;
 
 const DetailWrapper = styled.div`
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 64px;
   left: 0;
   right: 0;
   bottom: 0;
   padding: 2rem;
   background: rgba(13, 35, 57, 0.98);
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.1);
-  animation: fadeIn 0.3s ease-out;
-  z-index: 10;
+  animation: expandIn 0.3s ease-out;
+  z-index: 1000;
+  overflow-y: auto;
 
-  @keyframes fadeIn {
+  @keyframes expandIn {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: scale(0.95);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: scale(1);
     }
+  }
+
+  @media (max-width: 768px) {
+    top: 0;
   }
 `;
 
@@ -366,23 +369,20 @@ const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
         <span>Week {index + 1} ({week.dates})</span>
       </WeekHeader>
       <WeekContent $isExpanded={isExpanded}>
-        {!showDetail ? (
-          <>
-            <div>
-              {week.content}
-            </div>
-            <ViewDetailButton onClick={handleViewDetail}>
-              View Full Details →
-            </ViewDetailButton>
-          </>
-        ) : (
-          <WeekDetail 
-            week={week} 
-            weekNumber={index + 1}
-            onClose={() => setShowDetail(false)}
-          />
-        )}
+        <div>
+          {week.content}
+        </div>
+        <ViewDetailButton onClick={handleViewDetail}>
+          View Full Details →
+        </ViewDetailButton>
       </WeekContent>
+      {showDetail && (
+        <WeekDetail 
+          week={week} 
+          weekNumber={index + 1}
+          onClose={() => setShowDetail(false)}
+        />
+      )}
     </WeekItemContainer>
   )
 }
