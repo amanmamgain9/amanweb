@@ -213,7 +213,7 @@ const WeekHeader = styled.div<{ $isExpanded: boolean }>`
 `
 
 const WeekContent = styled.div<{ $isExpanded: boolean }>`
-  color: #58a6ff;
+  color: #b3e5fc;
   line-height: 1.5;
   border-top: 1px solid ${baseTheme.border};
   overflow: hidden;
@@ -296,7 +296,7 @@ const WeekDetail = ({ week, weekNumber }: WeekDetailProps) => {
           {week.dates}
         </h3>
         <p style={{ 
-          color: '#58a6ff', 
+          color: '#b3e5fc', 
           lineHeight: 1.8,
           fontSize: '1.1em'
         }}>
