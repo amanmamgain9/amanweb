@@ -40,13 +40,14 @@ const ContentContainer = styled.div`
   }
 `
 
-const ListSection = styled(motion.div)<{ isMobileView?: boolean }>`
+const ListSection = styled(motion.div)<{ isMobileView?: boolean; showingContent?: boolean }>`
   overflow: auto;
   width: 38.2%;
 
   @media (max-width: 768px) {
     width: 100%;
     height: 100%;
+    display: ${props => props.isMobileView && props.showingContent ? 'none' : 'flex'};
   }
 `
 
@@ -314,8 +315,7 @@ function AppContent() {
             animate={hasListContent && !isMobileView ? "expanded" : "collapsed"}
             variants={listVariants}
             style={{ 
-              borderRightStyle: 'solid',
-              display: isMobileView && showingContent ? 'none' : 'flex'
+              borderRightStyle: 'solid'
             }}
             isMobileView={isMobileView}
             showingContent={showingContent}
