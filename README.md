@@ -1,25 +1,54 @@
 # Personal Portfolio Website
 
-A modern, interactive portfolio website built with React, TypeScript, and Vite. Features a showcase of projects, weekly activity tracking, and smooth animations.
+A modern, interactive portfolio website built with React, TypeScript, and Vite. Features a showcase of projects, weekly activity tracking, and smooth animations powered by Framer Motion.
 
 ## 🚀 Features
 
-- **Project Showcase**: Display of various projects with detailed descriptions and technology stacks
-- **Weekly Activity Tracker**: Track and display weekly activities, work hours, and fitness metrics
-- **Smooth Animations**: Custom animations and transitions using motion libraries
-- **Responsive Design**: Mobile-friendly layout with custom navigation
-- **Custom Styling**: Global styles with styled-components and custom fonts
+- **Project Showcase**
+  - Display of various projects with detailed descriptions and tech stacks
+  - Category-based filtering (Desktop, Game, AI, Web, Extensions)
+  - Interactive project cards with smooth hover effects
+  - Detailed view with technology breakdown
+
+- **Weekly Activity Tracker (WDYGDTW)**
+  - Calendar-based navigation with visual date indicators
+  - Weekly activity summaries including:
+    - Work hours tracked
+    - Gym attendance
+    - Average daily steps
+  - Expandable weekly highlights
+  - Detailed view with retro-styled scoreboard
+
+- **Smooth Animations**
+  - Page transitions using Framer Motion
+  - Split-view layout animations
+  - Content fade effects
+  - Mobile-optimized motion design
+
+- **Responsive Design**
+  - Adaptive layout for desktop and mobile
+  - Touch-friendly interactions
+  - Optimized navigation for smaller screens
+  - Fluid typography scaling
 
 ## 🛠️ Tech Stack
 
-- React 18
-- TypeScript
-- Vite
-- Styled Components
-- Motion for animations
-- React Calendar
-- React Router DOM
-- React Icons
+### Core
+- React 18.3
+- TypeScript 5.6
+- Vite 6.0
+
+### Styling & Animation
+- Styled Components 6.1
+- Framer Motion
+- Custom theme system
+- Retro-inspired UI elements
+
+### Navigation & Interaction
+- React Router DOM 7.1
+- React Calendar 5.1
+- React Icons 5.4
+- Custom gesture handling
 
 ## 🏃‍♂️ Getting Started
 
@@ -41,35 +70,80 @@ npm run build
 
 ## 📁 Project Structure
 
-- `/src/components` - React components
-- `/src/data` - Data files for showcase items and weekly activities
-- `/src/styles` - Global styles and theme configuration
-- `/src/libs` - Animation and utility functions
-- `/src/types` - TypeScript type definitions
-- `/public` - Static assets and fonts
+```
+src/
+├── components/          # React components
+│   ├── Showcase/       # Project showcase components
+│   ├── WDYGDTW/       # Weekly tracker components
+│   └── shared/        # Reusable UI components
+├── context/           # React context providers
+├── data/             # Static data and types
+├── libs/             # Animation and utility functions
+├── styles/           # Global styles and themes
+└── utils/            # Helper functions
+```
 
 ## 🧩 Key Components
 
-- **Showcase**: Display projects, articles, and other content
-- **WDYGDTW (What Did You Get Done This Week)**: Weekly activity tracking
-- **AnimatedLayout**: Handles page transitions and animations
-- **Navigation**: Custom navigation system with category filtering
+### Showcase System
+- `ShowcaseList`: Grid-based project display
+- `ShowcaseDetail`: Detailed project view
+- `ShowcaseContext`: Global state management
+- Category-based filtering system
+
+### WDYGDTW (Weekly Tracker)
+- `WDYGDTWContent`: Main tracker interface
+- `WeekDetail`: Detailed weekly view
+- `Calendar`: Date navigation component
+- Activity metrics visualization
+
+### Layout & Navigation
+- `AnimatedLayout`: Handles page transitions
+- `Navbar`: Responsive navigation
+- `ContentSlot`: Dynamic content container
+- Split view management system
 
 ## 🎨 Styling
 
-The project uses a combination of styled-components and global styles with custom fonts:
-- Miso (Light, Regular, Bold)
-- Press Start 2P
+### Fonts
+- Miso (Light, Regular, Bold) for headings
+- Press Start 2P for retro elements
+- System fonts for body text
+
+### Theme
+- Dark mode optimized
+- Retro-cyberpunk inspired
 - Custom scrollbar styling
-- Dark theme with accent colors
+- Responsive breakpoints
+
+### Animation System
+- Page transitions
+- Content reveals
+- Interactive feedback
+- Mobile gesture support
 
 ## 📝 Scripts
 
 - `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run build` - TypeScript build + Vite bundle
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
 
 ## 🔧 Development
 
-The project uses ESLint with TypeScript support and custom configurations for React. Check `eslint.config.js` for the complete setup.
+### Code Quality
+- ESLint with TypeScript support
+- Custom React hooks rules
+- Import sorting
+- Consistent code style
+
+### Performance
+- Code splitting
+- Lazy loading
+- Optimized animations
+- Asset optimization
+
+### Browser Support
+- Modern browsers
+- Mobile Safari/Chrome
+- Touch device support
