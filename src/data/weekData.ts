@@ -43,7 +43,21 @@ export const formatMonthId = (monthYear: string) => {
 export const getOriginalMonthFormat = (monthId: string) => {
   // Convert "jan-2025" to "January 2025"
   const [month, year] = monthId.split('-');
-  return `${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
+  const months = {
+    'jan': 'January',
+    'feb': 'February',
+    'mar': 'March',
+    'apr': 'April',
+    'may': 'May',
+    'jun': 'June',
+    'jul': 'July',
+    'aug': 'August',
+    'sep': 'September',
+    'oct': 'October',
+    'nov': 'November',
+    'dec': 'December'
+  };
+  return `${months[month as keyof typeof months]} ${year}`;
 }
 
 export const isDateInWeeks = (date: Date, monthData: MonthData): boolean => {

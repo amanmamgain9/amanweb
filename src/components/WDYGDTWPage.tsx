@@ -279,7 +279,13 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
   // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
   const monthYear = getOriginalMonthFormat(weekId);
   const currentMonthData = weekData[monthYear]?.weeks || [];
-  console.log('Current month data:', { monthYear, weeks: currentMonthData });
+  console.log('Week data debug:', { 
+    inputWeekId: weekId,
+    convertedMonthYear: monthYear,
+    availableMonths: Object.keys(weekData),
+    foundData: weekData[monthYear],
+    weeks: currentMonthData 
+  });
 
   const handleDateChange = (newDate: Date) => {
     if (isDateInWeeks(newDate, weekData)) {
