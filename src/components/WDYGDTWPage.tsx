@@ -260,7 +260,7 @@ const DetailWrapper = styled.div`
   bottom: 0;
   padding: 2rem;
   background: rgba(13, 35, 57, 0.98);
-  animation: expandIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: expandIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
   overflow-y: auto;
 
@@ -432,7 +432,7 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
 
   const handleCloseDetail = () => {
     setShowingDetail(false);
-    setTimeout(() => setSelectedWeek(null), 300); // Clear after animation
+    setTimeout(() => setSelectedWeek(null), 200); // Faster cleanup after animation
   }
 
   return (
