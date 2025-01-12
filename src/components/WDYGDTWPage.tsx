@@ -337,9 +337,7 @@ const ViewDetailButton = styled.button`
   }
 `;
 
-const WeekItem = ({ week, index, isExpanded, onToggle }: WeekItemProps) => {
-  const [showDetail, setShowDetail] = useState(false);
-
+const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemProps) => {
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     onToggle();
