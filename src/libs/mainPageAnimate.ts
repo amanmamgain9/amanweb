@@ -83,7 +83,7 @@ export const getListContainerVariants = (isDesktop: boolean): Variants => {
       transition: { duration: CONTAINER_DURATION, ease: "easeInOut" }
     },
     hidden: {
-      width: "100%",
+      width: "0%",
       opacity: 0,
       transitionEnd: { display: "none" },
       transition: { duration: CONTAINER_DURATION, ease: "easeInOut" }
