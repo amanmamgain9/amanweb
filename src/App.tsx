@@ -255,12 +255,28 @@ function AppContent() {
       case 'HOME':
         return <AboutPage />
       case 'WDYGDTW':
-        return selectedItemId && (
+        const monthId = selectedItemId?.split('/')[0];
+        const weekNum = selectedItemId?.split('/')[1];
+        const monthYear = monthId && getOriginalMonthFormat(monthId);
+        const currentMonthData = monthYear ? weekData[monthYear]?.weeks || [] : [];
+        
+        let selectedWeekData = null;
+        if (weekNum && currentMonthData.length > 0) {
+          const weekIndex = parseInt(weekNum) - 1;
+          if (weekIndex >= 0 && weekIndex < currentMonthData.length) {
+            selectedWeekData = {
+              week: currentMonthData[weekIndex],
+              index: weekIndex
+            };
+          }
+        }
+
+        return monthId && (
           <WDYGDTWContent 
-            weekId={selectedItemId.split('/')[0]}
-            initialFocusWeek={selectedItemId.split('/')[1]}
+            weekId={monthId}
             onFocusSelect={focusItemSelect}
-            onUnsetFocus={unsetFocus}
+            selectedWeek={selectedWeekData}
+            showingDetail={!!weekNum}
           />
         )
       default:
