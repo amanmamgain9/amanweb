@@ -80,6 +80,28 @@ const MainContent = styled(motion.div)`
   }
 `
 
+const BackButton = styled.button`
+  display: none;
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    color: #00f0ff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 10;
+    
+    &:hover {
+      background: rgba(0, 240, 255, 0.2);
+    }
+  }
+`
+
 const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?: boolean }>`
   background-color: #0a1929;
   position: relative;
@@ -320,6 +342,11 @@ function AppContent() {
             showingContent={showingContent}
             hideOnMobile={hasListContent}
           >
+            {isMobileView && hasListContent && (
+              <BackButton onClick={handleBackToList}>
+                ← Back
+              </BackButton>
+            )}
             <AnimatePresence mode="wait">
               <ContentSlot
                 key={currentRoute + selectedItemId}
