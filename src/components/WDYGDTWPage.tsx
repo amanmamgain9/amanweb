@@ -444,19 +444,7 @@ export function WDYGDTWContent({
   }
 
   const handleShowDetail = (week: WeekDataType, index: number) => {
-    if (!showingDetail) {
-      onFocusSelect(`${weekId}/${index + 1}`);
-    }
-  }
-
-  const handleCloseDetail = () => {
-    setShowingDetail(false);
-    setSelectedWeek(null);
-    if (onUnsetFocus) {
-      onUnsetFocus();
-      // Navigate back to the month view
-      window.history.pushState({}, '', `/wdygdtw/${weekId}`);
-    }
+    onFocusSelect(`${weekId}/${index + 1}`);
   }
 
   return (
@@ -497,11 +485,11 @@ export function WDYGDTWContent({
       </MainContentWrapper>
       
       <AnimatePresence>
-        {selectedWeek && (
+        {selectedWeek && showingDetail && (
           <WeekDetail 
             week={selectedWeek.week}
             weekNumber={selectedWeek.index + 1}
-            onClose={handleCloseDetail}
+            onClose={() => onFocusSelect(weekId)}
           />
         )}
       </AnimatePresence>
