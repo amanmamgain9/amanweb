@@ -189,6 +189,10 @@ function AppContent() {
     if (!['PROJECTS', 'WDYGDTW'].includes(path)) {
       setShowingContent(true)
     }
+    else
+    {
+      setShowingContent(false)
+    }
   }, [location])
   
   // Slot management using refs
