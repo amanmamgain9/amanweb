@@ -285,7 +285,7 @@ function AppContent() {
     }, 800)
   }
 
-  const handleItemSelect = (id: number) => {
+  const handleItemSelect = (id: string) => {
     if (id === selectedItemId) return
     setSelectedItemId(id.toString())
     if (isMobileView) {
