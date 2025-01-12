@@ -338,7 +338,7 @@ function AppContent() {
                   <ContentSlot
                     key={currentRoute + selectedItemId}
                     variants={getDetailContentVariants(isDesktop, transitionType)}
-                    initial={currentRoute === 'HOME' && !prevHasListContent ? false : "initial"}
+                    initial={!isDesktop && currentRoute === 'HOME' ? false : "initial"}
                     animate={hasContainerTransition ? "animateWithDelay" : "animate"}
                     exit="exit"
                     hasBackButton={!isDesktop && hasListContent}
