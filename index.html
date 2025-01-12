@@ -7,13 +7,18 @@
     <meta property="og:title" content="Aman Mamgain - Portfolio" />
     <meta property="og:description" content="Personal portfolio showcasing projects, weekly activities, and development journey." />
     <meta property="og:image" content="" id="og-image" />
+    <meta property="og:url" content="https://amanmamgain.com" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aman Mamgain - Portfolio" />
+    <meta name="twitter:description" content="Personal portfolio showcasing projects, weekly activities, and development journey." />
+    <meta name="twitter:image" content="" id="twitter-image" />
     <script>
       const path = window.location.pathname;
       const image = path.startsWith('/wdygdtw') ? '/wdygdtw.jpeg' : '/moi.webp';
-      document.getElementById('og-image').setAttribute('content', image);
+      document.getElementById('og-image').setAttribute('content', window.location.origin + image);
+      document.getElementById('twitter-image').setAttribute('content', window.location.origin + image);
     </script>
-    <meta property="og:url" content="https://amanmamgain.com" />
-    <meta property="og:type" content="website" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900&family=Oswald:wght@400;700&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
