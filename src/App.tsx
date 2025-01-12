@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useMemo } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
@@ -284,6 +284,7 @@ function AppContent() {
           <ContentContainer>
             <MainContent>
               <ListSection
+                key={!isDesktop ? (showingContent ? 'detail' : 'list') : 'persistent'}
                 initial={isDesktop ? "visible" : "hidden"}
                 animate={hasListContent ? (showingContent && !isDesktop ? "hidden" : "visible") : "hidden"}
                 variants={getListContainerVariants(isDesktop)}
