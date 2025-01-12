@@ -279,6 +279,7 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
   // Convert weekId (jan-2025) back to format needed for weekData ("January 2025")
   const monthYear = getOriginalMonthFormat(weekId);
   const currentMonthData = weekData[monthYear]?.weeks || [];
+  console.log('Current month data:', { monthYear, weeks: currentMonthData });
 
   const handleDateChange = (newDate: Date) => {
     if (isDateInWeeks(newDate, weekData)) {
@@ -308,7 +309,12 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
       </CalendarWrapper>
 
       <WeeksContainer>
-        {currentMonthData.map((week, index) => (
+        {currentMonthData.length === 0 ? (
+          <div style={{ textAlign: 'center', color: baseTheme.primary }}>
+            No entries available for {monthYear}
+          </div>
+        ) : (
+          currentMonthData.map((week, index) => (
           <WeekItem
             key={index}
             week={week}
@@ -316,7 +322,8 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
             isExpanded={expandedWeekIndex === index}
             onToggle={() => handleWeekToggle(index)}
           />
-        ))}
+          ))
+        )}
       </WeeksContainer>
     </ContentContainer>
   )
