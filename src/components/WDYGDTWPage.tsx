@@ -282,7 +282,6 @@ export function WDYGDTWContent({
       {selectedWeek && showingDetail && (
         <WeekDetail 
           week={selectedWeek.week}
-          weekNumber={selectedWeek.index + 1}
           onClose={() => onUnsetFocus()}
         />
       )}

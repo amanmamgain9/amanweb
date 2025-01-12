@@ -97,10 +97,9 @@ const ItemLink = styled.a`
 `
 
 interface ShowcaseDetailProps {
-  onClose: () => void;
 }
 
-export function ShowcaseDetail({ onClose }: ShowcaseDetailProps) {
+export function ShowcaseDetail({ }: ShowcaseDetailProps) {
   const { selectedItem: item } = useShowcase();
 
   if (!item) return null;

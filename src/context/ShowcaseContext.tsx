@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { showcaseItems } from '../data/showcaseItems';
-import { ShowcaseItem } from '../types/showcase';
+import { ShowcaseItem, showcaseItems } from '../data/showcaseItems';
 
 interface ShowcaseContextType {
   items: ShowcaseItem[];

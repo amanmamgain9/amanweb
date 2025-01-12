@@ -135,7 +135,7 @@ export const getDetailContentInfo = (
   };
 };
 
-export const getDetailContentVariants = (isDesktop: boolean): Variants => {
+export const getDetailContentVariants = (): Variants => {
     return {
       hidden: {
         opacity: 0,

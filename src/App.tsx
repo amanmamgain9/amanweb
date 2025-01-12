@@ -255,8 +255,7 @@ function AppContent() {
     switch (state.currentRoute) {
       case 'PROJECTS':
         return state.selectedItemId && (
-          <ShowcaseDetail 
-            onClose={handleBackToList} 
+          <ShowcaseDetail  
             selectedId={state.selectedItemId}
           />
         );
