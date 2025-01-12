@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from 'react';
-import { ShowcaseProvider } from './context/ShowcaseContext';
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
@@ -232,7 +231,7 @@ function AppContent() {
     switch (currentRoute) {
       case 'PROJECTS':
         return selectedItemId && (
-          <ShowcaseDetail onClose={handleBackToList} />
+          <ShowcaseDetail onClose={handleBackToList} selectedId={selectedItemId} />
         )
       case 'HOME':
         return <AboutPage />
@@ -338,9 +337,7 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
-      <ShowcaseProvider>
-        <AppContent />
-      </ShowcaseProvider>
+      <AppContent />
     </Router>
   );
 }

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useShowcase } from '../context/ShowcaseContext'
+import { showcaseItems } from '../data/showcaseItems'
 
 // ---- Shared Styled Components ----
 const BaseContainer = styled.div`
@@ -165,13 +165,10 @@ interface ShowcaseDetailProps {
 
 // ---- Component Exports ----
 export function ShowcaseList({ onItemSelect, isVisible }: ShowcaseListProps) {
-  const { items } = useShowcase();
-  
-  if (!items) return null;
   return (
     <ListContainer $isVisible={isVisible}>
       <ListContent>
-        {items.map(item => (
+        {showcaseItems.map(item => (
           <Card key={item.title} onClick={() => onItemSelect(item.slug)}>
             <Title>{item.title}</Title>
             <TechnologiesContainer>
@@ -186,8 +183,8 @@ export function ShowcaseList({ onItemSelect, isVisible }: ShowcaseListProps) {
   );
 }
 
-export function ShowcaseDetail({ onClose }: ShowcaseDetailProps) {
-  const { selectedItem: item } = useShowcase();
+export function ShowcaseDetail({ onClose, selectedId }: ShowcaseDetailProps) {
+  const item = showcaseItems.find(item => item.slug === selectedId);
 
   if (!item) return null;
   return (
