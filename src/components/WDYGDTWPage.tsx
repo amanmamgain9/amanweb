@@ -406,10 +406,6 @@ export function WDYGDTWContent({
   onFocusSelect: (id: string) => void;
   onUnsetFocus?: () => void;
   initialFocusWeek?: string;
-  weekId: string, 
-  onFocusSelect: (id: string) => void,
-  onUnsetFocus?: () => void,
-  initialFocusWeek?: string
 }) {
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
@@ -436,6 +432,9 @@ export function WDYGDTWContent({
         setSelectedWeek({ week, index: weekIndex });
         setShowingDetail(true);
       }
+    } else {
+      setShowingDetail(false);
+      setSelectedWeek(null);
     }
   }, [initialFocusWeek, currentMonthData]);
 
