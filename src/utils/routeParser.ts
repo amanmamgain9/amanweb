@@ -1,4 +1,4 @@
-import { ROUTES } from './constants';
+import { ROUTES, LIST_CONTENT_ROUTES } from './constants';
 
 interface RouteState {
   currentRoute: string;
