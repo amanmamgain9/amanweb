@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { motion, AnimatePresence } from 'framer-motion'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { WeekEntry as WeekDataType, MonthData, weekData, isDateInWeeks, getCurrentMonthDefault, getOriginalMonthFormat } from '../data/weekData'
@@ -254,7 +253,7 @@ const BackToListButton = styled.button`
   }
 `;
 
-const DetailWrapper = styled(motion.div)`
+const DetailWrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -277,12 +276,7 @@ const DetailHeader = styled.div`
 
 const WeekDetail = ({ week, weekNumber, onClose }: WeekDetailProps) => {
   return (
-    <DetailWrapper
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <DetailWrapper>
       <DetailHeader>
         <Title style={{ margin: 0 }}>{week.dates}</Title>
         <BackToListButton onClick={onClose}>
@@ -497,15 +491,13 @@ export function WDYGDTWContent({
         </WeeksContainer>
       </MainContentWrapper>
       
-      <AnimatePresence>
-        {selectedWeek && showingDetail && (
-          <WeekDetail 
-            week={selectedWeek.week}
-            weekNumber={selectedWeek.index + 1}
-            onClose={() => onUnsetFocus()}
-          />
-        )}
-      </AnimatePresence>
+      {selectedWeek && showingDetail && (
+        <WeekDetail 
+          week={selectedWeek.week}
+          weekNumber={selectedWeek.index + 1}
+          onClose={() => onUnsetFocus()}
+        />
+      )}
     </ContentContainer>
   )
 }
