@@ -166,6 +166,7 @@ function AppContent() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768)
   const [showingContent, setShowingContent] = useState(false)
+  const [hideList, setHideList] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const [currentRoute, setCurrentRoute] = useState(location.pathname.slice(1).toUpperCase() || 'HOME')
@@ -263,7 +264,7 @@ function AppContent() {
 
   const focusItemSelect = (id: string) => {
     setSelectedItemId(id);
-    setShowingContent(true);
+    setHideList(true);
   }
 
   const handleBackToList = () => {
@@ -292,7 +293,7 @@ function AppContent() {
                   borderRightStyle: isDesktop ? 'solid' : 'none'
                 }}
                 isMobileView={!isDesktop}
-                showingContent={showingContent}
+                showingContent={showingContent || hideList}
               >
                 <AnimatePresence mode="wait">
                   {hasListContent && (
