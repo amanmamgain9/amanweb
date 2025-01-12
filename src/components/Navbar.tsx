@@ -86,7 +86,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ activePage, onPageChange }: NavbarProps) {
-  const pages = ['HOME', 'PROJECTS', 'RANTS', 'WDYGDTW'];
+  const pages = ['HOME', 'PROJECTS', 'WDYGDTW'];
   
   return (
     <TopBarContainer>
