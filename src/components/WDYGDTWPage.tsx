@@ -260,20 +260,18 @@ const DetailWrapper = styled.div`
   bottom: 0;
   padding: 2rem;
   background: rgba(13, 35, 57, 0.98);
-  animation: expandIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: expandIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
   overflow-y: auto;
 
   @keyframes expandIn {
     from {
-      opacity: 0;
-      transform: scale(0.98) translateY(20px);
-      backdrop-filter: blur(0px);
+      opacity: 1;
+      transform: scale(1);
     }
     to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: scale(0.98);
     }
   }
 `;
@@ -432,7 +430,7 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
 
   const handleCloseDetail = () => {
     setShowingDetail(false);
-    setTimeout(() => setSelectedWeek(null), 200); // Faster cleanup after animation
+    setSelectedWeek(null); // Remove timeout for immediate cleanup
   }
 
   return (
