@@ -116,12 +116,16 @@ const DetailSection = styled(motion.div)<{ isMobileView?: boolean; hideOnMobile?
   }
 `
 
-const ContentSlot = styled(motion.div)`
+const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
   width: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  flex: 1;  // Add this
+  flex: 1;
+
+  @media (max-width: 768px) {
+    padding-top: ${props => props.hasBackButton ? '60px' : '0'};
+  }
 `
 
 // Animation variants
@@ -354,6 +358,7 @@ function AppContent() {
                 initial="enter"
                 animate="center"
                 exit="exit"
+                hasBackButton={isMobileView && hasListContent}
               >
                 {renderContent()}
               </ContentSlot>
