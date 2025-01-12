@@ -3,6 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { LIST_CONTENT_ROUTES } from './utils/constants';
 import { parseRoute, getDefaultSelection } from './utils/routeParser';
+import { 
+  getListAnimateInfo, 
+  getListContentInfo, 
+  getDetailSectionInfo,
+  getDetailContentInfo 
+} from './utils/animationUtils';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
 import { AboutPage } from './components/AboutPage'
@@ -293,8 +299,7 @@ function AppContent() {
             <MainContent>
               <ListSection
                 key={!isDesktop ? (showMobileDetail ? 'detail' : 'list') : 'persistent'}
-                initial={(isDesktop && hasListContent) ? "visible" : "hidden"}
-                animate={hasListContent ? (showMobileDetail && !isDesktop ? "hidden" : "visible") : "hidden"}
+                {...getListAnimateInfo(hasListContent, isDesktop, showMobileDetail)}
                 variants={getListContainerVariants(isDesktop)}
                 style={{ 
                   borderRightStyle: isDesktop ? 'solid' : 'none'
@@ -312,8 +317,7 @@ function AppContent() {
                       <ContentSlot
                         key="list"
                         variants={getListContentVariants(isDesktop)}
-                        initial="initial"
-                        animate={hasContainerTransition ? "animateWithDelay" : "animate"}
+                        {...getListContentInfo(hasContainerTransition)}
                         exit="exit"
                       >
                         {renderList()}
@@ -324,8 +328,7 @@ function AppContent() {
               </ListSection>
               
               <DetailSection
-                initial="fullWidth"
-                animate={hasListContent && isDesktop ? "partialWidth" : "fullWidth"}
+                {...getDetailSectionInfo(hasListContent, isDesktop)}
                 variants={getDetailContainerVariants(isDesktop)}
                 isMobileView={!isDesktop}
                 showingContent={showMobileDetail}
@@ -340,8 +343,7 @@ function AppContent() {
                   <ContentSlot
                     key={currentRoute + selectedItemId}
                     variants={getDetailContentVariants(isDesktop, transitionType)}
-                    initial="initial"
-                    animate={hasContainerTransition ? "animateWithDelay" : "animate"}
+                    {...getDetailContentInfo(hasContainerTransition)}
                     exit="exit"
                     hasBackButton={!isDesktop && hasListContent}
                   >
