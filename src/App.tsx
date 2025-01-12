@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
+import { LIST_CONTENT_ROUTES } from './utils/constants';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
 import { AboutPage } from './components/AboutPage'
@@ -217,7 +218,7 @@ function AppContent() {
     }
   }, [location, isMobileView])
 
-  const hasListContent = ['PROJECTS', 'WDYGDTW'].includes(currentRoute)
+  const hasListContent = LIST_CONTENT_ROUTES.includes(currentRoute as any) && !hideList
   const prevHasListContent = usePrevious(hasListContent);
 
   const renderList = () => {
