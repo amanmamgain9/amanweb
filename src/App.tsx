@@ -1,4 +1,5 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react';
+import { ShowcaseProvider } from './context/ShowcaseContext';
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navbar } from './components/Navbar'
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
@@ -163,7 +164,7 @@ const useTransitionType = (currentRoute: string, selectedItemId: string | null):
 };
 
 function AppContent() {
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768)
   const [showingContent, setShowingContent] = useState(false)
   const location = useLocation()
@@ -204,9 +205,6 @@ function AppContent() {
     }
   }, [location, isMobileView])
   
-  const selectedItem = selectedItemId 
-    ? showcaseItems.find(item => item.slug === selectedItemId)
-    : null;
 
   const hasListContent = ['PROJECTS', 'WDYGDTW'].includes(currentRoute)
   const prevHasListContent = usePrevious(hasListContent);
@@ -235,11 +233,8 @@ function AppContent() {
   const renderContent = () => {
     switch (currentRoute) {
       case 'PROJECTS':
-        return selectedItem && (
-          <ShowcaseDetail
-            item={selectedItem}
-            onClose={handleBackToList}
-          />
+        return selectedItemId && (
+          <ShowcaseDetail onClose={handleBackToList} />
         )
       case 'HOME':
         return <AboutPage />
@@ -345,7 +340,9 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
-      <AppContent />
+      <ShowcaseProvider>
+        <AppContent />
+      </ShowcaseProvider>
     </Router>
-  )
+  );
 }

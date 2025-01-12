@@ -1,5 +1,5 @@
-import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components'
+import { useShowcase } from '../context/ShowcaseContext'
 
 const ListContainer = styled.div<{ $isVisible?: boolean }>`
   padding: 1rem;
@@ -79,16 +79,15 @@ const TechTag = styled.span`
 `
 
 interface ShowcaseListProps {
-  items: ShowcaseItem[]
-  onItemSelect: (title: string) => void
-  isVisible?: boolean
+  onItemSelect: (title: string) => void;
+  isVisible?: boolean;
 }
 
 export function ShowcaseList({ 
-  items, 
   onItemSelect,
   isVisible
 }: ShowcaseListProps) {
+  const { items } = useShowcase();
   return (
     <ListContainer $isVisible={isVisible}>
       <ListContent>

@@ -1,5 +1,5 @@
-import { ShowcaseItem } from '../types/showcase'
 import styled from 'styled-components';
+import { useShowcase } from '../context/ShowcaseContext';
 
 const DetailContainer = styled.div`
   padding: 2rem;
@@ -97,13 +97,13 @@ const ItemLink = styled.a`
 `
 
 interface ShowcaseDetailProps {
-  item: ShowcaseItem
-  onClose: () => void
+  onClose: () => void;
 }
 
-export function ShowcaseDetail({ 
-  item
-}: ShowcaseDetailProps) {
+export function ShowcaseDetail({ onClose }: ShowcaseDetailProps) {
+  const { selectedItem: item } = useShowcase();
+
+  if (!item) return null;
   return (
     <DetailContainer>
       <Header>
