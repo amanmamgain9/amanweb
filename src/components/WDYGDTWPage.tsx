@@ -113,7 +113,7 @@ const ViewDetailButton = styled.button`
   margin-left: auto;
   display: block;
   transition: all 0.2s ease;
-  font-family: 'Press Start 2P';
+  font-family: 'Miso';
   font-size: 0.7em;
 
   &:hover {

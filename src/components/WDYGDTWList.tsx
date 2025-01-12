@@ -52,7 +52,7 @@ const ActionButton = styled.button`
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
     cursor: pointer;
-    font-family: 'Press Start 2P';
+    font-family: 'Miso';
     font-size: 0.7em;
     backdrop-filter: blur(4px);
     transition: all 0.2s ease;

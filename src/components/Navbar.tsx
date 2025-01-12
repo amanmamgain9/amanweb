@@ -48,7 +48,7 @@ const NavButton = styled(Link)<{ $active?: boolean }>`
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  font-family: 'Press Start 2P';
+  font-family: 'Miso';
   font-size: 0.7em;
   transition: all 0.3s ease;
   position: relative;

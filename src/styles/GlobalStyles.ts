@@ -27,7 +27,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   button {
-    font-family: 'Press Start 2P';
+    font-family: 'Miso';
   }
 
   h1, h2, h3, h4, h5, h6 {
