@@ -48,14 +48,7 @@ export const getDetailContainerAnimateInfo = (
   };
 };
 
-export const getDetailContentInfo = (
-  hasContainerTransition: boolean
-): AnimationState => {
-  return {
-    initial: "hidden",
-    animate: hasContainerTransition ? "visibleWithDelay" : "visible"
-  };
-};
+
 
 export const getListContainerVariants = (isDesktop: boolean): Variants => {
   if (isDesktop) {
@@ -131,6 +124,16 @@ export const getDetailContainerVariants = (isDesktop: boolean): Variants => ({
     width: "0%"
   },
 });
+
+
+export const getDetailContentInfo = (
+  hasContainerTransition: boolean
+): AnimationState => {
+  return {
+    initial: "hidden",
+    animate: hasContainerTransition ? "visibleWithDelay" : "visible"
+  };
+};
 
 export const getDetailContentVariants = (isDesktop: boolean): Variants => {
     return {

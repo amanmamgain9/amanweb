@@ -276,9 +276,11 @@ function AppContent() {
 
   const isDesktop = !isMobileView;
   const hasContainerTransition = prevHasListContent !== state.hasListContent && 
-    prevHasListContent !== undefined;
+    prevHasListContent !== undefined || (!isDesktop && state.hasListContent);
   const isDetailContainerHidden = !isDesktop && state.hasListContent && !state.showMobileDetail;
-
+  console.log('hasContainerTransition:', hasContainerTransition);
+  console.log("preHasListContent:", prevHasListContent);
+  
   return (
     <Routes>
       <Route 
@@ -307,6 +309,7 @@ function AppContent() {
                         </MobileHeader>
                         <ContentSlot
                           key={state.currentRoute}
+                          // key={!isDesktop? location.pathname : state.currentRoute}
                           variants={getListContentVariants(isDesktop)}
                           {...getListContentInfo(hasContainerTransition)}
                           exit="exit"
@@ -330,6 +333,7 @@ function AppContent() {
                   <AnimatePresence mode="wait">
                     <ContentSlot
                       key={location.pathname}
+                      // key={isDesktop ? location.pathname : state.currentRoute}
                       variants={getDetailContentVariants(isDesktop)}
                       {...getDetailContentInfo(hasContainerTransition)}
                       hasBackButton={!isDesktop && state.hasListContent}
