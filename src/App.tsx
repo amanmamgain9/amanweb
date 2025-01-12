@@ -237,17 +237,26 @@ function AppContent() {
   useEffect(() => {
     const path = location.pathname.slice(1).toUpperCase() || 'HOME'
     setCurrentRoute(path)
-    setSelectedItemId(null)
     
     // Set showingContent to true for routes without list content
     if (!['PROJECTS', 'WDYGDTW'].includes(path)) {
       setShowingContent(true)
+      setSelectedItemId(null)
     }
-    else
-    {
+    else {
       setShowingContent(false)
+      // Select first item if on desktop
+      if (!isMobileView) {
+        if (path === 'PROJECTS' && showcaseItems.length > 0) {
+          setSelectedItemId(showcaseItems[0].title)
+        } else if (path === 'WDYGDTW') {
+          setSelectedItemId('1') // First week
+        }
+      } else {
+        setSelectedItemId(null)
+      }
     }
-  }, [location])
+  }, [location, isMobileView])
   
   // Slot management using refs
   const activeSlotIndex = useRef(0)
