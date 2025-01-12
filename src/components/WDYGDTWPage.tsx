@@ -235,9 +235,31 @@ interface WeekDetailProps {
   weekNumber: number;
 }
 
+const BackToListButton = styled.button`
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Press Start 2P';
+  margin-bottom: 1rem;
+  
+  &:hover {
+    background: rgba(0, 240, 255, 0.2);
+  }
+`;
+
 const WeekDetail = ({ week, weekNumber }: WeekDetailProps) => {
+  const handleBack = () => {
+    setShowDetail(false);
+  };
+
   return (
     <ContentContainer>
+      <BackToListButton onClick={handleBack}>
+        {`<`} Back to List
+      </BackToListButton>
       <Title>Week {weekNumber}</Title>
       <div style={{ padding: '2rem' }}>
         <h3 style={{ color: '#00f0ff', marginBottom: '1rem' }}>{week.dates}</h3>
