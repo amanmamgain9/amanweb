@@ -396,7 +396,7 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
   `}
 `;
 
-export function WDYGDTWContent({ weekId }: { weekId: string }) {
+export function WDYGDTWContent({ weekId, onFocusSelect }: { weekId: string, onFocusSelect: (id: string) => void }) {
   const [date, setDate] = useState(new Date())
   const [expandedWeekIndex, setExpandedWeekIndex] = useState<number | null>(null)
   const [showingDetail, setShowingDetail] = useState(false)
@@ -420,6 +420,7 @@ export function WDYGDTWContent({ weekId }: { weekId: string }) {
   const handleShowDetail = (week: WeekDataType, index: number) => {
     setSelectedWeek({ week, index });
     setShowingDetail(true);
+    onFocusSelect(weekId);
   }
 
   const handleCloseDetail = () => {
