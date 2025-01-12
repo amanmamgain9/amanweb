@@ -6,7 +6,7 @@ import { ShowcaseList, ShowcaseDetail } from './components/Showcase'
 import { AboutPage } from './components/AboutPage'
 import { WDYGDTWList, WDYGDTWContent } from './components/WDYGDTWPage'
 import { showcaseItems, getDefaultShowcase } from './data/showcaseItems'
-import { getCurrentMonthDefault } from './data/weekData'
+import { getCurrentMonthDefault, getOriginalMonthFormat, weekData } from './data/weekData'
 import styled from 'styled-components'
 import { 
   getListContainerVariants, 
