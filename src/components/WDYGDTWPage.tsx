@@ -381,14 +381,7 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;
-  transition: all 0.3s ease-out;
-  
-  ${props => props.$isDetailView && `
-    filter: blur(5px);
-    opacity: 0;
-    transform: scale(0.95);
-    pointer-events: none;
-  `}
+  display: ${props => props.$isDetailView ? 'none' : 'block'};
 `;
 
 export function WDYGDTWContent({ 
