@@ -49,7 +49,7 @@ const NavButton = styled(Link)<{ $active?: boolean }>`
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-family: 'Miso';
-  font-size: 0.7em;
+  font-size: 1.7em;
   transition: all 0.3s ease;
   position: relative;
   display: flex;

@@ -114,7 +114,7 @@ const ViewDetailButton = styled.button`
   display: block;
   transition: all 0.2s ease;
   font-family: 'Miso';
-  font-size: 0.7em;
+  font-size: 1.2em;
 
   &:hover {
     background: rgba(0, 240, 255, 0.2);
