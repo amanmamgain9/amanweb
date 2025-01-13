@@ -7,6 +7,7 @@ export interface WeekEntry {
     hoursWorked: number;
     gymDays: number;
     averageSteps: string;
+    weight: number;
   };
 }
 
@@ -34,7 +35,8 @@ export const weekData: MonthData = {
         details: {
           hoursWorked: 52,
           gymDays: 4,
-          averageSteps: "~ 5000"
+          averageSteps: "~ 5000",
+          weight: 86.7
         }
       }
     ]

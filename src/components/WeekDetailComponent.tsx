@@ -121,6 +121,7 @@ interface WeekDetailProps {
       hoursWorked: number;
       gymDays: number;
       averageSteps: string;
+      weight: number;
     };
   };
   onClose: () => void;
@@ -148,6 +149,10 @@ const WeekDetail = ({ week, onClose }: WeekDetailProps) => {
         <ScoreRow>
           <ScoreLabel>AVG STEPS PER DAY</ScoreLabel>
           <ScoreValue>{week.details.averageSteps}</ScoreValue>
+        </ScoreRow>
+        <ScoreRow>
+          <ScoreLabel>WEIGHT</ScoreLabel>
+          <ScoreValue>{week.details.weight} Kg</ScoreValue>
         </ScoreRow>
       </ScoreboardContainer>
 
