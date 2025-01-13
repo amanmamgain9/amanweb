@@ -6,21 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta property="og:title" content="Aman Mamgain - Portfolio" />
     <meta property="og:description" content="Personal portfolio showcasing projects, weekly activities, and development journey." />
-    <meta property="og:image" content="http://www.amanmamgain.com/moi.webp" id="og-image" />
-    <meta property="og:image:alt" content="Aman Mamgain's Portfolio" />
-    <meta property="og:url" content="https://amanmamgain.com" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Aman Mamgain - Portfolio" />
-    <meta name="twitter:description" content="Personal portfolio showcasing projects, weekly activities, and development journey." />
-    <meta name="twitter:image" content="http://www.amanmamgain.com/moi.webp" id="twitter-image" />
-    <meta name="twitter:image:alt" content="Aman Mamgain's Portfolio" />
     <script>
       const path = window.location.pathname;
       const baseUrl = 'http://www.amanmamgain.com';
       const image = path.startsWith('/wdygdtw') ? '/wdygdtw.jpeg' : '/moi.webp';
-      document.getElementById('og-image').setAttribute('content', baseUrl + image);
-      document.getElementById('twitter-image').setAttribute('content', baseUrl + image);
+      const imageUrl = baseUrl + image;
+      
+      const metaTags = [
+        { property: 'og:image', content: imageUrl },
+        { property: 'og:image:alt', content: "Aman Mamgain's Portfolio" },
+        { property: 'og:url', content: 'https://amanmamgain.com' },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Aman Mamgain - Portfolio' },
+        { name: 'twitter:description', content: 'Personal portfolio showcasing projects, weekly activities, and development journey.' },
+        { name: 'twitter:image', content: imageUrl },
+        { name: 'twitter:image:alt', content: "Aman Mamgain's Portfolio" }
+      ];
+
+      metaTags.forEach(tag => {
+        const meta = document.createElement('meta');
+        if (tag.property) meta.setAttribute('property', tag.property);
+        if (tag.name) meta.setAttribute('name', tag.name);
+        meta.setAttribute('content', tag.content);
+        document.head.appendChild(meta);
+      });
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
