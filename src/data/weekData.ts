@@ -27,14 +27,14 @@ export const weekData: MonthData = {
         startDate: new Date(2025, 0, 6),
         endDate: new Date(2025, 0, 12),
         highlights: [
-          'Completed portfolio website',
+          'Made this pretty website',
           'Setup CUDA and CUDNN installation with multiple version support',
           'Trained faceswap model (results were suboptimal)'
         ],
         details: {
-          hoursWorked: 45,
+          hoursWorked: 52,
           gymDays: 4,
-          averageSteps: 5500
+          averageSteps: ~5000
         }
       }
     ]

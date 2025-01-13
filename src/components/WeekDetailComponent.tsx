@@ -146,7 +146,7 @@ const WeekDetail = ({ week, onClose }: WeekDetailProps) => {
           <ScoreValue>{week.details.gymDays}</ScoreValue>
         </ScoreRow>
         <ScoreRow>
-          <ScoreLabel>AVG STEPS</ScoreLabel>
+          <ScoreLabel>AVG STEPS PER DAY</ScoreLabel>
           <ScoreValue>{week.details.averageSteps}</ScoreValue>
         </ScoreRow>
       </ScoreboardContainer>
