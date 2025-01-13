@@ -120,7 +120,7 @@ interface WeekDetailProps {
     details: {
       hoursWorked: number;
       gymDays: number;
-      averageSteps: number;
+      averageSteps: string;
     };
   };
   onClose: () => void;
