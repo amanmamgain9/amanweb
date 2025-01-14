@@ -79,7 +79,7 @@ const NavButton = styled(Link)<{ $active?: boolean }>`
   
   @media (max-width: 768px) {
     padding: 0.5rem;
-    font-size: 0.6em;
+    font-size: 1em;
   }
 `
 
