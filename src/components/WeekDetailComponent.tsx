@@ -102,6 +102,8 @@ const HighlightsContainer = styled.div`
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 `;
 
+
+
 const HighlightItem = styled.div`
   color: rgba(255, 215, 0, 0.9);
   font-size: 0.8em;
@@ -111,6 +113,20 @@ const HighlightItem = styled.div`
   &:last-child {
     border-bottom: none;
   }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    
+    &:hover {
+      color: #ffd700;
+      text-decoration: none;
+    }
+  }
+`;
+
+const HighlightContent = styled.span`
+  margin-left: 0.5em;
 `;
 
 interface WeekDetailProps {
@@ -159,7 +175,8 @@ const WeekDetail = ({ week, onClose }: WeekDetailProps) => {
       <HighlightsContainer>
         {week.highlights.map((highlight, index) => (
           <HighlightItem key={index}>
-            ★ {highlight}
+            <span>★</span>
+            <HighlightContent dangerouslySetInnerHTML={{ __html: highlight }} />
           </HighlightItem>
         ))}
       </HighlightsContainer>
@@ -168,3 +185,4 @@ const WeekDetail = ({ week, onClose }: WeekDetailProps) => {
 };
 
 export { WeekDetail };
+

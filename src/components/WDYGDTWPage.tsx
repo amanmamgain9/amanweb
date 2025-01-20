@@ -100,7 +100,16 @@ const HighlightItem = styled.li`
   &:last-child {
     border-bottom: none;
   }
-`
+
+  a {
+    color: #00f0ff;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
 
 const ViewDetailButton = styled.button`
   background: rgba(0, 240, 255, 0.1);
@@ -148,7 +157,6 @@ const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemP
     onViewDetail();
   }
 
-
   return (
     <WeekItemContainer>
       <WeekHeader 
@@ -156,14 +164,15 @@ const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemP
         onClick={handleToggle}
         style={{ cursor: 'pointer' }}
       >
-        <span>Week {index + 1} ({week.dates})</span>
+        <span>Week {week.weekIndex} ({week.dates})</span>
       </WeekHeader>
       <WeekContent $isExpanded={isExpanded}>
         <HighlightsList>
           {week.highlights.map((highlight, idx) => (
-            <HighlightItem key={idx}>
-              {highlight}
-            </HighlightItem>
+            <HighlightItem 
+              key={idx}
+              dangerouslySetInnerHTML={{ __html: highlight }}
+            />
           ))}
         </HighlightsList>
         <ViewDetailButton onClick={handleViewDetail}>
@@ -219,7 +228,8 @@ export function WDYGDTWContent({
   }, [pathname]);
 
   const monthYear = getOriginalMonthFormat(weekId);
-  const currentMonthData = weekData[monthYear]?.weeks || [];
+  let currentMonthData = weekData[monthYear]?.weeks || [];
+  currentMonthData = [...currentMonthData].reverse();
 
   const handleDateChange = (
     value: Date | [Date, Date] | null | any
@@ -234,8 +244,8 @@ export function WDYGDTWContent({
     setExpandedWeekIndex(expandedWeekIndex === index ? -1 : index)
   }
 
-  const handleShowDetail = (index: number) => {
-    onFocusSelect(`${weekId}/${index + 1}`);
+  const handleShowDetail = (weekIndex: number) => {
+    onFocusSelect(`${weekId}/${weekIndex}`);
   }
 
   return (
@@ -261,14 +271,14 @@ export function WDYGDTWContent({
               No entries available for {monthYear}
             </div>
           ) : (
-            currentMonthData.map((week, index) => (
+            [...currentMonthData].map((week, index) => (
               <WeekItem
                 key={index}
                 week={week}
                 index={index}
                 isExpanded={expandedWeekIndex === index}
                 onToggle={() => handleWeekToggle(index)}
-                onViewDetail={() => handleShowDetail(index)}
+                onViewDetail={() => handleShowDetail(week.weekIndex)}
               />
             ))
           )}

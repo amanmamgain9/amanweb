@@ -3,6 +3,7 @@ export interface WeekEntry {
   startDate: Date;
   endDate: Date;
   highlights: string[];
+  weekIndex: number;
   details: {
     hoursWorked: number;
     gymDays: number;
@@ -24,6 +25,7 @@ export const weekData: MonthData = {
   'January 2025': {
     weeks: [
       {
+        weekIndex: 1,
         dates: 'Jan 6 - Jan 12',
         startDate: new Date(2025, 0, 6),
         endDate: new Date(2025, 0, 12),
@@ -37,6 +39,23 @@ export const weekData: MonthData = {
           gymDays: 4,
           averageSteps: "~ 5000",
           weight: 86.7
+        }
+      },
+      {
+        dates: 'Jan 13 - Jan 19',
+        weekIndex: 2,
+        startDate: new Date(2025, 0, 13),
+        endDate: new Date(2025, 0, 19),
+        highlights: [
+          'Started development of LLM-powered Anki card generator',
+          'Initiated codebase interaction project using tiered LLM approach (<a href="https://github.com/amanmamgain9/llm-search-codebase" target="_blank" rel="noopener noreferrer">GitHub</a>)',
+          'Dedicated 8-9 hours to interview preparation'
+        ],
+        details: {
+          hoursWorked: 42,
+          gymDays: 3,
+          averageSteps: "~ 2500",
+          weight: 87.1
         }
       }
     ]
