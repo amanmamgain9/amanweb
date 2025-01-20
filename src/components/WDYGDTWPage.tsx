@@ -146,7 +146,7 @@ interface WeekItemProps {
   onViewDetail: () => void;
 }
 
-const WeekItem = ({ week, index, isExpanded, onToggle, onViewDetail }: WeekItemProps) => {
+const WeekItem = ({ week, isExpanded, onToggle, onViewDetail }: WeekItemProps) => {
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     onToggle();
@@ -275,7 +275,6 @@ export function WDYGDTWContent({
               <WeekItem
                 key={index}
                 week={week}
-                index={index}
                 isExpanded={expandedWeekIndex === index}
                 onToggle={() => handleWeekToggle(index)}
                 onViewDetail={() => handleShowDetail(week.weekIndex)}
