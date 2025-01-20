@@ -140,7 +140,6 @@ const MainContentWrapper = styled.div<{ $isDetailView: boolean }>`
 
 interface WeekItemProps {
   week: WeekDataType;
-  index: number;
   isExpanded: boolean;
   onToggle: () => void;
   onViewDetail: () => void;
