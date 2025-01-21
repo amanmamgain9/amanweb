@@ -23,14 +23,14 @@ import {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
-  min-height: 100vh;
+  max-height: 100dvh;
+  min-height: 100dvh;
   background-color: #0a1929;
   color: #00f0ff;
 
   @media (max-width: 768px) {
     flex-direction: column-reverse;
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     position: relative;
   }

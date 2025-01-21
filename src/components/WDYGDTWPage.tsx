@@ -159,7 +159,7 @@ const WeekItem = ({ week, isExpanded, onToggle, onViewDetail }: WeekItemProps) =
   return (
     <WeekItemContainer>
       <WeekHeader 
-        $isExpanded={isExpanded}
+      $isExpanded={isExpanded}
         onClick={handleToggle}
         style={{ cursor: 'pointer' }}
       >
