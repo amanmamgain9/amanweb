@@ -17,7 +17,7 @@ const ListContainer = styled(BaseContainer)<{ $isVisible?: boolean }>`
   opacity: ${props => props.$isVisible === false ? 0 : 1};
   transition: opacity 0.3s ease-in-out;
   @media (max-width: 768px) {
-    height: calc(-123px + 100vh);
+    height: calc(100dvh - 123px);
   }
 `
 
@@ -25,7 +25,8 @@ const ListContent = styled.div`
   height: 100%;
   padding-top: 1rem;
   
-  @media (max-width: 768px) {  
+  @media (max-width: 768px) {
+  height: calc(100dvh - 123px);  
     overflow-y: scroll;
   }
 
