@@ -143,6 +143,7 @@ const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
   @media (max-width: 768px) {
     padding-top: ${props => props.hasBackButton ? '60px' : '0'};
     min-height: calc(100vh - 123px);
+    height: calc(100dvh - 123px);
   }
 `;
 
