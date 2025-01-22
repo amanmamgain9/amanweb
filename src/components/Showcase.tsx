@@ -26,10 +26,13 @@ const ListContent = styled.div`
   height: 100%;
   padding-top: 1rem;
   
-  & > *:not(:last-child) {
-    margin-bottom: 1rem;
+  @media (max-width: 768px) {  
     overflow-y: scroll;
     overscroll-behavior: contain;
+  }
+    
+  & > *:not(:last-child) {
+    margin-bottom: 1rem;
   }
 `
 
