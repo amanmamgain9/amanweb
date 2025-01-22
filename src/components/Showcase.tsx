@@ -17,7 +17,7 @@ const ListContainer = styled(BaseContainer)<{ $isVisible?: boolean }>`
   opacity: ${props => props.$isVisible === false ? 0 : 1};
   transition: opacity 0.3s ease-in-out;
   @media (max-width: 768px) {
-    height: 100%;
+    height: 100dvh;
   }
 `
 
