@@ -6,6 +6,7 @@ const BaseContainer = styled.div`
   padding: 1rem;
   overflow: hidden;
   height: calc(100vh - 200px);
+  
 `
 
 // ---- List Components ----
@@ -15,6 +16,9 @@ const ListContainer = styled(BaseContainer)<{ $isVisible?: boolean }>`
   gap: 1rem;
   opacity: ${props => props.$isVisible === false ? 0 : 1};
   transition: opacity 0.3s ease-in-out;
+  @media (max-width: 768px) {
+    height: 100%;
+  }
 `
 
 const ListContent = styled.div`
