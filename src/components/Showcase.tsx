@@ -29,6 +29,7 @@ const ListContent = styled.div`
   & > *:not(:last-child) {
     margin-bottom: 1rem;
     overflow-y: scroll;
+    overscroll-behavior: contain;
   }
 `
 
