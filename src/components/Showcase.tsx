@@ -18,7 +18,6 @@ const ListContainer = styled(BaseContainer)<{ $isVisible?: boolean }>`
   transition: opacity 0.3s ease-in-out;
   @media (max-width: 768px) {
     height: calc(-123px + 100vh);
-    overflow-y: hidden;
   }
 `
 
@@ -28,9 +27,8 @@ const ListContent = styled.div`
   
   @media (max-width: 768px) {  
     overflow-y: scroll;
-    overscroll-behavior: contain;
   }
-    
+
   & > *:not(:last-child) {
     margin-bottom: 1rem;
   }
