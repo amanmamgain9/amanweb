@@ -5,7 +5,7 @@ import { showcaseItems } from '../data/showcaseItems'
 const BaseContainer = styled.div`
   padding: 1rem;
   overflow: hidden;
-  height: calc(100vh - 200px);
+  height: calc(100dvh - 200px);
   
 `
 
@@ -17,7 +17,7 @@ const ListContainer = styled(BaseContainer)<{ $isVisible?: boolean }>`
   opacity: ${props => props.$isVisible === false ? 0 : 1};
   transition: opacity 0.3s ease-in-out;
   @media (max-width: 768px) {
-    height: calc(100dvh - 123px);
+    min-height: 100%;
   }
 `
 
@@ -26,8 +26,13 @@ const ListContent = styled.div`
   padding-top: 1rem;
   
   @media (max-width: 768px) {
-  height: calc(100dvh - 123px);  
+    height: auto;
+    min-height: 100%;
+    position: relative;
     overflow-y: scroll;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+
   }
 
   & > *:not(:last-child) {

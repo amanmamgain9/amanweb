@@ -5,7 +5,7 @@ import { FaGithub, FaLinkedin, FaEnvelope, FaFilePdf, FaCode, FaUsers, FaRobot }
 const AboutContainer = styled.div`
   padding: 2rem;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   @media (max-width: 768px) {
     padding: 1rem;

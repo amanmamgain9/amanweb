@@ -16,7 +16,7 @@ const TopBarContainer = styled.div`
   backdrop-filter: blur(10px);
   border: 1px solid rgba(88, 166, 255, 0.1);
   margin: 1rem;
-  
+  z-index: 1;  
   @media (max-width: 768px) {
     position: fixed;
     bottom: 0;
@@ -33,7 +33,7 @@ const TopBarContainer = styled.div`
 const NavContainer = styled.div`
   display: flex;
   gap: 2rem;
-  
+  z-index: 1;
   @media (max-width: 768px) {
     width: 100%;
     justify-content: space-around;

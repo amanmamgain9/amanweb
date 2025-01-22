@@ -46,7 +46,7 @@ const ContentContainer = styled.div`
 
   @media (max-width: 768px) {
     padding: 0;
-    height: calc(100vh - 64px);
+    height: calc(100dvh - 64px);
     overflow: hidden;
     padding-bottom: 64px;
   }
@@ -77,14 +77,14 @@ const ListSection = styled(motion.div)`
 
   @media (max-width: 768px) {
     width: 100%;
-    height: calc(100dvh - 12rem);
+    height: calc(100dvh - 64px);
   }
 `;
 
 const MainContent = styled(motion.div)`
   width: 100%;
   max-width: 1200px;
-  height: calc(100vh - 12rem);
+  height: calc(100dvh - 12rem);
   display: flex;
   flex-direction: row;
   background: rgba(10, 25, 41, 0.8);
@@ -94,7 +94,7 @@ const MainContent = styled(motion.div)`
   overflow: hidden;
 
   @media (max-width: 768px) {
-    height: 100%;
+    height: calc(100dvh - 64px);
     border: none;
     border-radius: 0;
     background: transparent;
@@ -131,6 +131,9 @@ const DetailSection = styled(motion.div)`
   display: flex;
   flex-direction: column;
   flex: 1;
+  @media (max-width: 768px) {
+    height: calc(100dvh - 64px);
+  }
 `;
 
 const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
@@ -142,7 +145,7 @@ const ContentSlot = styled(motion.div)<{ hasBackButton?: boolean }>`
 
   @media (max-width: 768px) {
     padding-top: ${props => props.hasBackButton ? '60px' : '0'};
-    min-height: calc(100vh - 123px);
+    min-height: calc(100dvh - 123px);
     height: calc(100dvh - 123px);
   }
 `;

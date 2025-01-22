@@ -13,6 +13,9 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
+  html {
+    height: 100dvh;
+  }
   body {
     margin: 0;
     font-family: Verdana, sans-serif;
@@ -20,10 +23,11 @@ export const GlobalStyles = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     background-color: #0a1929;
     color: #e6edf3;
-  }
+    height: 100dvh;
+    }
 
   #root {
-    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   button {
