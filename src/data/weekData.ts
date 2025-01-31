@@ -57,6 +57,22 @@ export const weekData: MonthData = {
           averageSteps: "~ 2500",
           weight: 87.1
         }
+      },
+      {
+        dates: 'Jan 20 - Jan 26',
+        weekIndex: 3,
+        startDate: new Date(2025, 0, 20),
+        endDate: new Date(2025, 0, 26),
+        highlights: [
+          'Dedicated time for interview preparation',
+          'Stopped Smoking',
+        ],
+        details: {
+          hoursWorked: 35.4,
+          gymDays: 2,
+          averageSteps: "~ 2500",
+          weight: 87.1
+        }
       }
     ]
   }
