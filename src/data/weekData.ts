@@ -73,6 +73,42 @@ export const weekData: MonthData = {
           averageSteps: "~ 2500",
           weight: 87.1
         }
+      },
+      {
+        dates: 'Jan 27 - Feb 02',
+        weekIndex: 4,
+        startDate: new Date(2025, 0, 27),
+        endDate: new Date(2025, 1, 2),
+        highlights: [
+          'Dedicated time for interview preparation',
+          'A lot of wasted time too'
+        ],
+        details: {
+          hoursWorked: 21,
+          gymDays: 3,
+          averageSteps: "~ 2000",
+          weight: 87.3
+        }
+      },
+    ]
+  },
+  'February 2025': {
+    weeks: [
+      {
+        dates: 'Feb 03 - Feb 09',
+        weekIndex: 1,
+        startDate: new Date(2025, 1, 3),
+        endDate: new Date(2025, 1, 9),
+        highlights: [
+          'Dedicated time for interview preparation',
+          'Started new project'
+        ],
+        details: {
+          hoursWorked: 30,
+          gymDays: 2,
+          averageSteps: "~ 2500",
+          weight: 88.1
+        }
       }
     ]
   }
@@ -80,7 +116,7 @@ export const weekData: MonthData = {
 
 export const getCurrentMonthDefault = () => {
   const date = new Date();
-  return date.toLocaleString('default', { 
+  return date.toLocaleString('default', {
     month: 'short', // 'Jan'
     year: 'numeric'  // '2025'
   }).replace(' ', '-').toLowerCase(); // Returns "jan-2025"
@@ -90,7 +126,7 @@ export const getCurrentMonthDefault = () => {
 export const formatMonthId = (monthYear: string) => {
   // Convert "January 2025" to "jan-2025"
   const [month, year] = monthYear.split(' ');
-  return `${month.slice(0,3).toLowerCase()}-${year}`;
+  return `${month.slice(0, 3).toLowerCase()}-${year}`;
 }
 
 export const getOriginalMonthFormat = (monthId: string) => {
@@ -116,12 +152,12 @@ export const getOriginalMonthFormat = (monthId: string) => {
 export const isDateInWeeks = (date: Date, monthData: MonthData): boolean => {
   const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
   const month = monthData[monthKey];
-  
+
   if (!month || month.weeks.length === 0) return false;
-  
+
   // If the month has any entries, make the whole month selectable
   const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  
+
   return date >= firstDayOfMonth && date <= lastDayOfMonth;
 };

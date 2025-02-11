@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { WeekEntry as WeekDataType, weekData, isDateInWeeks, getCurrentMonthDefault, getOriginalMonthFormat } from '../data/weekData';
+import { WeekEntry as WeekDataType, weekData, isDateInWeeks, getCurrentMonthDefault, getOriginalMonthFormat, formatMonthId } from '../data/weekData';
 import { baseTheme, CalendarWrapper } from '../libs/calendarStyles';
 import { WDYGDTWList } from './WDYGDTWList';
 import { WeekDetail } from './WeekDetailComponent';
@@ -236,6 +236,13 @@ export function WDYGDTWContent({
     if (value instanceof Date && isDateInWeeks(value, weekData)) {
       setDate(value)
       setExpandedWeekIndex(0)
+      // Update weekId based on selected date
+      const monthYear = value.toLocaleString('default', { 
+        month: 'long',
+        year: 'numeric'
+      });
+      const formattedMonthId = formatMonthId(monthYear);
+      setWeekId(formattedMonthId);
     }
   }
 
