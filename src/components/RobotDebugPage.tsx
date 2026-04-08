@@ -969,8 +969,8 @@ export const RobotDebugPage = () => {
                   border: '1px solid rgba(247,237,220,0.24)',
                   borderRadius: '8px',
                   padding: '0.5rem',
-                  fontSize: '0.75rem',
-                  fontFamily: 'monospace',
+                  fontSize: 'var(--font-size-caption)',
+                  fontFamily: 'Inter',
                 }}
               />
               <Hint>All bones ({boneDump.allBones.length}):</Hint>
@@ -985,8 +985,8 @@ export const RobotDebugPage = () => {
                   border: '1px solid rgba(247,237,220,0.24)',
                   borderRadius: '8px',
                   padding: '0.5rem',
-                  fontSize: '0.75rem',
-                  fontFamily: 'monospace',
+                  fontSize: 'var(--font-size-caption)',
+                  fontFamily: 'Inter',
                 }}
               />
             </>
@@ -1303,12 +1303,12 @@ const Panel = styled.aside`
 `;
 
 const Title = styled.h1`
-  font-size: 1.2rem;
+  font-size: var(--font-size-lg-plus);
 `;
 
 const Hint = styled.p`
   color: #c9baa4;
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm-plus);
   line-height: 1.4;
 `;
 
@@ -1317,14 +1317,14 @@ const Row = styled.div`
   gap: 0.35rem;
   grid-template-columns: 64px 1fr auto;
   align-items: center;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
 
   input {
     width: 100%;
   }
 
   code {
-    font-size: 0.8rem;
+    font-size: var(--font-size-code-sm);
     color: #ffcc9b;
   }
 `;
@@ -1333,7 +1333,7 @@ const Toggle = styled.div`
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm-plus);
 `;
 
 const Actions = styled.div`
@@ -1349,7 +1349,7 @@ const Actions = styled.div`
     border-radius: 0.55rem;
     padding: 0.4rem 0.55rem;
     text-decoration: none;
-    font-size: 0.85rem;
+    font-size: var(--font-size-sm);
     cursor: pointer;
   }
 `;

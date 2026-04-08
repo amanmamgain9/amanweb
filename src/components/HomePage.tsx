@@ -14,15 +14,6 @@ import { AndroidModelOverlay } from './AndroidModelOverlay';
 import { homeContent, type ExperienceEntry } from '../data/homeContent';
 import { useActiveExperience } from '../hooks/useActiveExperience';
 
-type ScatterToken = {
-  char: string;
-  x: number;
-  y: number;
-  rotation: number;
-  scale: number;
-};
-
-type AssembledVariant = 'hero' | 'relay' | 'meta';
 type AndroidPosition = {
   x: number;
   y: number;
@@ -38,32 +29,11 @@ type AndroidPosition = {
   rawRy?: number;
 } | null;
 
-const chipDrift = keyframes`
-  0% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(0, -8px, 0); }
-  100% { transform: translate3d(0, 0, 0); }
-`;
-
 const hiBubbleFloat = keyframes`
   0% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(0, -3px, 0); }
   100% { transform: translate3d(0, 0, 0); }
 `;
-
-const buildScatterTokens = (text: string) =>
-  text.split('').map((char, index): ScatterToken => {
-    const distance = 90 + (index % 7) * 18;
-    const angle = (index * 41) % 360;
-    const radians = (angle * Math.PI) / 180;
-
-    return {
-      char,
-      x: Math.cos(radians) * distance,
-      y: Math.sin(radians) * (distance * 0.7) - 14 + (index % 3) * 11,
-      rotation: ((index * 19) % 36) - 18,
-      scale: 0.72 + (index % 5) * 0.05,
-    };
-  });
 
 const getExperienceCardText = (experience: ExperienceEntry) =>
   ({
@@ -85,48 +55,7 @@ const buildExperienceBlocks = (experience: ExperienceEntry): ReflowBlock[] => {
   ];
 };
 
-const AssembledLine = ({
-  text,
-  assembled,
-  accent = false,
-  variant = 'hero',
-}: {
-  text: string;
-  assembled: boolean;
-  accent?: boolean;
-  variant?: AssembledVariant;
-}) => {
-  const tokens = useMemo(() => buildScatterTokens(text), [text]);
-
-  return (
-    <AssembledTextLine $accent={accent} $variant={variant} aria-label={text}>
-      {tokens.map((token, index) => {
-        const scatterScale = variant === 'hero' ? 1 : variant === 'relay' ? 0.38 : 0.24;
-        const style = {
-          '--fragment-x': `${token.x * scatterScale}px`,
-          '--fragment-y': `${token.y * scatterScale}px`,
-          '--fragment-rotate': `${token.rotation}deg`,
-          '--fragment-scale': variant === 'hero' ? token.scale : 0.9,
-        } as CSSProperties;
-
-        return (
-          <Fragment
-            key={`${token.char}-${index}`}
-            $assembled={assembled}
-            $order={index}
-            style={style}
-            aria-hidden="true"
-          >
-            {token.char === ' ' ? '\u00a0' : token.char}
-          </Fragment>
-        );
-      })}
-    </AssembledTextLine>
-  );
-};
-
 export const HomePage = () => {
-  const [assembled, setAssembled] = useState(false);
   const [isCompact, setIsCompact] = useState(window.innerWidth <= 900);
   const [isMedium, setIsMedium] = useState(window.innerWidth > 900 && window.innerWidth <= 1100);
   const [scrollTick, setScrollTick] = useState(0);
@@ -143,11 +72,6 @@ export const HomePage = () => {
   const experienceStackRef = useRef<HTMLDivElement | null>(null);
   const mainFlowRef = useRef<HTMLElement | null>(null);
   const heroVisualRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setAssembled(true), 120);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -550,7 +474,7 @@ const TopNav = styled.nav`
 const NavLink = styled.a`
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: var(--font-size-md);
   letter-spacing: 0.04em;
 
   &:hover {
@@ -589,70 +513,6 @@ const HeroContent = styled.div`
   gap: 1.25rem;
 `;
 
-const Eyebrow = styled.p`
-  color: var(--accent-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  font-size: 0.82rem;
-`;
-
-const HeroHeadline = styled.div`
-  display: grid;
-  gap: 0.4rem;
-`;
-
-const AssembledTextLine = styled.h1<{ $accent?: boolean; $variant: AssembledVariant }>`
-  display: flex;
-  flex-wrap: wrap;
-  line-height: ${({ $variant }) => ($variant === 'hero' ? 0.9 : 0.94)};
-  font-size: ${({ $variant }) => {
-    if ($variant === 'relay') return 'clamp(2rem, 4vw, 3.1rem)';
-    if ($variant === 'meta') return 'clamp(1rem, 2vw, 1.35rem)';
-    return 'clamp(3.4rem, 10vw, 7rem)';
-  }};
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: ${({ $accent }) => ($accent ? '#f3b88b' : 'var(--text)')};
-  text-shadow: ${({ $accent }) =>
-    $accent ? '0 0 28px rgba(255, 122, 26, 0.2)' : '0 0 18px rgba(247, 237, 220, 0.08)'};
-`;
-
-const Fragment = styled.span<{ $assembled: boolean; $order: number }>`
-  display: inline-block;
-  will-change: transform, opacity, filter;
-  transform: translate3d(var(--fragment-x), var(--fragment-y), 0)
-    rotate(var(--fragment-rotate)) scale(var(--fragment-scale));
-  opacity: 0;
-  filter: blur(14px);
-  transition:
-    transform 1.2s cubic-bezier(0.19, 1, 0.22, 1),
-    opacity 0.9s ease,
-    filter 1.1s ease;
-  transition-delay: ${({ $order }) => `${$order * 24}ms`};
-
-  ${({ $assembled }) =>
-    $assembled &&
-    css`
-      transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-      opacity: 1;
-      filter: blur(0);
-    `}
-`;
-
-const HeroSummary = styled.p`
-  max-width: 44rem;
-  color: var(--text);
-  font-size: clamp(1.08rem, 2.6vw, 1.35rem);
-  line-height: 1.55;
-`;
-
-const HeroSupporting = styled.p`
-  max-width: 38rem;
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.7;
-`;
-
 const ActionRow = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -680,7 +540,7 @@ const PrimaryAction = styled.a`
   ${buttonBase}
   background: linear-gradient(135deg, #ffb36a, #ff7a1a);
   color: #120d0a;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   box-shadow: 0 16px 40px rgba(255, 122, 26, 0.26);
 `;
 
@@ -708,14 +568,14 @@ const StatPill = styled.div`
 
 const StatValue = styled.div`
   color: var(--text);
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
 `;
 
 const StatLabel = styled.div`
   margin-top: 0.2rem;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
 `;
 
 const HeroVisual = styled.div`
@@ -727,28 +587,6 @@ const HeroVisual = styled.div`
   @media (max-width: 900px) {
     min-height: auto;
   }
-`;
-
-const PortraitCard = styled.div`
-  position: relative;
-  padding: 1.2rem;
-  border-radius: 2rem;
-  border: 1px solid rgba(247, 237, 220, 0.08);
-  background:
-    linear-gradient(180deg, rgba(38, 27, 20, 0.88), rgba(18, 14, 11, 0.92)),
-    rgba(247, 237, 220, 0.02);
-  overflow: hidden;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.28);
-`;
-
-const PortraitBackdrop = styled.div`
-  position: absolute;
-  inset: -14% -18% auto auto;
-  width: 17rem;
-  height: 17rem;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 122, 26, 0.38), transparent 70%);
-  filter: blur(10px);
 `;
 
 const Portrait = styled.img`
@@ -763,42 +601,6 @@ const Portrait = styled.img`
   filter: saturate(0.95) contrast(1.04);
 `;
 
-const PortraitCaption = styled.p`
-  position: relative;
-  margin-top: 1rem;
-  color: var(--muted);
-  line-height: 1.6;
-`;
-
-const SignalCluster = styled.div`
-  position: absolute;
-  right: -0.5rem;
-  bottom: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  max-width: 22rem;
-
-  @media (max-width: 900px) {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    justify-content: flex-start;
-    margin-top: 1rem;
-  }
-`;
-
-const SignalChip = styled.span`
-  padding: 0.75rem 1rem;
-  border-radius: 999px;
-  background: rgba(247, 237, 220, 0.08);
-  border: 1px solid rgba(247, 237, 220, 0.1);
-  color: var(--text);
-  backdrop-filter: blur(14px);
-  animation: ${chipDrift} 5.2s ease-in-out infinite;
-`;
-
 const WorkSection = styled.section`
   display: grid;
   gap: 2rem;
@@ -807,27 +609,6 @@ const WorkSection = styled.section`
 
 const SectionIntro = styled.div`
   max-width: 42rem;
-`;
-
-const SectionEyebrow = styled.p`
-  color: var(--accent-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.78rem;
-  margin-bottom: 0.7rem;
-`;
-
-const SectionTitle = styled.h2`
-  font-size: clamp(2.2rem, 5vw, 4.2rem);
-  font-weight: 600;
-  line-height: 0.95;
-`;
-
-const SectionCopy = styled.p`
-  margin-top: 0.9rem;
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: 1rem;
 `;
 
 const TimelineLayout = styled.div`
@@ -882,7 +663,7 @@ const Tag = styled.span`
   background: rgba(247, 237, 220, 0.06);
   border: 1px solid rgba(247, 237, 220, 0.08);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm-plus);
 `;
 
 const ProjectsSection = styled.section`
@@ -905,16 +686,6 @@ const ProjectCard = styled.article`
   border-radius: 1.6rem;
   border: 1px solid rgba(247, 237, 220, 0.08);
   background: linear-gradient(180deg, rgba(27, 20, 15, 0.86), rgba(18, 14, 11, 0.92));
-`;
-
-const ProjectName = styled.h3`
-  font-size: 1.45rem;
-`;
-
-const ProjectSummary = styled.p`
-  margin-top: 0.8rem;
-  color: var(--muted);
-  line-height: 1.7;
 `;
 
 const ProjectLink = styled.a`
@@ -948,16 +719,6 @@ const PrincipleCard = styled.article`
   background: linear-gradient(180deg, rgba(24, 18, 14, 0.82), rgba(16, 13, 11, 0.92));
 `;
 
-const PrincipleTitle = styled.h3`
-  font-size: 1.25rem;
-`;
-
-const PrincipleBody = styled.p`
-  margin-top: 0.75rem;
-  color: var(--muted);
-  line-height: 1.7;
-`;
-
 const Footer = styled.footer`
   position: relative;
   z-index: 1;
@@ -973,12 +734,6 @@ const Footer = styled.footer`
   @media (max-width: 768px) {
     width: min(100%, calc(100% - 1.25rem));
   }
-`;
-
-const FooterCopy = styled.p`
-  max-width: 38rem;
-  color: var(--muted);
-  line-height: 1.7;
 `;
 
 const FooterReflowWrap = styled.div`
@@ -1043,7 +798,7 @@ const DebugPanel = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.24);
   background: rgba(8, 10, 16, 0.88);
   color: #d9e7ff;
-  font-size: 0.78rem;
+  font-size: var(--font-size-2xs);
   line-height: 1.35;
 `;
 
@@ -1060,7 +815,7 @@ const HiBubble = styled.div`
   border: 1px solid rgba(230, 250, 255, 0.7);
   background: rgba(28, 29, 39, 0.88);
   color: #ebf9ff;
-  font-size: 0.78rem;
+  font-size: var(--font-size-2xs);
   line-height: 1;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
   animation: ${hiBubbleFloat} 2.2s ease-in-out infinite;

@@ -29,7 +29,7 @@ export type PrincipleEntry = {
 
 export const homeContent = {
   hero: {
-    eyebrow: 'Portfolio 2026',
+    eyebrow: '',
     name: 'Aman Mamgain',
     title: 'Full-stack systems, game surfaces, and applied AI.',
     summary:

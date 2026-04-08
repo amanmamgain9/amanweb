@@ -59,8 +59,7 @@ const MIN_SLOT_WIDTH = 56;
 const SCRAMBLE_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const TEXT_COLOR = '#f7eddc';
 const ORB_COLOR = 'rgba(248, 218, 162, 0.94)';
-const MANUSCRIPT_FONT_STACK =
-  '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Georgia", serif';
+const MANUSCRIPT_FONT = '"Inter"';
 
 const preparedCache = new Map<string, PreparedTextWithSegments>();
 
@@ -248,7 +247,7 @@ export const ManuscriptScene = ({
 
       const fontSize = compact ? 16 : 17;
       const lineHeight = compact ? 25 : 27;
-      const font = `${fontSize}px "MisoText", ${MANUSCRIPT_FONT_STACK}`;
+      const font = `${fontSize}px ${MANUSCRIPT_FONT}`;
       context.font = font;
       context.textBaseline = 'top';
 

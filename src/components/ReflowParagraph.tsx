@@ -56,8 +56,12 @@ type Interval = {
   right: number;
 };
 
-const FONT_STACK =
-  '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Georgia", serif';
+const FONT_FAMILY = '"Inter"';
+const FONT_WEIGHT = {
+  regular: 400,
+  semibold: 600,
+  bold: 700,
+} as const;
 const MIN_SLOT_WIDTH = 56;
 const MIN_SLOT_WIDTH_NEAR_OBSTACLE = 100;
 const OBSTACLE_PAD_LEFT = 0;
@@ -163,127 +167,127 @@ const getBlockStyle = (kind: ReflowBlock['kind'], compact: boolean): BlockStyle 
   switch (kind) {
     case 'meta':
       return {
-        font: `${compact ? 500 : 600} ${compact ? 13 : 14}px "MisoText", ${FONT_STACK}`,
+        font: `${compact ? FONT_WEIGHT.regular : FONT_WEIGHT.semibold} ${compact ? 13 : 14}px ${FONT_FAMILY}`,
         lineHeight: compact ? 20 : 22,
         color: '#ffb36a',
         marginTop: 0,
       };
     case 'heading':
       return {
-        font: `${compact ? 600 : 700} ${compact ? 28 : 32}px "MisoText", ${FONT_STACK}`,
+        font: `${compact ? FONT_WEIGHT.semibold : FONT_WEIGHT.bold} ${compact ? 28 : 32}px ${FONT_FAMILY}`,
         lineHeight: compact ? 33 : 38,
         color: '#f7eddc',
         marginTop: compact ? 4 : 6,
       };
     case 'role':
       return {
-        font: `${compact ? 500 : 500} ${compact ? 17 : 19}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.regular} ${compact ? 17 : 19}px ${FONT_FAMILY}`,
         lineHeight: compact ? 25 : 27,
         color: '#c2b4a0',
         marginTop: compact ? 2 : 3,
       };
     case 'stack':
       return {
-        font: `${compact ? 400 : 400} ${compact ? 14 : 15}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 15}px ${FONT_FAMILY}`,
         lineHeight: compact ? 22 : 24,
         color: '#e5d8c4',
         marginTop: compact ? 7 : 9,
       };
     case 'heroEyebrow':
       return {
-        font: `600 ${compact ? 11 : 13}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.semibold} ${compact ? 11 : 13}px ${FONT_FAMILY}`,
         lineHeight: compact ? 16 : 18,
         color: '#ffb36a',
         marginTop: 0,
       };
     case 'heroTitle': {
       const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
-      const sz = compact ? 48 : vw <= 1100 ? 56 : 80;
-      const lh = compact ? 44 : vw <= 1100 ? 52 : 72;
+      const sz = compact ? 48 : vw <= 1100 ? 52 : 64;
+      const lh = compact ? 44 : vw <= 1100 ? 48 : 58;
       return {
-        font: `600 ${sz}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.semibold} ${sz}px ${FONT_FAMILY}`,
         lineHeight: lh,
         color: '#f7eddc',
-        marginTop: compact ? 8 : 12,
+        marginTop: compact ? 8 : 6,
       };
     }
     case 'heroTitleAccent': {
       const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
-      const sz = compact ? 48 : vw <= 1100 ? 56 : 80;
-      const lh = compact ? 44 : vw <= 1100 ? 52 : 72;
+      const sz = compact ? 48 : vw <= 1100 ? 52 : 64;
+      const lh = compact ? 44 : vw <= 1100 ? 48 : 58;
       return {
-        font: `600 ${sz}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.semibold} ${sz}px ${FONT_FAMILY}`,
         lineHeight: lh,
         color: '#ff7a1a',
-        marginTop: compact ? 2 : 4,
+        marginTop: compact ? 2 : 2,
       };
     }
     case 'heroSummary':
       return {
-        font: `400 ${compact ? 17 : 21}px "MisoText", ${FONT_STACK}`,
-        lineHeight: compact ? 26 : 33,
+        font: `${FONT_WEIGHT.regular} ${compact ? 17 : 21}px ${FONT_FAMILY}`,
+        lineHeight: compact ? 26 : 30,
         color: '#f7eddc',
-        marginTop: compact ? 12 : 18,
+        marginTop: compact ? 12 : 10,
       };
     case 'heroSupporting':
       return {
-        font: `400 ${compact ? 14 : 16}px "MisoText", ${FONT_STACK}`,
-        lineHeight: compact ? 24 : 27,
+        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
+        lineHeight: compact ? 24 : 25,
         color: '#c2b4a0',
-        marginTop: compact ? 8 : 12,
+        marginTop: compact ? 8 : 8,
       };
     case 'sectionEyebrow':
       return {
-        font: `600 ${compact ? 11 : 12}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.semibold} ${compact ? 11 : 12}px ${FONT_FAMILY}`,
         lineHeight: compact ? 16 : 18,
         color: '#ffb36a',
         marginTop: 0,
       };
     case 'sectionTitle':
       return {
-        font: `600 ${compact ? 34 : 50}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.semibold} ${compact ? 34 : 50}px ${FONT_FAMILY}`,
         lineHeight: compact ? 34 : 48,
         color: '#f7eddc',
         marginTop: compact ? 8 : 11,
       };
     case 'sectionCopy':
       return {
-        font: `400 ${compact ? 15 : 16}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.regular} ${compact ? 15 : 16}px ${FONT_FAMILY}`,
         lineHeight: compact ? 25 : 27,
         color: '#c2b4a0',
         marginTop: compact ? 10 : 14,
       };
     case 'projectName':
       return {
-        font: `700 ${compact ? 20 : 23}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.bold} ${compact ? 20 : 23}px ${FONT_FAMILY}`,
         lineHeight: compact ? 26 : 30,
         color: '#f7eddc',
         marginTop: 0,
       };
     case 'projectSummary':
       return {
-        font: `400 ${compact ? 14 : 16}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
         lineHeight: compact ? 24 : 27,
         color: '#c2b4a0',
         marginTop: compact ? 10 : 13,
       };
     case 'principleTitle':
       return {
-        font: `700 ${compact ? 17 : 20}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.bold} ${compact ? 17 : 20}px ${FONT_FAMILY}`,
         lineHeight: compact ? 22 : 26,
         color: '#f7eddc',
         marginTop: 0,
       };
     case 'principleBody':
       return {
-        font: `400 ${compact ? 14 : 16}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
         lineHeight: compact ? 22 : 27,
         color: '#c2b4a0',
         marginTop: compact ? 8 : 10,
       };
     case 'footerCopy':
       return {
-        font: `400 ${compact ? 14 : 16}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
         lineHeight: compact ? 24 : 27,
         color: '#c2b4a0',
         marginTop: 0,
@@ -291,7 +295,7 @@ const getBlockStyle = (kind: ReflowBlock['kind'], compact: boolean): BlockStyle 
     case 'body':
     default:
       return {
-        font: `${compact ? 400 : 400} ${compact ? 18 : 20}px "MisoText", ${FONT_STACK}`,
+        font: `${FONT_WEIGHT.regular} ${compact ? 18 : 20}px ${FONT_FAMILY}`,
         lineHeight: compact ? 28 : 31,
         color: '#f7eddc',
         marginTop: compact ? 6 : 8,
