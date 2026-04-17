@@ -141,7 +141,7 @@ export const RobotVrmLoadPage = () => {
         {state === 'loading' ? <p>Progress: {progress.toFixed(1)}%</p> : null}
         {state === 'error' ? <ErrorText>{errorMessage || 'Failed to load model.'}</ErrorText> : null}
         <p>Model path: {MODEL_PATH}</p>
-        <a href="/?robotStudio=1">Back to robotStudio</a>
+        <a href="/">Back to homepage</a>
       </Panel>
       <Viewport ref={viewportRef} />
     </Shell>

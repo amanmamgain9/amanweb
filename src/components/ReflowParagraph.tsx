@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import {
-  layoutNextLine,
-  prepareWithSegments,
-  type LayoutCursor,
-  type PreparedTextWithSegments,
-} from '@chenglou/pretext';
+import { interFont, layoutTextBlocks, type Obstacle, type TextEntry } from '../utils/pretextLayout';
 
 export type ReflowBlock = {
   kind:
@@ -43,113 +38,14 @@ type ReflowParagraphProps = {
   } | null;
 };
 
-type PositionedLine = {
-  x: number;
-  y: number;
-  text: string;
-  font: string;
-  color: string;
-};
-
-type Interval = {
-  left: number;
-  right: number;
-};
-
-const FONT_FAMILY = '"Inter"';
 const FONT_WEIGHT = {
   regular: 400,
   semibold: 600,
   bold: 700,
 } as const;
-const MIN_SLOT_WIDTH = 56;
-const MIN_SLOT_WIDTH_NEAR_OBSTACLE = 100;
-const OBSTACLE_PAD_LEFT = 0;
-const OBSTACLE_PAD_RIGHT = 0;
-const OBSTACLE_PAD_Y = 0;
-
-const preparedCache = new Map<string, PreparedTextWithSegments>();
-
-const getPrepared = (text: string, font: string) => {
-  const key = `${font}::${text}`;
-  const cached = preparedCache.get(key);
-  if (cached) return cached;
-  const prepared = prepareWithSegments(text, font);
-  preparedCache.set(key, prepared);
-  return prepared;
-};
-
-const circleIntervalForBand = (
-  cx: number,
-  cy: number,
-  r: number,
-  bandTop: number,
-  bandBottom: number,
-  leftPad: number,
-  rightPad: number,
-  vPad: number,
-) => {
-  const top = bandTop - vPad;
-  const bottom = bandBottom + vPad;
-  if (top >= cy + r || bottom <= cy - r) return null;
-
-  const minDy = cy >= top && cy <= bottom ? 0 : cy < top ? top - cy : cy - bottom;
-  if (minDy >= r) return null;
-
-  const maxDx = Math.sqrt(r * r - minDy * minDy);
-  return { left: cx - maxDx - leftPad, right: cx + maxDx + rightPad };
-};
-
-const ellipseIntervalForBand = (
-  cx: number,
-  cy: number,
-  rx: number,
-  ry: number,
-  bandTop: number,
-  bandBottom: number,
-  leftPad: number,
-  rightPad: number,
-  vPad: number,
-) => {
-  const grownRxLeft = rx + leftPad;
-  const grownRxRight = rx + rightPad;
-  const grownRy = ry + vPad;
-  const top = bandTop;
-  const bottom = bandBottom;
-  if (top >= cy + grownRy || bottom <= cy - grownRy) return null;
-
-  const minDy = cy >= top && cy <= bottom ? 0 : cy < top ? top - cy : cy - bottom;
-  if (minDy >= grownRy) return null;
-
-  const yRatio = minDy / grownRy;
-  const baseDx = Math.sqrt(1 - yRatio * yRatio);
-  const maxDxLeft = grownRxLeft * baseDx;
-  const maxDxRight = grownRxRight * baseDx;
-  return { left: cx - maxDxLeft, right: cx + maxDxRight };
-};
-
-const carveTextLineSlots = (base: Interval, blocked: Interval[], minSlotWidth: number) => {
-  let slots: Interval[] = [base];
-
-  for (let blockedIndex = 0; blockedIndex < blocked.length; blockedIndex += 1) {
-    const interval = blocked[blockedIndex]!;
-    const next: Interval[] = [];
-
-    for (let slotIndex = 0; slotIndex < slots.length; slotIndex += 1) {
-      const slot = slots[slotIndex]!;
-      if (interval.right <= slot.left || interval.left >= slot.right) {
-        next.push(slot);
-        continue;
-      }
-      if (interval.left > slot.left) next.push({ left: slot.left, right: interval.left });
-      if (interval.right < slot.right) next.push({ left: interval.right, right: slot.right });
-    }
-
-    slots = next;
-  }
-
-  return slots.filter((slot) => slot.right - slot.left >= minSlotWidth);
-};
+const REFLOW_OBSTACLE_PAD_X = 12;
+const REFLOW_OBSTACLE_PAD_Y = 6;
+const REFLOW_RIGHT_SAFE_PAD = 22;
 
 type BlockStyle = {
   font: string;
@@ -158,242 +54,144 @@ type BlockStyle = {
   marginTop: number;
 };
 
-type PreparedBlock = {
-  prepared: PreparedTextWithSegments;
-  style: BlockStyle;
-};
-
 const getBlockStyle = (kind: ReflowBlock['kind'], compact: boolean): BlockStyle => {
   switch (kind) {
     case 'meta':
       return {
-        font: `${compact ? FONT_WEIGHT.regular : FONT_WEIGHT.semibold} ${compact ? 13 : 14}px ${FONT_FAMILY}`,
-        lineHeight: compact ? 20 : 22,
-        color: '#ffb36a',
+        font: interFont(compact ? FONT_WEIGHT.regular : FONT_WEIGHT.semibold, compact ? 12 : 13),
+        lineHeight: compact ? 18 : 20,
+        color: '#b58900',
         marginTop: 0,
       };
     case 'heading':
       return {
-        font: `${compact ? FONT_WEIGHT.semibold : FONT_WEIGHT.bold} ${compact ? 28 : 32}px ${FONT_FAMILY}`,
-        lineHeight: compact ? 33 : 38,
-        color: '#f7eddc',
+        font: interFont(compact ? FONT_WEIGHT.semibold : FONT_WEIGHT.bold, compact ? 24 : 27),
+        lineHeight: compact ? 30 : 34,
+        color: '#333333',
         marginTop: compact ? 4 : 6,
       };
     case 'role':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 17 : 19}px ${FONT_FAMILY}`,
-        lineHeight: compact ? 25 : 27,
-        color: '#c2b4a0',
+        font: interFont(FONT_WEIGHT.regular, compact ? 15 : 17),
+        lineHeight: compact ? 23 : 25,
+        color: '#586e75',
         marginTop: compact ? 2 : 3,
       };
     case 'stack':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 15}px ${FONT_FAMILY}`,
-        lineHeight: compact ? 22 : 24,
-        color: '#e5d8c4',
+        font: interFont(FONT_WEIGHT.regular, compact ? 13 : 14),
+        lineHeight: compact ? 20 : 22,
+        color: '#586e75',
         marginTop: compact ? 7 : 9,
       };
     case 'heroEyebrow':
       return {
-        font: `${FONT_WEIGHT.semibold} ${compact ? 11 : 13}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.semibold, compact ? 11 : 13),
         lineHeight: compact ? 16 : 18,
-        color: '#ffb36a',
+        color: '#b58900',
         marginTop: 0,
       };
     case 'heroTitle': {
       const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
-      const sz = compact ? 48 : vw <= 1100 ? 52 : 64;
-      const lh = compact ? 44 : vw <= 1100 ? 48 : 58;
+      const sz = compact ? 46 : vw <= 1200 ? 48 : vw <= 1500 ? 56 : 62;
+      const lh = compact ? 42 : vw <= 1200 ? 45 : vw <= 1500 ? 52 : 58;
       return {
-        font: `${FONT_WEIGHT.semibold} ${sz}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.semibold, sz),
         lineHeight: lh,
-        color: '#f7eddc',
+        color: '#333333',
         marginTop: compact ? 8 : 6,
       };
     }
     case 'heroTitleAccent': {
       const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
-      const sz = compact ? 48 : vw <= 1100 ? 52 : 64;
-      const lh = compact ? 44 : vw <= 1100 ? 48 : 58;
+      const sz = compact ? 46 : vw <= 1200 ? 48 : vw <= 1500 ? 56 : 62;
+      const lh = compact ? 42 : vw <= 1200 ? 45 : vw <= 1500 ? 52 : 58;
       return {
-        font: `${FONT_WEIGHT.semibold} ${sz}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.semibold, sz),
         lineHeight: lh,
-        color: '#ff7a1a',
+        color: '#cb4b16',
         marginTop: compact ? 2 : 2,
       };
     }
     case 'heroSummary':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 17 : 21}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.regular, compact ? 17 : 21),
         lineHeight: compact ? 26 : 30,
-        color: '#f7eddc',
+        color: '#333333',
         marginTop: compact ? 12 : 10,
       };
     case 'heroSupporting':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.regular, compact ? 14 : 16),
         lineHeight: compact ? 24 : 25,
-        color: '#c2b4a0',
+        color: '#586e75',
         marginTop: compact ? 8 : 8,
       };
     case 'sectionEyebrow':
       return {
-        font: `${FONT_WEIGHT.semibold} ${compact ? 11 : 12}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.semibold, compact ? 11 : 12),
         lineHeight: compact ? 16 : 18,
-        color: '#ffb36a',
+        color: '#b58900',
         marginTop: 0,
       };
     case 'sectionTitle':
       return {
-        font: `${FONT_WEIGHT.semibold} ${compact ? 34 : 50}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.semibold, compact ? 34 : 50),
         lineHeight: compact ? 34 : 48,
-        color: '#f7eddc',
+        color: '#333333',
         marginTop: compact ? 8 : 11,
       };
     case 'sectionCopy':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 15 : 16}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.regular, compact ? 15 : 16),
         lineHeight: compact ? 25 : 27,
-        color: '#c2b4a0',
+        color: '#586e75',
         marginTop: compact ? 10 : 14,
       };
     case 'projectName':
       return {
-        font: `${FONT_WEIGHT.bold} ${compact ? 20 : 23}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.bold, compact ? 20 : 23),
         lineHeight: compact ? 26 : 30,
-        color: '#f7eddc',
+        color: '#333333',
         marginTop: 0,
       };
     case 'projectSummary':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.regular, compact ? 14 : 16),
         lineHeight: compact ? 24 : 27,
-        color: '#c2b4a0',
+        color: '#586e75',
         marginTop: compact ? 10 : 13,
       };
     case 'principleTitle':
       return {
-        font: `${FONT_WEIGHT.bold} ${compact ? 17 : 20}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.bold, compact ? 17 : 20),
         lineHeight: compact ? 22 : 26,
-        color: '#f7eddc',
+        color: '#333333',
         marginTop: 0,
       };
     case 'principleBody':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.regular, compact ? 14 : 16),
         lineHeight: compact ? 22 : 27,
-        color: '#c2b4a0',
+        color: '#586e75',
         marginTop: compact ? 8 : 10,
       };
     case 'footerCopy':
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 14 : 16}px ${FONT_FAMILY}`,
+        font: interFont(FONT_WEIGHT.regular, compact ? 14 : 16),
         lineHeight: compact ? 24 : 27,
-        color: '#c2b4a0',
+        color: '#586e75',
         marginTop: 0,
       };
     case 'body':
     default:
       return {
-        font: `${FONT_WEIGHT.regular} ${compact ? 18 : 20}px ${FONT_FAMILY}`,
-        lineHeight: compact ? 28 : 31,
-        color: '#f7eddc',
+        font: interFont(FONT_WEIGHT.regular, compact ? 16 : 18),
+        lineHeight: compact ? 25 : 28,
+        color: '#333333',
         marginTop: compact ? 6 : 8,
       };
   }
-};
-
-const layoutBlockAroundObstacle = (
-  prepared: PreparedTextWithSegments,
-  style: BlockStyle,
-  width: number,
-  startY: number,
-  android:
-    | {
-        x: number;
-        y: number;
-        radius: number;
-        rx?: number;
-        ry?: number;
-      }
-    | null,
-) => {
-  const lines: PositionedLine[] = [];
-  let cursor: LayoutCursor = { segmentIndex: 0, graphemeIndex: 0 };
-  let lineTop = startY;
-  let exhausted = false;
-  let guard = 0;
-
-  while (!exhausted && guard < 80) {
-    const bandTop = lineTop;
-    const bandBottom = lineTop + style.lineHeight;
-    const blocked: Interval[] = [];
-    let nearObstacleBand = false;
-    if (android) {
-      const interval =
-        android.rx && android.ry
-          ? ellipseIntervalForBand(
-              android.x,
-              android.y,
-              android.rx,
-              android.ry,
-              bandTop,
-              bandBottom,
-              OBSTACLE_PAD_LEFT,
-              OBSTACLE_PAD_RIGHT,
-              OBSTACLE_PAD_Y,
-            )
-          : circleIntervalForBand(
-              android.x,
-              android.y,
-              android.radius,
-              bandTop,
-              bandBottom,
-              OBSTACLE_PAD_LEFT,
-              OBSTACLE_PAD_RIGHT,
-              OBSTACLE_PAD_Y,
-            );
-      if (interval) {
-        blocked.push(interval);
-        nearObstacleBand = true;
-      }
-    }
-    const minSlotWidth = nearObstacleBand ? MIN_SLOT_WIDTH_NEAR_OBSTACLE : MIN_SLOT_WIDTH;
-    const slots = carveTextLineSlots({ left: 0, right: width }, blocked, minSlotWidth).sort(
-      (a, b) => a.left - b.left,
-    );
-
-    if (slots.length === 0) {
-      lineTop += style.lineHeight;
-      guard += 1;
-      continue;
-    }
-
-    for (let slotIndex = 0; slotIndex < slots.length; slotIndex += 1) {
-      const slot = slots[slotIndex]!;
-      const line = layoutNextLine(prepared, cursor, slot.right - slot.left);
-      if (line === null) {
-        exhausted = true;
-        break;
-      }
-
-      lines.push({
-        x: Math.round(slot.left),
-        y: Math.round(lineTop),
-        text: line.text,
-        font: style.font,
-        color: style.color,
-      });
-      cursor = line.end;
-    }
-    lineTop += style.lineHeight;
-    guard += 1;
-  }
-
-  return {
-    lines,
-    nextY: lineTop,
-  };
 };
 
 export const ReflowParagraph = ({
@@ -404,7 +202,6 @@ export const ReflowParagraph = ({
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(220);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -423,42 +220,31 @@ export const ReflowParagraph = ({
 
   const metrics = useMemo(() => {
     if (width <= 0) return null;
-    const preparedBlocks: PreparedBlock[] = blocks.map((block) => {
+    const layoutWidth = Math.max(40, width - REFLOW_RIGHT_SAFE_PAD);
+    const entries: TextEntry[] = blocks.map((block) => {
       const style = getBlockStyle(block.kind, compact);
       return {
-        prepared: getPrepared(block.text, style.font),
-        style,
+        text: block.text,
+        font: style.font,
+        lineHeight: style.lineHeight,
+        color: style.color,
+        marginTop: style.marginTop,
       };
     });
-    const safeAndroid = {
-      x: width * 0.5,
-      y: compact ? 44 : 50,
-      radius: compact ? 18 : 22,
-      rx: compact ? 18 : 22,
-      ry: compact ? 24 : 30,
-    };
-    let baseY = compact ? 6 : 8;
-    let shapedY = compact ? 6 : 8;
 
-    for (let i = 0; i < preparedBlocks.length; i += 1) {
-      const block = preparedBlocks[i]!;
-      baseY += block.style.marginTop;
-      shapedY += block.style.marginTop;
-      const baseResult = layoutBlockAroundObstacle(block.prepared, block.style, width, baseY, null);
-      const shapedResult = layoutBlockAroundObstacle(
-        block.prepared,
-        block.style,
-        width,
-        shapedY,
-        safeAndroid,
-      );
-      baseY = baseResult.nextY;
-      shapedY = shapedResult.nextY;
-    }
+    const safeObstacle: Obstacle = {
+      x: layoutWidth * 0.5,
+      y: compact ? 44 : 50,
+      rx: (compact ? 18 : 22) + REFLOW_OBSTACLE_PAD_X,
+      ry: (compact ? 24 : 30) + REFLOW_OBSTACLE_PAD_Y,
+    };
+    const baseLayout = layoutTextBlocks(entries, layoutWidth, null);
+    const shapedLayout = layoutTextBlocks(entries, layoutWidth, safeObstacle);
 
     return {
-      preparedBlocks,
-      stableHeight: Math.ceil(Math.max(baseY, shapedY) + (compact ? 10 : 12)),
+      entries,
+      layoutWidth,
+      stableHeight: Math.ceil(Math.max(baseLayout.height, shapedLayout.height)),
     };
   }, [blocks, compact, width]);
 
@@ -471,36 +257,26 @@ export const ReflowParagraph = ({
     if (!context) return;
 
     const dpr = window.devicePixelRatio || 1;
-    if (metrics.stableHeight !== height) {
-      setHeight(metrics.stableHeight);
-    }
 
     const wrapBounds = wrap.getBoundingClientRect();
-    const verticalInfluence = androidGlobal
-      ? Math.max(androidGlobal.ry ?? androidGlobal.radius, androidGlobal.radius) * 2
+    const verticalInfluencePx = androidGlobal
+      ? (Math.max(androidGlobal.ry ?? androidGlobal.radius, androidGlobal.radius) +
+          REFLOW_OBSTACLE_PAD_Y) *
+        2
       : 0;
-    const androidLocal =
+    const androidLocal: Obstacle | null =
       androidGlobal &&
-      androidGlobal.y + verticalInfluence > wrapBounds.top &&
-      androidGlobal.y - verticalInfluence < wrapBounds.bottom
+      androidGlobal.y + verticalInfluencePx > wrapBounds.top &&
+      androidGlobal.y - verticalInfluencePx < wrapBounds.bottom
         ? {
             x: androidGlobal.x - wrapBounds.left,
             y: androidGlobal.y - wrapBounds.top,
-            radius: androidGlobal.radius,
-            intensity: androidGlobal.intensity,
-            rx: androidGlobal.rx,
-            ry: androidGlobal.ry,
+            rx: (androidGlobal.rx ?? androidGlobal.radius) + REFLOW_OBSTACLE_PAD_X,
+            ry: (androidGlobal.ry ?? androidGlobal.radius) + REFLOW_OBSTACLE_PAD_Y,
           }
         : null;
-    const finalLines: PositionedLine[] = [];
-    let yCursor = compact ? 6 : 8;
-    for (let i = 0; i < metrics.preparedBlocks.length; i += 1) {
-      const block = metrics.preparedBlocks[i]!;
-      yCursor += block.style.marginTop;
-      const layout = layoutBlockAroundObstacle(block.prepared, block.style, width, yCursor, androidLocal);
-      finalLines.push(...layout.lines);
-      yCursor = layout.nextY;
-    }
+    const layout = layoutTextBlocks(metrics.entries, metrics.layoutWidth, androidLocal);
+    const finalLines = layout.lines;
 
     const pixelWidth = Math.max(1, Math.round(width * dpr));
     const pixelHeight = Math.max(1, Math.round(metrics.stableHeight * dpr));
@@ -513,7 +289,7 @@ export const ReflowParagraph = ({
     context.clearRect(0, 0, width, metrics.stableHeight);
     context.textBaseline = 'top';
 
-    context.shadowColor = 'rgba(247, 237, 220, 0.16)';
+    context.shadowColor = 'rgba(88, 110, 117, 0.12)';
     context.shadowBlur = 7;
 
     finalLines.forEach((line) => {
@@ -526,10 +302,12 @@ export const ReflowParagraph = ({
     context.shadowBlur = 0;
     context.globalAlpha = 1;
 
-  }, [androidGlobal, height, metrics, width]);
+  }, [androidGlobal, metrics, width]);
+
+  const stableHeight = metrics?.stableHeight ?? 220;
 
   return (
-    <Wrap ref={wrapRef} style={{ height }}>
+    <Wrap ref={wrapRef} style={{ height: stableHeight }}>
       <Canvas ref={canvasRef} />
       <AccessibleText>{blocks.map((block) => block.text).join(' ')}</AccessibleText>
     </Wrap>
@@ -539,6 +317,7 @@ export const ReflowParagraph = ({
 const Wrap = styled.div`
   position: relative;
   width: 100%;
+  overflow: hidden;
 `;
 
 const Canvas = styled.canvas`

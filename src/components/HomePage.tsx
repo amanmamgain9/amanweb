@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import { useEffect, useRef, useState } from 'react';
+import styled, { css } from 'styled-components';
 import {
   FaArrowDown,
   FaArrowRight,
@@ -10,30 +9,9 @@ import {
   FaLinkedin,
 } from 'react-icons/fa';
 import { ReflowParagraph, type ReflowBlock } from './ReflowParagraph';
-import { AndroidModelOverlay } from './AndroidModelOverlay';
+import { HeroRobotCard } from './HeroRobotCard';
 import { homeContent, type ExperienceEntry } from '../data/homeContent';
 import { useActiveExperience } from '../hooks/useActiveExperience';
-
-type AndroidPosition = {
-  x: number;
-  y: number;
-  radius: number;
-  intensity: number;
-  rx?: number;
-  ry?: number;
-  debugLeft?: number;
-  debugTop?: number;
-  debugRight?: number;
-  debugBottom?: number;
-  rawRx?: number;
-  rawRy?: number;
-} | null;
-
-const hiBubbleFloat = keyframes`
-  0% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(0, -3px, 0); }
-  100% { transform: translate3d(0, 0, 0); }
-`;
 
 const getExperienceCardText = (experience: ExperienceEntry) =>
   ({
@@ -56,12 +34,8 @@ const buildExperienceBlocks = (experience: ExperienceEntry): ReflowBlock[] => {
 };
 
 export const HomePage = () => {
-  const [isCompact, setIsCompact] = useState(window.innerWidth <= 900);
-  const [isMedium, setIsMedium] = useState(window.innerWidth > 900 && window.innerWidth <= 1100);
-  const [scrollTick, setScrollTick] = useState(0);
-  const [androidFootprint, setAndroidFootprint] = useState<AndroidPosition>(null);
-  const [robotDebug, setRobotDebug] = useState(
-    () => new URLSearchParams(window.location.search).get('robotDebug') === '1',
+  const [isCompact, setIsCompact] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 900 : false,
   );
   const activeExperienceId = useActiveExperience(homeContent.experiences);
   const activeExperienceIndex = Math.max(
@@ -70,101 +44,11 @@ export const HomePage = () => {
   );
   const experienceCardRefs = useRef<(HTMLElement | null)[]>([]);
   const experienceStackRef = useRef<HTMLDivElement | null>(null);
-  const mainFlowRef = useRef<HTMLElement | null>(null);
-  const heroVisualRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      const w = window.innerWidth;
-      setIsCompact(w <= 900);
-      setIsMedium(w > 900 && w <= 1100);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    let frame = 0;
-    const schedule = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        setScrollTick((current) => current + 1);
-      });
-    };
-
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
-    schedule();
-    return () => {
-      window.removeEventListener('scroll', schedule);
-      window.removeEventListener('resize', schedule);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  const scrollingAndroid: AndroidPosition = useMemo(() => {
-    const flow = mainFlowRef.current;
-    if (!flow) return null;
-
-    const flowRect = flow.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const radius = isCompact ? 20 : 24;
-
-    const HEADER_HEIGHT = 60;
-    const ZIG_ZAG_CYCLES = 2.5;
-    const AMPLITUDE_FRAC = isCompact ? 0.42 : isMedium ? 0.32 : 0.44;
-    const VIEWPORT_PAD = radius + 12;
-
-    const topY = HEADER_HEIGHT + 10;
-    const bottomY = vh - radius * 2;
-    const progressRaw = (topY - flowRect.top) / Math.max(flowRect.height - vh, 1);
-    const progress = Math.max(0, Math.min(1, progressRaw));
-
-    const contentCenter = flowRect.left + flowRect.width * 0.5;
-    const amplitude = flowRect.width * AMPLITUDE_FRAC;
-
-    const xRaw = contentCenter + amplitude * Math.cos(progress * ZIG_ZAG_CYCLES * 2 * Math.PI);
-    const x = Math.max(VIEWPORT_PAD, Math.min(window.innerWidth - VIEWPORT_PAD, xRaw));
-
-    const y = topY + (bottomY - topY) * progress;
-
-    return {
-      x,
-      y,
-      radius,
-      intensity: 0.56 + Math.sin(progress * Math.PI) * 0.36,
-    };
-  }, [isCompact, scrollTick]);
-
-  useEffect(() => {
-    if (!scrollingAndroid) setAndroidFootprint(null);
-  }, [scrollingAndroid]);
-
-  const handleFootprintChange = useCallback((next: Exclude<AndroidPosition, null>) => {
-    setAndroidFootprint((current) => {
-      if (!current) return next;
-      const dx = Math.abs(current.x - next.x);
-      const dy = Math.abs(current.y - next.y);
-      const dr = Math.abs(current.radius - next.radius);
-      const drx = Math.abs((current.rx ?? current.radius) - (next.rx ?? next.radius));
-      const dry = Math.abs((current.ry ?? current.radius) - (next.ry ?? next.radius));
-      if (dx < 0.75 && dy < 0.75 && dr < 0.6 && drx < 0.6 && dry < 0.6) return current;
-      return next;
-    });
-  }, []);
-
-  const reflowObstacle = androidFootprint ?? scrollingAndroid;
-  const speechTarget = androidFootprint ?? scrollingAndroid;
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.altKey && (event.key === 'd' || event.key === 'D')) {
-        setRobotDebug((current) => !current);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const onResize = () => setIsCompact(window.innerWidth <= 900);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   return (
@@ -178,20 +62,16 @@ export const HomePage = () => {
         </TopNav>
       </TopBar>
 
-      <MainFlow id="top" ref={mainFlowRef}>
+      <MainFlow id="top">
         <HeroSection>
           <HeroContent>
-            <ReflowParagraph
-              blocks={[
-                { kind: 'heroEyebrow', text: homeContent.hero.eyebrow.toUpperCase() },
-                { kind: 'heroTitle', text: homeContent.hero.name },
-                { kind: 'heroTitleAccent', text: homeContent.hero.title },
-                { kind: 'heroSummary', text: homeContent.hero.summary },
-                { kind: 'heroSupporting', text: homeContent.hero.supporting },
-              ]}
-              compact={isCompact}
-              androidGlobal={reflowObstacle}
-            />
+            <HeroTextStack>
+              {homeContent.hero.eyebrow ? <HeroEyebrow>{homeContent.hero.eyebrow.toUpperCase()}</HeroEyebrow> : null}
+              <HeroName>{homeContent.hero.name}</HeroName>
+              <HeroTitleAccent>{homeContent.hero.title}</HeroTitleAccent>
+              <HeroSummary>{homeContent.hero.summary}</HeroSummary>
+              <HeroSupporting>{homeContent.hero.supporting}</HeroSupporting>
+            </HeroTextStack>
             <ActionRow>
               <PrimaryAction href="#work">
                 View work <FaArrowDown />
@@ -210,8 +90,8 @@ export const HomePage = () => {
             </StatsRow>
           </HeroContent>
 
-          <HeroVisual ref={heroVisualRef}>
-            <Portrait src="/moi.webp" alt="Aman Mamgain" />
+          <HeroVisual>
+            <HeroRobotCard />
           </HeroVisual>
         </HeroSection>
 
@@ -224,7 +104,6 @@ export const HomePage = () => {
                 { kind: 'sectionCopy', text: 'Ten years of work across founding builds, operational systems, healthcare products, commerce, and experimental tools.' },
               ]}
               compact={isCompact}
-              androidGlobal={reflowObstacle}
             />
           </SectionIntro>
 
@@ -243,7 +122,6 @@ export const HomePage = () => {
                     <ReflowParagraph
                       blocks={buildExperienceBlocks(experience)}
                       compact={isCompact}
-                      androidGlobal={reflowObstacle}
                     />
                   </ExperienceNarrative>
                 </ExperienceCard>
@@ -261,7 +139,6 @@ export const HomePage = () => {
                 { kind: 'sectionCopy', text: 'Browser-side media, small tools, and experiments that turn fuzzy ideas into usable software.' },
               ]}
               compact={isCompact}
-              androidGlobal={reflowObstacle}
             />
           </SectionIntro>
 
@@ -274,7 +151,6 @@ export const HomePage = () => {
                     { kind: 'projectSummary', text: project.summary },
                   ]}
                   compact={isCompact}
-                  androidGlobal={reflowObstacle}
                 />
                 <TagRow>
                   {project.tags.map((tag) => (
@@ -297,7 +173,6 @@ export const HomePage = () => {
                 { kind: 'sectionTitle', text: 'Clean surfaces, strong systems, fast loops.' },
               ]}
               compact={isCompact}
-              androidGlobal={reflowObstacle}
             />
           </SectionIntro>
 
@@ -310,7 +185,6 @@ export const HomePage = () => {
                     { kind: 'principleBody', text: principle.body },
                   ]}
                   compact={isCompact}
-                  androidGlobal={reflowObstacle}
                 />
               </PrincipleCard>
             ))}
@@ -325,7 +199,6 @@ export const HomePage = () => {
               { kind: 'footerCopy', text: 'Available for product engineering, creative frontend systems, and prototypes that need to feel alive.' },
             ]}
             compact={isCompact}
-            androidGlobal={reflowObstacle}
           />
         </FooterReflowWrap>
         <FooterLinks>
@@ -343,96 +216,28 @@ export const HomePage = () => {
           </FooterLink>
         </FooterLinks>
       </Footer>
-      <AndroidModelOverlay android={scrollingAndroid} onFootprintChange={handleFootprintChange} />
-      {speechTarget && (
-        <HiBubble
-          aria-hidden="true"
-          style={
-            {
-              left: speechTarget.x + (speechTarget.rx ?? speechTarget.radius) + 10,
-              top: speechTarget.y - (speechTarget.ry ?? speechTarget.radius) - 16,
-            } as CSSProperties
-          }
-        >
-          Hi
-        </HiBubble>
-      )}
-      {robotDebug && androidFootprint && (
-        <DebugOverlay aria-hidden="true">
-          {androidFootprint.debugLeft !== undefined &&
-            androidFootprint.debugTop !== undefined &&
-            androidFootprint.debugRight !== undefined &&
-            androidFootprint.debugBottom !== undefined && (
-              <DebugRawBounds
-                style={
-                  {
-                    left: androidFootprint.debugLeft,
-                    top: androidFootprint.debugTop,
-                    width: androidFootprint.debugRight - androidFootprint.debugLeft,
-                    height: androidFootprint.debugBottom - androidFootprint.debugTop,
-                  } as CSSProperties
-                }
-              />
-            )}
-          <DebugEllipse
-            style={
-              {
-                left: androidFootprint.x - (androidFootprint.rx ?? androidFootprint.radius),
-                top: androidFootprint.y - (androidFootprint.ry ?? androidFootprint.radius),
-                width: (androidFootprint.rx ?? androidFootprint.radius) * 2,
-                height: (androidFootprint.ry ?? androidFootprint.radius) * 2,
-              } as CSSProperties
-            }
-          />
-          <DebugCenter
-            style={{ left: androidFootprint.x - 4, top: androidFootprint.y - 4 } as CSSProperties}
-          />
-          <DebugPanel>
-            <DebugLine>
-              `?robotDebug=1` active (Alt+D toggles)
-            </DebugLine>
-            <DebugLine>
-              center: {androidFootprint.x.toFixed(1)}, {androidFootprint.y.toFixed(1)}
-            </DebugLine>
-            <DebugLine>
-              ellipse rx/ry: {(androidFootprint.rx ?? androidFootprint.radius).toFixed(1)} /{' '}
-              {(androidFootprint.ry ?? androidFootprint.radius).toFixed(1)}
-            </DebugLine>
-            <DebugLine>
-              raw bbox:{' '}
-              {androidFootprint.debugLeft !== undefined
-                ? `${androidFootprint.debugLeft.toFixed(1)}-${androidFootprint.debugRight?.toFixed(1)}`
-                : 'n/a'}
-            </DebugLine>
-            <DebugLine>
-              raw rx/ry: {androidFootprint.rawRx?.toFixed(1) ?? 'n/a'} /{' '}
-              {androidFootprint.rawRy?.toFixed(1) ?? 'n/a'}
-            </DebugLine>
-          </DebugPanel>
-        </DebugOverlay>
-      )}
     </PageShell>
   );
 };
 
 const PageShell = styled.div`
-  --bg: #100d0b;
-  --bg-soft: #18120f;
-  --panel: rgba(27, 20, 15, 0.72);
-  --panel-strong: rgba(35, 25, 18, 0.86);
-  --line: rgba(247, 237, 220, 0.12);
-  --text: #f7eddc;
-  --muted: #c2b4a0;
-  --accent: #ff7a1a;
-  --accent-soft: #ffb36a;
-  --violet: #8f78ff;
+  --bg: #fff6dc;
+  --bg-soft: #fff8dc;
+  --panel: rgba(255, 250, 240, 0.88);
+  --panel-strong: rgba(245, 222, 179, 0.74);
+  --line: rgba(222, 184, 135, 0.32);
+  --text: #333333;
+  --muted: #586e75;
+  --accent: #deb887;
+  --accent-soft: #b58900;
+  --violet: #268bd2;
   position: relative;
   min-height: 100dvh;
   overflow: clip;
   background:
-    radial-gradient(circle at top left, rgba(255, 121, 30, 0.16), transparent 34%),
-    radial-gradient(circle at 80% 12%, rgba(143, 120, 255, 0.18), transparent 30%),
-    linear-gradient(180deg, #1a130f 0%, #100d0b 42%, #0d0a08 100%);
+    radial-gradient(circle at 6% 5%, rgba(222, 184, 135, 0.2), transparent 34%),
+    radial-gradient(circle at 86% 14%, rgba(38, 139, 210, 0.08), transparent 30%),
+    linear-gradient(180deg, #fffaf0 0%, #fff6dc 44%, #fff2cf 100%);
   color: var(--text);
 `;
 
@@ -441,9 +246,9 @@ const AmbientGlow = styled.div`
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 22%, rgba(255, 179, 106, 0.18), transparent 0 16%),
-    radial-gradient(circle at 75% 15%, rgba(143, 120, 255, 0.16), transparent 0 14%),
-    radial-gradient(circle at 60% 58%, rgba(255, 122, 26, 0.14), transparent 0 18%);
+    radial-gradient(circle at 18% 22%, rgba(222, 184, 135, 0.18), transparent 0 16%),
+    radial-gradient(circle at 75% 16%, rgba(38, 139, 210, 0.1), transparent 0 14%),
+    radial-gradient(circle at 58% 58%, rgba(181, 137, 0, 0.1), transparent 0 18%);
   filter: blur(30px);
   opacity: 0.8;
 `;
@@ -453,8 +258,8 @@ const TopBar = styled.header`
   top: 0;
   z-index: 10;
   backdrop-filter: blur(16px);
-  background: linear-gradient(180deg, rgba(16, 13, 11, 0.84), rgba(16, 13, 11, 0.34));
-  border-bottom: 1px solid rgba(247, 237, 220, 0.06);
+  background: linear-gradient(180deg, rgba(255, 248, 228, 0.94), rgba(255, 246, 220, 0.82));
+  border-bottom: 1px solid rgba(222, 184, 135, 0.32);
 `;
 
 
@@ -497,20 +302,67 @@ const MainFlow = styled.main`
 const HeroSection = styled.section`
   min-height: calc(100dvh - 90px);
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-  gap: 2rem;
-  align-items: center;
-  padding: 2rem 0 4rem;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+  gap: clamp(1.5rem, 3vw, 2.6rem);
+  align-items: start;
+  padding: 1.35rem 0 4rem;
 
-  @media (max-width: 900px) {
+  @media (max-width: 1120px) {
     grid-template-columns: 1fr;
     padding-top: 1rem;
   }
 `;
 
 const HeroContent = styled.div`
+  min-width: 0;
+  max-width: 100%;
   display: grid;
   gap: 1.25rem;
+`;
+
+const HeroTextStack = styled.div`
+  max-width: 38rem;
+`;
+
+const HeroEyebrow = styled.p`
+  color: #b58900;
+  font-size: clamp(0.7rem, 1.2vw, 0.82rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.2rem;
+`;
+
+const HeroName = styled.h1`
+  color: #333333;
+  font-size: clamp(2.35rem, 5.8vw, 4rem);
+  line-height: 0.98;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.02em;
+`;
+
+const HeroTitleAccent = styled.p`
+  color: #cb4b16;
+  font-size: clamp(2.15rem, 5.2vw, 3.7rem);
+  line-height: 0.98;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.02em;
+  margin-top: 0.1rem;
+`;
+
+const HeroSummary = styled.p`
+  color: #333333;
+  font-size: clamp(1.02rem, 1.9vw, 1.3rem);
+  line-height: 1.45;
+  margin-top: 0.85rem;
+  max-width: 34rem;
+`;
+
+const HeroSupporting = styled.p`
+  color: #586e75;
+  font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+  line-height: 1.5;
+  margin-top: 0.3rem;
+  max-width: 34rem;
 `;
 
 const ActionRow = styled.div`
@@ -538,16 +390,16 @@ const buttonBase = css`
 
 const PrimaryAction = styled.a`
   ${buttonBase}
-  background: linear-gradient(135deg, #ffb36a, #ff7a1a);
-  color: #120d0a;
+  background: linear-gradient(135deg, #deb887, #c9a36a);
+  color: #333333;
   font-weight: var(--font-weight-bold);
-  box-shadow: 0 16px 40px rgba(255, 122, 26, 0.26);
+  box-shadow: 0 16px 40px rgba(176, 128, 71, 0.2);
 `;
 
 const SecondaryAction = styled.a`
   ${buttonBase}
-  border: 1px solid rgba(247, 237, 220, 0.16);
-  background: rgba(247, 237, 220, 0.04);
+  border: 1px solid rgba(181, 137, 0, 0.22);
+  background: rgba(255, 250, 240, 0.7);
   color: var(--text);
 `;
 
@@ -560,9 +412,9 @@ const StatsRow = styled.div`
 
 const StatPill = styled.div`
   padding: 0.9rem 1rem;
-  border: 1px solid rgba(247, 237, 220, 0.1);
+  border: 1px solid rgba(181, 137, 0, 0.2);
   border-radius: 1.1rem;
-  background: rgba(247, 237, 220, 0.04);
+  background: rgba(255, 250, 240, 0.62);
   min-width: 9rem;
 `;
 
@@ -580,25 +432,15 @@ const StatLabel = styled.div`
 
 const HeroVisual = styled.div`
   position: relative;
-  min-height: 28rem;
+  min-height: 32rem;
   display: grid;
   align-items: center;
+  justify-items: end;
 
-  @media (max-width: 900px) {
+  @media (max-width: 1120px) {
     min-height: auto;
+    justify-items: start;
   }
-`;
-
-const Portrait = styled.img`
-  position: relative;
-  display: block;
-  width: 100%;
-  max-width: 24rem;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: 1.4rem;
-  border: 1px solid rgba(247, 237, 220, 0.08);
-  filter: saturate(0.95) contrast(1.04);
 `;
 
 const WorkSection = styled.section`
@@ -629,13 +471,13 @@ const ExperienceCard = styled.article<{ $active: boolean }>`
   padding: 1.5rem;
   width: 100%;
   border-radius: 1.8rem;
-  border: 1px solid rgba(247, 237, 220, 0.08);
+  border: 1px solid rgba(181, 137, 0, 0.2);
   background: ${({ $active }) =>
     $active
-      ? 'linear-gradient(180deg, rgba(45, 30, 21, 0.96), rgba(20, 14, 11, 0.96))'
-      : 'linear-gradient(180deg, rgba(28, 21, 16, 0.82), rgba(18, 14, 11, 0.88))'};
+      ? 'linear-gradient(180deg, rgba(255, 250, 240, 0.98), rgba(245, 233, 203, 0.96))'
+      : 'linear-gradient(180deg, rgba(255, 248, 228, 0.9), rgba(245, 233, 203, 0.86))'};
   box-shadow: ${({ $active }) =>
-    $active ? '0 26px 55px rgba(0, 0, 0, 0.28)' : '0 14px 32px rgba(0, 0, 0, 0.2)'};
+    $active ? '0 20px 45px rgba(136, 108, 62, 0.16)' : '0 10px 24px rgba(136, 108, 62, 0.12)'};
   transform: ${({ $active }) => ($active ? 'translateY(-4px)' : 'translateY(0)')};
   transition:
     transform 220ms ease,
@@ -660,8 +502,8 @@ const TagRow = styled.div`
 const Tag = styled.span`
   padding: 0.45rem 0.7rem;
   border-radius: 999px;
-  background: rgba(247, 237, 220, 0.06);
-  border: 1px solid rgba(247, 237, 220, 0.08);
+  background: rgba(222, 184, 135, 0.22);
+  border: 1px solid rgba(181, 137, 0, 0.2);
   color: var(--text);
   font-size: var(--font-size-sm-plus);
 `;
@@ -684,8 +526,8 @@ const ProjectsGrid = styled.div`
 const ProjectCard = styled.article`
   padding: 1.35rem;
   border-radius: 1.6rem;
-  border: 1px solid rgba(247, 237, 220, 0.08);
-  background: linear-gradient(180deg, rgba(27, 20, 15, 0.86), rgba(18, 14, 11, 0.92));
+  border: 1px solid rgba(181, 137, 0, 0.2);
+  background: linear-gradient(180deg, rgba(255, 248, 228, 0.92), rgba(245, 233, 203, 0.9));
 `;
 
 const ProjectLink = styled.a`
@@ -715,8 +557,8 @@ const PrinciplesGrid = styled.div`
 const PrincipleCard = styled.article`
   padding: 1.35rem;
   border-radius: 1.6rem;
-  border: 1px solid rgba(247, 237, 220, 0.08);
-  background: linear-gradient(180deg, rgba(24, 18, 14, 0.82), rgba(16, 13, 11, 0.92));
+  border: 1px solid rgba(181, 137, 0, 0.2);
+  background: linear-gradient(180deg, rgba(255, 248, 228, 0.88), rgba(245, 233, 203, 0.9));
 `;
 
 const Footer = styled.footer`
@@ -753,70 +595,9 @@ const FooterLink = styled.a`
   gap: 0.55rem;
   padding: 0.8rem 1rem;
   border-radius: 999px;
-  border: 1px solid rgba(247, 237, 220, 0.1);
-  background: rgba(247, 237, 220, 0.04);
+  border: 1px solid rgba(181, 137, 0, 0.22);
+  background: rgba(255, 250, 240, 0.74);
   color: var(--text);
   text-decoration: none;
 `;
 
-const DebugOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  pointer-events: none;
-`;
-
-const DebugRawBounds = styled.div`
-  position: fixed;
-  border: 1px dashed rgba(74, 222, 128, 0.95);
-  background: rgba(74, 222, 128, 0.06);
-`;
-
-const DebugEllipse = styled.div`
-  position: fixed;
-  border: 2px solid rgba(56, 189, 248, 0.95);
-  background: rgba(56, 189, 248, 0.08);
-  border-radius: 999px;
-`;
-
-const DebugCenter = styled.div`
-  position: fixed;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(248, 113, 113, 0.95);
-`;
-
-const DebugPanel = styled.div`
-  position: fixed;
-  right: 0.8rem;
-  top: 0.8rem;
-  display: grid;
-  gap: 0.25rem;
-  padding: 0.55rem 0.65rem;
-  border-radius: 0.65rem;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: rgba(8, 10, 16, 0.88);
-  color: #d9e7ff;
-  font-size: var(--font-size-2xs);
-  line-height: 1.35;
-`;
-
-const DebugLine = styled.div`
-  white-space: nowrap;
-`;
-
-const HiBubble = styled.div`
-  position: fixed;
-  z-index: 18;
-  pointer-events: none;
-  padding: 0.32rem 0.58rem;
-  border-radius: 999px;
-  border: 1px solid rgba(230, 250, 255, 0.7);
-  background: rgba(28, 29, 39, 0.88);
-  color: #ebf9ff;
-  font-size: var(--font-size-2xs);
-  line-height: 1;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-  animation: ${hiBubbleFloat} 2.2s ease-in-out infinite;
-`;

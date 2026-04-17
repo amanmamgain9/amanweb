@@ -3,7 +3,7 @@ import '@fontsource/inter/index.css'
 
 export const GlobalStyles = createGlobalStyle`
   :root {
-    color-scheme: dark;
+    color-scheme: light;
     scroll-behavior: smooth;
     --font-family-base: 'Inter';
     --font-weight-regular: 400;
@@ -43,8 +43,8 @@ export const GlobalStyles = createGlobalStyle`
     font-family: var(--font-family-base);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #100d0b;
-    color: #e6edf3;
+    background-color: #fff6dc;
+    color: #333333;
     min-height: 100dvh;
   }
 

@@ -55,7 +55,7 @@ export function clearAllCaches() {
 type Interval = { left: number; right: number };
 
 const MIN_SLOT = 56;
-const MIN_SLOT_NEAR = 100;
+const MIN_SLOT_NEAR = 104;
 
 const ellipseInterval = (
   cx: number, cy: number, rx: number, ry: number,
@@ -106,6 +106,8 @@ export function layoutTextBlocks(
     let lineTop = y;
 
     for (let guard = 0; guard < 300; guard++) {
+      if (cursor.segmentIndex >= prepared.segments.length) break;
+
       const bandTop = lineTop;
       const bandBottom = lineTop + entry.lineHeight;
       const blocked: Interval[] = [];
@@ -116,21 +118,34 @@ export function layoutTextBlocks(
         if (iv) { blocked.push(iv); near = true; }
       }
 
-      const slots = carveSlots({ left: 0, right: width }, blocked, near ? MIN_SLOT_NEAR : MIN_SLOT);
+      const slots = carveSlots({ left: 0, right: width }, blocked, near ? MIN_SLOT_NEAR : MIN_SLOT)
+        .sort((a, b) => a.left - b.left);
 
       if (slots.length === 0) { lineTop += entry.lineHeight; continue; }
 
-      const slot = slots.reduce((a, b) => (b.right - b.left > a.right - a.left ? b : a));
-      const line = layoutNextLine(prepared, cursor, slot.right - slot.left);
-      if (!line) break;
-      allLines.push({
-        x: Math.round(slot.left),
-        y: Math.round(lineTop),
-        text: line.text.trimEnd(),
-        font: entry.font,
-        color: entry.color,
-      });
-      cursor = line.end;
+      let placedInBand = false;
+      for (const slot of slots) {
+        const line = layoutNextLine(prepared, cursor, slot.right - slot.left);
+        // If a slot can't fit the next token, try other slots or next band.
+        // Only stop when we've already placed text in this band and then run out.
+        if (!line) {
+          if (placedInBand) break;
+          continue;
+        }
+        allLines.push({
+          x: Math.round(slot.left),
+          y: Math.round(lineTop),
+          text: line.text.trimEnd(),
+          font: entry.font,
+          color: entry.color,
+        });
+        cursor = line.end;
+        placedInBand = true;
+      }
+      if (!placedInBand) {
+        lineTop += entry.lineHeight;
+        continue;
+      }
       lineTop += entry.lineHeight;
     }
     y = lineTop;

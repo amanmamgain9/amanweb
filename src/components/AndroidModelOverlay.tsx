@@ -22,12 +22,6 @@ type AndroidPosition = {
   intensity: number;
   rx?: number;
   ry?: number;
-  debugLeft?: number;
-  debugTop?: number;
-  debugRight?: number;
-  debugBottom?: number;
-  rawRx?: number;
-  rawRy?: number;
 } | null;
 
 type AndroidModelOverlayProps = {
@@ -332,12 +326,6 @@ const Robot = ({
       ry: Math.max((maxY - minY) * 0.5 * 0.78, 20),
       radius: Math.max(rawHalfW * 0.72, (maxY - minY) * 0.5 * 0.62, 16),
       intensity: android.intensity,
-      debugLeft: minX,
-      debugTop: minY,
-      debugRight: maxX,
-      debugBottom: maxY,
-      rawRx: Math.max((maxX - minX) * 0.5, 1),
-      rawRy: Math.max((maxY - minY) * 0.5, 1),
     };
 
     const previous = footprintRef.current;
@@ -349,12 +337,6 @@ const Robot = ({
           ry: lerp(previous.ry ?? previous.radius, rawFootprint.ry, 0.22),
           radius: lerp(previous.radius, rawFootprint.radius, 0.22),
           intensity: rawFootprint.intensity,
-          debugLeft: rawFootprint.debugLeft,
-          debugTop: rawFootprint.debugTop,
-          debugRight: rawFootprint.debugRight,
-          debugBottom: rawFootprint.debugBottom,
-          rawRx: rawFootprint.rawRx,
-          rawRy: rawFootprint.rawRy,
         }
       : rawFootprint;
     footprintRef.current = smoothed;
