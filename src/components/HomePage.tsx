@@ -531,8 +531,8 @@ const chainFlash = keyframes`
 const DockChainsSvg = styled.svg<{ $snapping: boolean; $visible: boolean }>`
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
   pointer-events: none;
   z-index: 12;
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
@@ -628,8 +628,6 @@ const DockChains = ({ anchor, snapping, visible }: DockChainsProps) => {
     <DockChainsSvg
       $snapping={snapping}
       $visible={visible}
-      viewBox={`0 0 ${typeof window !== 'undefined' ? window.innerWidth : 1920} ${typeof window !== 'undefined' ? window.innerHeight : 1080}`}
-      preserveAspectRatio="none"
       aria-hidden="true"
     >
       <defs>
