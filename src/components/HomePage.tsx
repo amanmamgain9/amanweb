@@ -50,7 +50,6 @@ export const HomePage = () => {
   const experienceStackRef = useRef<HTMLDivElement | null>(null);
   const mainFlowRef = useRef<HTMLElement | null>(null);
   const heroDockRef = useRef<HTMLDivElement | null>(null);
-  const footerRef = useRef<HTMLElement | null>(null);
   const [isHiRobotLoaded, setIsHiRobotLoaded] = useState(false);
   const [isOtherLinksOpen, setIsOtherLinksOpen] = useState(false);
   const {
@@ -58,12 +57,10 @@ export const HomePage = () => {
     scrollingAndroid,
     reflowObstacle,
     speechTarget,
-    isFooterVisible,
     handleFootprintChange,
   } = useRobotMovement({
     mainFlowRef,
     heroVisualRef: heroDockRef,
-    footerRef,
     freezeMovement: !isHiRobotLoaded,
   });
 
@@ -157,7 +154,7 @@ export const HomePage = () => {
 
       </MainFlow>
 
-      <Footer id="contact" ref={footerRef}>
+      <Footer id="contact">
         <FooterLinks>
           <FooterLink href={homeContent.links.calendly} target="_blank" rel="noreferrer">
             <FaCalendarAlt /> Set up a call
@@ -204,7 +201,7 @@ export const HomePage = () => {
         onFootprintChange={handleFootprintChange}
         onLoaded={() => setIsHiRobotLoaded(true)}
       />
-      {isHiRobotLoaded && speechTarget && !isFooterVisible && (
+      {isHiRobotLoaded && speechTarget && (
         <HiBubble
           aria-hidden="true"
           style={
@@ -459,6 +456,16 @@ const HeroRobotDock = styled.div`
     radial-gradient(circle at 24% 62%, rgba(222, 184, 135, 0.2), transparent 48%),
     linear-gradient(160deg, rgba(255, 248, 228, 0.96), rgba(245, 233, 203, 0.94));
   box-shadow: 0 14px 30px rgba(136, 108, 62, 0.14);
+
+  @media (max-width: 1120px) {
+    width: min(60%, 13rem);
+    aspect-ratio: 1 / 1;
+    border-radius: 1.1rem;
+  }
+
+  @media (max-width: 640px) {
+    width: min(55%, 11rem);
+  }
 `;
 
 const WorkSection = styled.section`
