@@ -115,33 +115,6 @@ const computeScrollingAndroid = (
   const roamPosY = roamY;
   const roamIntensity = 0.56 + Math.sin(t * Math.PI) * 0.28;
 
-  if (isPeekActive) {
-    const targetX = vw - radius * 0.5;
-    const targetY = roamY;
-    const prev = refs.peekSmoothRef.current ?? { x: roamX, y: roamPosY, lastMs: nowMs };
-    // Time-based exponential smoothing: rate 6 → half-gap closed in ~115ms
-    const dt = Math.min(0.1, Math.max(0, (nowMs - prev.lastMs) / 1000));
-    const k = 1 - Math.exp(-6 * dt);
-    const smoothed = {
-      x: lerp(prev.x, targetX, k),
-      y: lerp(prev.y, targetY, k),
-      lastMs: nowMs,
-    };
-    refs.peekSmoothRef.current = smoothed;
-    return {
-      position: {
-        x: clamp(smoothed.x, pad - radius, vw + radius),
-        y: clamp(smoothed.y, radius + 8, vh - radius - 8),
-        radius,
-        intensity: 0.7,
-        mode: 'peek',
-      },
-      isDocked: false,
-    };
-  }
-
-  refs.peekSmoothRef.current = null;
-
   // Cross-fade roam ↔ dock across the band using smoothstep. At s=1
   // (band top, rawDockY = roamY + bandAbove) we output pure dock; at s=0
   // (band bottom, rawDockY = roamY − bandBelow) we output pure roam. The
@@ -152,6 +125,42 @@ const computeScrollingAndroid = (
   const blendedX = lerp(roamX, rawDockX, s);
   const blendedY = lerp(roamPosY, rawDockY, s);
   const blendedIntensity = lerp(roamIntensity, 0.55, s);
+
+  // Bidirectional peek smoothing: on entry we ease from blendedPos toward
+  // the off-screen right; on exit we ease back toward blendedPos. The ref
+  // outlives the isPeek=false flip so the robot doesn't teleport from
+  // off-screen to mid-roam in a single frame when scrolling up from the
+  // bottom. Held until the smoothed position sits within 0.5 px of the
+  // base, at which point control returns to the blended output.
+  if (isPeekActive || refs.peekSmoothRef.current !== null) {
+    const peekX = vw - radius * 0.5;
+    const targetX = isPeekActive ? peekX : blendedX;
+    const targetY = isPeekActive ? roamY : blendedY;
+    const prev = refs.peekSmoothRef.current ?? { x: blendedX, y: blendedY, lastMs: nowMs };
+    const dt = Math.min(0.1, Math.max(0, (nowMs - prev.lastMs) / 1000));
+    const k = 1 - Math.exp(-6 * dt);
+    const smoothed = {
+      x: lerp(prev.x, targetX, k),
+      y: lerp(prev.y, targetY, k),
+      lastMs: nowMs,
+    };
+    const gap = Math.hypot(smoothed.x - targetX, smoothed.y - targetY);
+    if (!isPeekActive && gap < 0.5) {
+      refs.peekSmoothRef.current = null;
+    } else {
+      refs.peekSmoothRef.current = smoothed;
+      return {
+        position: {
+          x: clamp(smoothed.x, pad - radius, vw + radius),
+          y: clamp(smoothed.y, radius + 8, vh - radius - 8),
+          radius,
+          intensity: isPeekActive ? 0.7 : blendedIntensity,
+          mode: isPeekActive ? 'peek' : isDocked ? 'dock' : 'roam',
+        },
+        isDocked: isPeekActive ? false : isDocked,
+      };
+    }
+  }
 
   return {
     position: {
@@ -242,7 +251,11 @@ export const useRobotMovement = ({
 
     const loop = () => {
       update();
-      if (isPeekRef.current) {
+      // Keep driving frames while peek is active OR its exit smoothing is
+      // still converging back to the base roam position — otherwise the
+      // smoothing would stall between sparse scroll events and the exit
+      // would feel like a teleport.
+      if (isPeekRef.current || peekSmoothRef.current !== null) {
         loopFrame = window.requestAnimationFrame(loop);
       } else {
         loopFrame = 0;
@@ -255,7 +268,9 @@ export const useRobotMovement = ({
     };
 
     const onPeekChange = () => {
-      if (isPeekRef.current) startLoop();
+      // Start the loop on both enter and exit; exit needs it to smooth
+      // back from off-screen to the live roam position.
+      startLoop();
     };
     window.addEventListener('robot:peek-change', onPeekChange);
     window.addEventListener('scroll', schedule, { passive: true });
