@@ -202,6 +202,7 @@ export const ReflowParagraph = ({
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [width, setWidth] = useState(0);
+  const [renderedHeight, setRenderedHeight] = useState(0);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -277,16 +278,23 @@ export const ReflowParagraph = ({
         : null;
     const layout = layoutTextBlocks(metrics.entries, metrics.layoutWidth, androidLocal);
     const finalLines = layout.lines;
+    // Sync back the real laid-out height so the Wrap can grow when the
+    // live android obstacle forces more line breaks than stableHeight
+    // reserved. Without this, the extra lines fall outside the canvas
+    // buffer and get clipped — exactly what was happening to the long
+    // Experience section copy when the robot roamed into it.
+    setRenderedHeight((prev) => (prev === layout.height ? prev : layout.height));
 
+    const containerHeight = Math.max(metrics.stableHeight, layout.height);
     const pixelWidth = Math.max(1, Math.round(width * dpr));
-    const pixelHeight = Math.max(1, Math.round(metrics.stableHeight * dpr));
+    const pixelHeight = Math.max(1, Math.round(containerHeight * dpr));
     if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
       canvas.width = pixelWidth;
       canvas.height = pixelHeight;
     }
 
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
-    context.clearRect(0, 0, width, metrics.stableHeight);
+    context.clearRect(0, 0, width, containerHeight);
     context.textBaseline = 'top';
 
     context.shadowColor = 'rgba(88, 110, 117, 0.12)';
@@ -305,9 +313,10 @@ export const ReflowParagraph = ({
   }, [androidGlobal, metrics, width]);
 
   const stableHeight = metrics?.stableHeight ?? 220;
+  const displayHeight = Math.max(stableHeight, renderedHeight);
 
   return (
-    <Wrap ref={wrapRef} style={{ height: stableHeight }}>
+    <Wrap ref={wrapRef} style={{ height: displayHeight }}>
       <Canvas ref={canvasRef} />
       <AccessibleText>{blocks.map((block) => block.text).join(' ')}</AccessibleText>
     </Wrap>
