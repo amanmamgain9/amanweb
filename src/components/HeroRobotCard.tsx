@@ -109,13 +109,18 @@ const RobotInCard = ({ onLoaded }: { onLoaded: () => void }) => {
     const node = groupRef.current;
     if (!node) return;
 
-    const bob = Math.sin(clock.elapsedTime * 2.2) * 7;
-    const sway = Math.sin(clock.elapsedTime * 1.05) * 0.14;
+    const t = clock.elapsedTime;
+    const sideTravel = Math.sin(t * 0.85) * Math.min(size.width * 0.13, 34);
+    const bob = Math.sin(t * 2.5) * 11;
+    const floatLift = Math.max(0, Math.sin(t * 1.35 + 0.35)) * 8;
+    const sway = Math.sin(t * 1.05) * 0.18;
+    const roll = Math.sin(t * 1.3 + 0.7) * 0.045;
+    const pitch = Math.sin(t * 1.6) * 0.03;
     const targetHeight = Math.max(Math.min(size.height * 0.95, 390), 230);
     const scale = Math.min(Math.max((targetHeight / modelMetrics.height) * 1.08, 0.001), 45);
 
-    node.position.set(0, -size.height * 0.1 + bob, 30);
-    node.rotation.set(-Math.PI, -Math.PI + sway, -Math.PI);
+    node.position.set(sideTravel, -size.height * 0.1 + bob + floatLift, 30);
+    node.rotation.set(-Math.PI + pitch, -Math.PI + sway, -Math.PI + roll);
     node.scale.setScalar(scale);
   });
 

@@ -1,42 +1,49 @@
-import { useEffect, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
+import { useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 import {
   FaArrowDown,
-  FaArrowRight,
   FaEnvelope,
   FaFilePdf,
   FaGithub,
   FaLinkedin,
 } from 'react-icons/fa';
 import { ReflowParagraph, type ReflowBlock } from './ReflowParagraph';
-import { HeroRobotCard } from './HeroRobotCard';
+import { AndroidModelOverlay } from './AndroidModelOverlay';
 import { homeContent, type ExperienceEntry } from '../data/homeContent';
 import { useActiveExperience } from '../hooks/useActiveExperience';
-
-const getExperienceCardText = (experience: ExperienceEntry) =>
-  ({
-    periodSignal: `${experience.period}    ${experience.signal}`,
-    heading: experience.company,
-    role: experience.role,
-    body: [experience.summary, ...experience.highlights].join(' '),
-    stack: `Stack: ${experience.stack.join(' • ')}`,
-  });
+import { useRobotMovement } from '../hooks/useRobotMovement';
 
 const buildExperienceBlocks = (experience: ExperienceEntry): ReflowBlock[] => {
-  const parts = getExperienceCardText(experience);
+  const baseBlocks: ReflowBlock[] = [
+    { kind: 'meta', text: `${experience.period}    ${experience.signal}` },
+    { kind: 'heading', text: experience.company },
+    { kind: 'role', text: experience.role },
+  ];
+
+  if (experience.id === 'independent-products') {
+    return [
+      ...baseBlocks,
+      { kind: 'body', text: experience.summary },
+      ...experience.highlights.map((highlight) => ({ kind: 'body' as const, text: highlight })),
+      { kind: 'stack', text: `Stack: ${experience.stack.join(' • ')}` },
+    ];
+  }
+
   return [
-    { kind: 'meta', text: parts.periodSignal },
-    { kind: 'heading', text: parts.heading },
-    { kind: 'role', text: parts.role },
-    { kind: 'body', text: parts.body },
-    { kind: 'stack', text: parts.stack },
+    ...baseBlocks,
+    { kind: 'body', text: [experience.summary, ...experience.highlights].join(' ') },
+    { kind: 'stack', text: `Stack: ${experience.stack.join(' • ')}` },
   ];
 };
 
+const hiBubbleFloat = keyframes`
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -3px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+`;
+
 export const HomePage = () => {
-  const [isCompact, setIsCompact] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth <= 900 : false,
-  );
   const activeExperienceId = useActiveExperience(homeContent.experiences);
   const activeExperienceIndex = Math.max(
     0,
@@ -44,12 +51,20 @@ export const HomePage = () => {
   );
   const experienceCardRefs = useRef<(HTMLElement | null)[]>([]);
   const experienceStackRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const onResize = () => setIsCompact(window.innerWidth <= 900);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
+  const mainFlowRef = useRef<HTMLElement | null>(null);
+  const heroDockRef = useRef<HTMLDivElement | null>(null);
+  const [isHiRobotLoaded, setIsHiRobotLoaded] = useState(false);
+  const {
+    isCompact,
+    scrollingAndroid,
+    reflowObstacle,
+    speechTarget,
+    handleFootprintChange,
+  } = useRobotMovement({
+    mainFlowRef,
+    heroVisualRef: heroDockRef,
+    freezeMovement: !isHiRobotLoaded,
+  });
 
   return (
     <PageShell>
@@ -57,12 +72,11 @@ export const HomePage = () => {
       <TopBar>
         <TopNav>
           <NavLink href="#work">Work</NavLink>
-          <NavLink href="#projects">Projects</NavLink>
           <NavLink href="#contact">Contact</NavLink>
         </TopNav>
       </TopBar>
 
-      <MainFlow id="top">
+      <MainFlow id="top" ref={mainFlowRef}>
         <HeroSection>
           <HeroContent>
             <HeroTextStack>
@@ -91,7 +105,7 @@ export const HomePage = () => {
           </HeroContent>
 
           <HeroVisual>
-            <HeroRobotCard />
+            <HeroRobotDock ref={heroDockRef} />
           </HeroVisual>
         </HeroSection>
 
@@ -99,11 +113,11 @@ export const HomePage = () => {
           <SectionIntro>
             <ReflowParagraph
               blocks={[
-                { kind: 'sectionEyebrow', text: 'EXPERIENCE ARC' },
-                { kind: 'sectionTitle', text: 'Shipping across product systems, game workflows, and applied AI.' },
+                { kind: 'sectionTitle', text: 'Experience' },
                 { kind: 'sectionCopy', text: 'Ten years of work across founding builds, operational systems, healthcare products, commerce, and experimental tools.' },
               ]}
               compact={isCompact}
+              androidGlobal={reflowObstacle}
             />
           </SectionIntro>
 
@@ -118,10 +132,11 @@ export const HomePage = () => {
                     experienceCardRefs.current[index] = node;
                   }}
                 >
-                  <ExperienceNarrative $active={index === activeExperienceIndex}>
+                  <ExperienceNarrative>
                     <ReflowParagraph
                       blocks={buildExperienceBlocks(experience)}
                       compact={isCompact}
+                      androidGlobal={reflowObstacle}
                     />
                   </ExperienceNarrative>
                 </ExperienceCard>
@@ -130,49 +145,15 @@ export const HomePage = () => {
           </TimelineLayout>
         </WorkSection>
 
-        <ProjectsSection id="projects">
-          <SectionIntro>
-            <ReflowParagraph
-              blocks={[
-                { kind: 'sectionEyebrow', text: 'SELECTED BUILDS' },
-                { kind: 'sectionTitle', text: 'Personal work that keeps the motion sharp.' },
-                { kind: 'sectionCopy', text: 'Browser-side media, small tools, and experiments that turn fuzzy ideas into usable software.' },
-              ]}
-              compact={isCompact}
-            />
-          </SectionIntro>
-
-          <ProjectsGrid>
-            {homeContent.projects.map((project) => (
-              <ProjectCard key={project.name}>
-                <ReflowParagraph
-                  blocks={[
-                    { kind: 'projectName', text: project.name },
-                    { kind: 'projectSummary', text: project.summary },
-                  ]}
-                  compact={isCompact}
-                />
-                <TagRow>
-                  {project.tags.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
-                  ))}
-                </TagRow>
-                <ProjectLink href={project.href} target="_blank" rel="noreferrer">
-                  {project.label} <FaArrowRight />
-                </ProjectLink>
-              </ProjectCard>
-            ))}
-          </ProjectsGrid>
-        </ProjectsSection>
-
         <PrinciplesSection>
           <SectionIntro>
             <ReflowParagraph
               blocks={[
                 { kind: 'sectionEyebrow', text: 'WORKING STYLE' },
-                { kind: 'sectionTitle', text: 'Clean surfaces, strong systems, fast loops.' },
+                { kind: 'sectionTitle', text: 'Working style' },
               ]}
               compact={isCompact}
+              androidGlobal={reflowObstacle}
             />
           </SectionIntro>
 
@@ -185,6 +166,7 @@ export const HomePage = () => {
                     { kind: 'principleBody', text: principle.body },
                   ]}
                   compact={isCompact}
+                  androidGlobal={reflowObstacle}
                 />
               </PrincipleCard>
             ))}
@@ -199,6 +181,7 @@ export const HomePage = () => {
               { kind: 'footerCopy', text: 'Available for product engineering, creative frontend systems, and prototypes that need to feel alive.' },
             ]}
             compact={isCompact}
+            androidGlobal={reflowObstacle}
           />
         </FooterReflowWrap>
         <FooterLinks>
@@ -216,6 +199,24 @@ export const HomePage = () => {
           </FooterLink>
         </FooterLinks>
       </Footer>
+      <AndroidModelOverlay
+        android={scrollingAndroid}
+        onFootprintChange={handleFootprintChange}
+        onLoaded={() => setIsHiRobotLoaded(true)}
+      />
+      {isHiRobotLoaded && speechTarget && (
+        <HiBubble
+          aria-hidden="true"
+          style={
+            {
+              left: speechTarget.x + (speechTarget.rx ?? speechTarget.radius) + 10,
+              top: speechTarget.y - (speechTarget.ry ?? speechTarget.radius) - 16,
+            } as CSSProperties
+          }
+        >
+          Hi
+        </HiBubble>
+      )}
     </PageShell>
   );
 };
@@ -306,6 +307,11 @@ const HeroSection = styled.section`
   gap: clamp(1.5rem, 3vw, 2.6rem);
   align-items: start;
   padding: 1.35rem 0 4rem;
+
+  @media (min-width: 1536px) {
+    min-height: 74vh;
+    padding-bottom: 2.3rem;
+  }
 
   @media (max-width: 1120px) {
     grid-template-columns: 1fr;
@@ -443,10 +449,26 @@ const HeroVisual = styled.div`
   }
 `;
 
+const HeroRobotDock = styled.div`
+  width: min(100%, 20rem);
+  aspect-ratio: 4 / 5;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(181, 137, 0, 0.2);
+  background:
+    radial-gradient(circle at 68% 26%, rgba(38, 139, 210, 0.1), transparent 42%),
+    radial-gradient(circle at 24% 62%, rgba(222, 184, 135, 0.2), transparent 48%),
+    linear-gradient(160deg, rgba(255, 248, 228, 0.96), rgba(245, 233, 203, 0.94));
+  box-shadow: 0 14px 30px rgba(136, 108, 62, 0.14);
+`;
+
 const WorkSection = styled.section`
   display: grid;
   gap: 2rem;
   padding: 2rem 0 1rem;
+
+  @media (min-width: 1536px) {
+    padding-top: 1.25rem;
+  }
 `;
 
 const SectionIntro = styled.div`
@@ -486,57 +508,9 @@ const ExperienceCard = styled.article<{ $active: boolean }>`
     box-shadow 220ms ease;
 `;
 
-const ExperienceNarrative = styled.div<{ $active: boolean }>`
+const ExperienceNarrative = styled.div`
   margin-top: 0.9rem;
-  opacity: ${({ $active }) => ($active ? 1 : 0.78)};
-  transition: opacity 220ms ease;
-`;
-
-const TagRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-top: 1.1rem;
-`;
-
-const Tag = styled.span`
-  padding: 0.45rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(222, 184, 135, 0.22);
-  border: 1px solid rgba(181, 137, 0, 0.2);
-  color: var(--text);
-  font-size: var(--font-size-sm-plus);
-`;
-
-const ProjectsSection = styled.section`
-  padding: 4rem 0 1rem;
-`;
-
-const ProjectsGrid = styled.div`
-  margin-top: 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-
-  @media (max-width: 960px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const ProjectCard = styled.article`
-  padding: 1.35rem;
-  border-radius: 1.6rem;
-  border: 1px solid rgba(181, 137, 0, 0.2);
-  background: linear-gradient(180deg, rgba(255, 248, 228, 0.92), rgba(245, 233, 203, 0.9));
-`;
-
-const ProjectLink = styled.a`
-  margin-top: 1.2rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--accent-soft);
-  text-decoration: none;
+  opacity: 1;
 `;
 
 const PrinciplesSection = styled.section`
@@ -599,5 +573,20 @@ const FooterLink = styled.a`
   background: rgba(255, 250, 240, 0.74);
   color: var(--text);
   text-decoration: none;
+`;
+
+const HiBubble = styled.div`
+  position: fixed;
+  z-index: 18;
+  pointer-events: none;
+  padding: 0.32rem 0.58rem;
+  border-radius: 999px;
+  border: 1px solid rgba(181, 137, 0, 0.5);
+  background: rgba(255, 250, 240, 0.9);
+  color: #333333;
+  font-size: var(--font-size-2xs);
+  line-height: 1;
+  box-shadow: 0 6px 18px rgba(130, 105, 73, 0.2);
+  animation: ${hiBubbleFloat} 2.2s ease-in-out infinite;
 `;
 

@@ -27,6 +27,7 @@ type AndroidPosition = {
 type AndroidModelOverlayProps = {
   android: AndroidPosition;
   onFootprintChange?: (footprint: Exclude<AndroidPosition, null>) => void;
+  onLoaded?: () => void;
 };
 
 const MODEL_PATH = '/robot.glb';
@@ -236,12 +237,15 @@ const Robot = ({
   android,
   modelPath,
   onFootprintChange,
+  onLoaded,
 }: {
   android: Exclude<AndroidPosition, null>;
   modelPath: string;
   onFootprintChange?: (footprint: Exclude<AndroidPosition, null>) => void;
+  onLoaded?: () => void;
 }) => {
   const groupRef = useRef<Group>(null);
+  const hasNotifiedLoadedRef = useRef(false);
   const footprintRef = useRef<Exclude<AndroidPosition, null> | null>(null);
   const worldBoundsRef = useRef(new Box3());
   const armBonesRef = useRef<ArmBones | null>(null);
@@ -274,6 +278,12 @@ const Robot = ({
       action?.stop();
     });
   }, [actions]);
+
+  useEffect(() => {
+    if (hasNotifiedLoadedRef.current) return;
+    hasNotifiedLoadedRef.current = true;
+    onLoaded?.();
+  }, [onLoaded]);
 
   useEffect(() => {
     armBonesRef.current = resolveArmBones(nodes.Object_7.skeleton);
@@ -357,7 +367,7 @@ const Robot = ({
   );
 };
 
-export const AndroidModelOverlay = ({ android, onFootprintChange }: AndroidModelOverlayProps) => {
+export const AndroidModelOverlay = ({ android, onFootprintChange, onLoaded }: AndroidModelOverlayProps) => {
   if (!android) return null;
 
   return (
@@ -374,7 +384,12 @@ export const AndroidModelOverlay = ({ android, onFootprintChange }: AndroidModel
         <directionalLight intensity={1.5} position={[120, 180, 220]} />
         <directionalLight intensity={0.9} position={[-140, -80, 140]} />
         <Suspense fallback={null}>
-          <Robot android={android} modelPath={MODEL_PATH} onFootprintChange={onFootprintChange} />
+          <Robot
+            android={android}
+            modelPath={MODEL_PATH}
+            onFootprintChange={onFootprintChange}
+            onLoaded={onLoaded}
+          />
         </Suspense>
       </Canvas>
     </Overlay>

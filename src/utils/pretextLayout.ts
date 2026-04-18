@@ -56,6 +56,7 @@ type Interval = { left: number; right: number };
 
 const MIN_SLOT = 56;
 const MIN_SLOT_NEAR = 104;
+const SLOT_INNER_PAD = 10;
 
 const ellipseInterval = (
   cx: number, cy: number, rx: number, ry: number,
@@ -125,7 +126,9 @@ export function layoutTextBlocks(
 
       let placedInBand = false;
       for (const slot of slots) {
-        const line = layoutNextLine(prepared, cursor, slot.right - slot.left);
+        const usableSlotWidth = Math.max(0, slot.right - slot.left - SLOT_INNER_PAD);
+        if (usableSlotWidth < MIN_SLOT) continue;
+        const line = layoutNextLine(prepared, cursor, usableSlotWidth);
         // If a slot can't fit the next token, try other slots or next band.
         // Only stop when we've already placed text in this band and then run out.
         if (!line) {

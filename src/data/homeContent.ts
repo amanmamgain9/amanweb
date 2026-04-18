@@ -31,18 +31,30 @@ export const homeContent = {
   hero: {
     eyebrow: '',
     name: 'Aman Mamgain',
-    title: 'Full-stack systems, game surfaces, and applied AI.',
+    title: 'Full-stack engineer.',
     summary:
-      'I build product experiences that start as rough fragments and resolve into clear, fast systems. The first screen assembles. The dragon handles the jumps.',
+      'I build product systems across web and mobile.',
     supporting:
-      'Ten years across product engineering, founding builds, game workflows, and AI prototypes.',
+      'Ten years across product engineering, founding builds, game workflows, and AI powered applications.',
     stats: [
       { label: 'Years shipping', value: '10+' },
-      { label: 'Product eras', value: '5' },
-      { label: 'Modes', value: 'Web / Games / AI' },
+      { label: 'Modes', value: 'Web / Mobile / Games / AI' },
     ] satisfies HeroStat[],
   },
   experiences: [
+    {
+      id: 'independent-products',
+      period: '2025 - 2026',
+      company: 'Independent Product Builder',
+      role: 'PlanMyWorkday.com and AIAnkiPro.com',
+      signal: 'Ship -> iterate',
+      summary:
+        'Built PlanMyWorkday.com, a keyboard-first daily planner with integrated timer for fast, focused execution.',
+      highlights: [
+        'Built AIAnkiPro.com to turn notes, videos, and AI chats into flashcards with Learn and Shuffle modes for stronger recall.',
+      ],
+      stack: ['Full-stack web', 'AI-assisted workflows', 'Product iteration'],
+    },
     {
       id: 'glip',
       period: '2021 - 2024',
