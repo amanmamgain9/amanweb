@@ -31,7 +31,8 @@ type AndroidModelOverlayProps = {
   isPeek?: boolean;
 };
 
-const MODEL_PATH = '/robot.glb';
+const MODEL_PATH = '/robot.opt.glb';
+const DRACO_DECODER_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
 const MODEL_SCALE = 0.4;
 const MODEL_SIZE_MULTIPLIER = 1;
 const MODEL_BASE_X_ROTATION = 0 * (Math.PI / 180);
@@ -283,7 +284,7 @@ const Robot = ({
   const footprintRef = useRef<Exclude<AndroidPosition, null> | null>(null);
   const worldBoundsRef = useRef(new Box3());
   const armBonesRef = useRef<ArmBones | null>(null);
-  const { scene, animations } = useGLTF(modelPath);
+  const { scene, animations } = useGLTF(modelPath, DRACO_DECODER_PATH);
   const { size, gl } = useThree();
   const clonedScene = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes, materials } = useGraph(clonedScene) as GLTFResult;
@@ -443,7 +444,7 @@ export const AndroidModelOverlay = ({ android, onFootprintChange, onLoaded, isPe
   );
 };
 
-useGLTF.preload(MODEL_PATH);
+useGLTF.preload(MODEL_PATH, DRACO_DECODER_PATH);
 
 const Overlay = styled.div`
   position: fixed;

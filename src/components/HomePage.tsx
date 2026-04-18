@@ -73,9 +73,11 @@ export const HomePage = () => {
   useEffect(() => {
     if (undockSignal === 0) return;
     setIsWireSnapping(true);
-    const timeout = window.setTimeout(() => setIsWireSnapping(false), 900);
-    return () => window.clearTimeout(timeout);
   }, [undockSignal]);
+
+  useEffect(() => {
+    if (isDocked) setIsWireSnapping(false);
+  }, [isDocked]);
 
   const chainAnchor = (() => {
     const dock = heroDockRef.current;
