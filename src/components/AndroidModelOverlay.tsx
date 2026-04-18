@@ -28,6 +28,7 @@ type AndroidModelOverlayProps = {
   android: AndroidPosition;
   onFootprintChange?: (footprint: Exclude<AndroidPosition, null>) => void;
   onLoaded?: () => void;
+  isPeek?: boolean;
 };
 
 const MODEL_PATH = '/robot.glb';
@@ -166,6 +167,37 @@ const tposeWorldSpace = (
   if (armBones.leftForearm) armBones.leftForearm.quaternion.slerp(_idQ, 1);
 };
 
+const peekPose = (
+  skinnedMesh: SkinnedMesh,
+  armBones: ArmBones,
+  time: number,
+) => {
+  tposeWorldSpace(skinnedMesh, armBones);
+
+  const { leftForearm, rightForearm, leftHand } = armBones;
+
+  const idleBob = Math.sin(time * 1.6) * 0.06;
+  if (rightForearm) {
+    rightForearm.updateWorldMatrix(true, true);
+    _wR.setFromAxisAngle(_zAx, 0.25 + idleBob);
+    worldRotToBone(rightForearm, _wR);
+  }
+  if (leftForearm) {
+    leftForearm.updateWorldMatrix(true, true);
+    _wR.setFromUnitVectors(_leftDir, _upDir);
+    worldRotToBone(leftForearm, _wR);
+    leftForearm.updateWorldMatrix(false, true);
+    const slowWave = Math.sin(time * 1.8) * 0.18;
+    _wR.setFromAxisAngle(_zAx, slowWave);
+    worldRotToBone(leftForearm, _wR);
+    if (leftHand) {
+      const flick = Math.sin(time * 1.8 + 1.2) * 0.1;
+      _wR.setFromAxisAngle(_zAx, flick);
+      worldRotToBone(leftHand, _wR);
+    }
+  }
+};
+
 const hiWaveAnimation = (
   skinnedMesh: SkinnedMesh,
   armBones: ArmBones,
@@ -238,11 +270,13 @@ const Robot = ({
   modelPath,
   onFootprintChange,
   onLoaded,
+  isPeek = false,
 }: {
   android: Exclude<AndroidPosition, null>;
   modelPath: string;
   onFootprintChange?: (footprint: Exclude<AndroidPosition, null>) => void;
   onLoaded?: () => void;
+  isPeek?: boolean;
 }) => {
   const groupRef = useRef<Group>(null);
   const hasNotifiedLoadedRef = useRef(false);
@@ -297,26 +331,38 @@ const Robot = ({
     mats.filter(Boolean).forEach((mat) => tuneMaterial(mat as Material, anisotropy));
   }, [gl, materials.hero_texture, nodes.Object_7.material]);
 
-  useFrame(({ clock }) => {
+  const peekBlendRef = useRef(0);
+
+  useFrame(({ clock }, delta) => {
     const node = groupRef.current;
     if (!node) return;
 
     const baseX = android.x - size.width * 0.5;
     const baseY = size.height * 0.5 - android.y;
     const bob = Math.sin(clock.elapsedTime * 2.4) * (2.2 + android.intensity * 2.2);
-    const sway = 0;
     const targetHeight = Math.max(android.radius * 4.2, 84) * MODEL_SIZE_MULTIPLIER;
     const scale = Math.min(Math.max(targetHeight / modelMetrics.height, 0.001), 40);
-    const yaw = MODEL_Y_ROTATION + sway;
 
-    node.position.set(baseX, baseY + bob + MODEL_Y_OFFSET, 40);
+    const blendRate = Math.min(1, Math.max(0, delta) * 3.2);
+    peekBlendRef.current = peekBlendRef.current + ((isPeek ? 1 : 0) - peekBlendRef.current) * blendRate;
+    const peekBlend = peekBlendRef.current;
+
+    const peekYawTilt = peekBlend * 0.55;
+    const peekLean = peekBlend * 4;
+    const yaw = MODEL_Y_ROTATION + peekYawTilt;
+
+    node.position.set(baseX - peekLean, baseY + bob + MODEL_Y_OFFSET, 40);
     node.rotation.set(MODEL_X_ROTATION, yaw, MODEL_Z_ROTATION);
     node.scale.setScalar(scale);
 
     const mesh = nodes.Object_7;
     const bones = armBonesRef.current;
     if (bones) {
-      hiWaveAnimation(mesh, bones, clock.elapsedTime);
+      if (peekBlend < 0.5) {
+        hiWaveAnimation(mesh, bones, clock.elapsedTime);
+      } else {
+        peekPose(mesh, bones, clock.elapsedTime);
+      }
     }
 
     mesh.updateWorldMatrix(true, false);
@@ -367,7 +413,7 @@ const Robot = ({
   );
 };
 
-export const AndroidModelOverlay = ({ android, onFootprintChange, onLoaded }: AndroidModelOverlayProps) => {
+export const AndroidModelOverlay = ({ android, onFootprintChange, onLoaded, isPeek }: AndroidModelOverlayProps) => {
   if (!android) return null;
 
   return (
@@ -389,6 +435,7 @@ export const AndroidModelOverlay = ({ android, onFootprintChange, onLoaded }: An
             modelPath={MODEL_PATH}
             onFootprintChange={onFootprintChange}
             onLoaded={onLoaded}
+            isPeek={isPeek}
           />
         </Suspense>
       </Canvas>

@@ -7,6 +7,7 @@ export type AndroidPosition = {
   intensity: number;
   rx?: number;
   ry?: number;
+  mode?: 'dock' | 'roam' | 'peek';
 } | null;
 
 type FootprintUpdate = Exclude<AndroidPosition, null>;
@@ -18,6 +19,7 @@ type ViewportBands = {
 type UseRobotMovementArgs = {
   mainFlowRef: MutableRefObject<HTMLElement | null>;
   heroVisualRef?: MutableRefObject<HTMLElement | null>;
+  footerRef?: MutableRefObject<HTMLElement | null>;
   freezeMovement?: boolean;
 };
 
@@ -30,17 +32,26 @@ const readViewportBands = (): ViewportBands => {
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 type UndockState = { x0: number; scroll0: number } | null;
+type SmoothState = { x: number; y: number; lastMs: number } | null;
+
+type ComputeRefs = {
+  undockRef: MutableRefObject<UndockState>;
+  peekSmoothRef: MutableRefObject<SmoothState>;
+};
 
 const computeScrollingAndroid = (
   flow: HTMLElement | null,
   hero: HTMLElement | null,
   viewport: ViewportBands,
   freezeMovement: boolean,
-  undockRef: MutableRefObject<UndockState>,
-): AndroidPosition => {
-  if (!flow) return null;
+  isPeekActive: boolean,
+  refs: ComputeRefs,
+  nowMs: number,
+): { position: AndroidPosition; isDocked: boolean } => {
+  if (!flow) return { position: null, isDocked: true };
 
   const flowRect = flow.getBoundingClientRect();
   const vh = window.innerHeight;
@@ -55,63 +66,124 @@ const computeScrollingAndroid = (
 
   if (freezeMovement) {
     return {
-      x: clamp(dockX, pad, vw - pad),
-      y: clamp(dockY, radius + 8, vh - radius - 8),
-      radius,
-      intensity: 0.6,
+      position: {
+        x: clamp(dockX, pad, vw - pad),
+        y: clamp(dockY, radius + 8, vh - radius - 8),
+        radius,
+        intensity: 0.6,
+        mode: 'dock',
+      },
+      isDocked: true,
     };
   }
 
-  // Undock the moment the live dock center crosses the roam line.
-  // Before: robot rides the dock element (natural during early scroll).
-  // After: y is locked to roamY; x sweeps a cosine from the undock-capture x.
   const undocked = dockY <= roamY;
 
   if (!undocked) {
-    undockRef.current = null;
+    refs.undockRef.current = null;
+    refs.peekSmoothRef.current = null;
     return {
-      x: clamp(dockX, pad, vw - pad),
-      y: clamp(dockY, radius + 8, vh - radius - 8),
-      radius,
-      intensity: 0.55,
+      position: {
+        x: clamp(dockX, pad, vw - pad),
+        y: clamp(dockY, radius + 8, vh - radius - 8),
+        radius,
+        intensity: 0.55,
+        mode: 'dock',
+      },
+      isDocked: true,
     };
   }
 
-  if (undockRef.current === null) {
-    undockRef.current = { x0: dockX, scroll0: window.scrollY };
+  if (refs.undockRef.current === null) {
+    refs.undockRef.current = { x0: dockX, scroll0: window.scrollY };
   }
 
   const centerX = flowRect.left + flowRect.width * 0.5;
   const amplitude = flowRect.width * (viewport.isCompact ? 0.34 : 0.42);
   const omega = viewport.isCompact ? Math.PI * 2.0 : Math.PI * 2.2;
-  const ratio = clamp((undockRef.current.x0 - centerX) / Math.max(amplitude, 1e-4), -1, 1);
+  const ratio = clamp((refs.undockRef.current.x0 - centerX) / Math.max(amplitude, 1e-4), -1, 1);
   const phase = Math.acos(ratio);
   const tDenom = Math.max(flowRect.height - vh, 1);
-  const t = clamp01((window.scrollY - undockRef.current.scroll0) / tDenom);
+  const t = clamp01((window.scrollY - refs.undockRef.current.scroll0) / tDenom);
 
-  const x = centerX + amplitude * Math.cos(omega * t + phase);
-  const y = roamY;
+  const roamX = centerX + amplitude * Math.cos(omega * t + phase);
+  const roamPosY = roamY;
+
+  if (isPeekActive) {
+    const targetX = vw - radius * 0.5;
+    const targetY = roamY;
+    const prev = refs.peekSmoothRef.current ?? { x: roamX, y: roamPosY, lastMs: nowMs };
+    // Time-based exponential smoothing: rate 6 → half-gap closed in ~115ms
+    const dt = Math.min(0.1, Math.max(0, (nowMs - prev.lastMs) / 1000));
+    const k = 1 - Math.exp(-6 * dt);
+    const smoothed = {
+      x: lerp(prev.x, targetX, k),
+      y: lerp(prev.y, targetY, k),
+      lastMs: nowMs,
+    };
+    refs.peekSmoothRef.current = smoothed;
+    return {
+      position: {
+        x: clamp(smoothed.x, pad - radius, vw + radius),
+        y: clamp(smoothed.y, radius + 8, vh - radius - 8),
+        radius,
+        intensity: 0.7,
+        mode: 'peek',
+      },
+      isDocked: false,
+    };
+  }
+
+  refs.peekSmoothRef.current = null;
 
   return {
-    x: clamp(x, pad, vw - pad),
-    y: clamp(y, radius + 8, vh - radius - 8),
-    radius,
-    intensity: 0.56 + Math.sin(t * Math.PI) * 0.28,
+    position: {
+      x: clamp(roamX, pad, vw - pad),
+      y: clamp(roamPosY, radius + 8, vh - radius - 8),
+      radius,
+      intensity: 0.56 + Math.sin(t * Math.PI) * 0.28,
+      mode: 'roam',
+    },
+    isDocked: false,
   };
 };
 
 export const useRobotMovement = ({
   mainFlowRef,
   heroVisualRef,
+  footerRef,
   freezeMovement = false,
 }: UseRobotMovementArgs) => {
   const [viewport, setViewport] = useState<ViewportBands>(() => readViewportBands());
   const [scrollingAndroid, setScrollingAndroid] = useState<AndroidPosition>(null);
   const [androidFootprint, setAndroidFootprint] = useState<AndroidPosition>(null);
+  const [isDocked, setIsDocked] = useState(true);
+  const [undockSignal, setUndockSignal] = useState(0);
+  const [isPeek, setIsPeek] = useState(false);
+
   const undockRef = useRef<UndockState>(null);
+  const peekSmoothRef = useRef<SmoothState>(null);
+  const lastDockedRef = useRef(true);
+  const isPeekRef = useRef(false);
+
+  useEffect(() => {
+    const target = footerRef?.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        setIsPeek(entry.isIntersecting && entry.intersectionRatio > 0.15);
+      },
+      { threshold: [0, 0.15, 0.4, 1] },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [footerRef]);
 
   useEffect(() => {
     let frame = 0;
+    let loopFrame = 0;
 
     const update = () => {
       const nextViewport = readViewportBands();
@@ -120,16 +192,25 @@ export const useRobotMovement = ({
         return nextViewport;
       });
 
-      const nextAndroid = computeScrollingAndroid(
+      const { position, isDocked: dockedNow } = computeScrollingAndroid(
         mainFlowRef.current,
         heroVisualRef?.current ?? null,
         nextViewport,
         freezeMovement,
-        undockRef,
+        isPeekRef.current,
+        { undockRef, peekSmoothRef },
+        performance.now(),
       );
-      setScrollingAndroid(nextAndroid);
 
-      if (!nextAndroid) {
+      setScrollingAndroid(position);
+
+      if (lastDockedRef.current && !dockedNow) {
+        setUndockSignal((n) => n + 1);
+      }
+      lastDockedRef.current = dockedNow;
+      setIsDocked((current) => (current === dockedNow ? current : dockedNow));
+
+      if (!position) {
         setAndroidFootprint((current) => (current ? null : current));
       }
     };
@@ -142,16 +223,41 @@ export const useRobotMovement = ({
       });
     };
 
+    const loop = () => {
+      update();
+      if (isPeekRef.current) {
+        loopFrame = window.requestAnimationFrame(loop);
+      } else {
+        loopFrame = 0;
+      }
+    };
+
+    const startLoop = () => {
+      if (loopFrame) return;
+      loopFrame = window.requestAnimationFrame(loop);
+    };
+
+    const onPeekChange = () => {
+      if (isPeekRef.current) startLoop();
+    };
+    window.addEventListener('robot:peek-change', onPeekChange);
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     schedule();
 
     return () => {
+      window.removeEventListener('robot:peek-change', onPeekChange);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
       if (frame) window.cancelAnimationFrame(frame);
+      if (loopFrame) window.cancelAnimationFrame(loopFrame);
     };
   }, [freezeMovement, heroVisualRef, mainFlowRef]);
+
+  useEffect(() => {
+    isPeekRef.current = isPeek;
+    window.dispatchEvent(new Event('robot:peek-change'));
+  }, [isPeek]);
 
   const handleFootprintChange = useCallback((next: FootprintUpdate) => {
     setAndroidFootprint((current) => {
@@ -175,5 +281,8 @@ export const useRobotMovement = ({
     reflowObstacle,
     speechTarget,
     handleFootprintChange,
+    isDocked,
+    undockSignal,
+    isPeek,
   };
 };

@@ -50,19 +50,50 @@ export const HomePage = () => {
   const experienceStackRef = useRef<HTMLDivElement | null>(null);
   const mainFlowRef = useRef<HTMLElement | null>(null);
   const heroDockRef = useRef<HTMLDivElement | null>(null);
+  const footerRef = useRef<HTMLElement | null>(null);
   const [isHiRobotLoaded, setIsHiRobotLoaded] = useState(false);
   const [isOtherLinksOpen, setIsOtherLinksOpen] = useState(false);
+  const [isWireSnapping, setIsWireSnapping] = useState(false);
   const {
     isCompact,
     scrollingAndroid,
     reflowObstacle,
     speechTarget,
     handleFootprintChange,
+    isDocked,
+    undockSignal,
+    isPeek,
   } = useRobotMovement({
     mainFlowRef,
     heroVisualRef: heroDockRef,
+    footerRef,
     freezeMovement: !isHiRobotLoaded,
   });
+
+  useEffect(() => {
+    if (undockSignal === 0) return;
+    setIsWireSnapping(true);
+    const timeout = window.setTimeout(() => setIsWireSnapping(false), 900);
+    return () => window.clearTimeout(timeout);
+  }, [undockSignal]);
+
+  const chainAnchor = (() => {
+    const dock = heroDockRef.current;
+    if (!dock || !scrollingAndroid) return null;
+    const rect = dock.getBoundingClientRect();
+    const inset = 0.12;
+    return {
+      top: {
+        l: { x: rect.left + rect.width * inset, y: rect.top + rect.height * 0.08 },
+        r: { x: rect.right - rect.width * inset, y: rect.top + rect.height * 0.08 },
+      },
+      bottom: {
+        l: { x: rect.left + rect.width * inset, y: rect.bottom - rect.height * 0.08 },
+        r: { x: rect.right - rect.width * inset, y: rect.bottom - rect.height * 0.08 },
+      },
+      center: { x: scrollingAndroid.x, y: scrollingAndroid.y },
+    };
+  })();
 
   useEffect(() => {
     if (!isOtherLinksOpen) return;
@@ -154,7 +185,7 @@ export const HomePage = () => {
 
       </MainFlow>
 
-      <Footer id="contact">
+      <Footer id="contact" ref={footerRef}>
         <FooterLinks>
           <FooterLink href={homeContent.links.calendly} target="_blank" rel="noreferrer">
             <FaCalendarAlt /> Set up a call
@@ -200,8 +231,14 @@ export const HomePage = () => {
         android={scrollingAndroid}
         onFootprintChange={handleFootprintChange}
         onLoaded={() => setIsHiRobotLoaded(true)}
+        isPeek={isPeek}
       />
-      {isHiRobotLoaded && speechTarget && (
+      <DockChains
+        anchor={chainAnchor}
+        snapping={isWireSnapping}
+        visible={(isDocked && isHiRobotLoaded) || isWireSnapping}
+      />
+      {isHiRobotLoaded && speechTarget && !isPeek && (
         <HiBubble
           aria-hidden="true"
           style={
@@ -447,6 +484,7 @@ const HeroVisual = styled.div`
 `;
 
 const HeroRobotDock = styled.div`
+  position: relative;
   width: min(100%, 20rem);
   aspect-ratio: 4 / 5;
   border-radius: 1.4rem;
@@ -467,6 +505,147 @@ const HeroRobotDock = styled.div`
     width: min(55%, 11rem);
   }
 `;
+
+const chainSnapTop = keyframes`
+  0%   { opacity: 1; transform: translate(0, 0); }
+  20%  { opacity: 1; transform: translate(0, -2px); }
+  60%  { opacity: 0.7; transform: translate(-4px, 8px); }
+  100% { opacity: 0; transform: translate(-10px, 18px); }
+`;
+
+const chainSnapBottom = keyframes`
+  0%   { opacity: 1; transform: translate(0, 0); }
+  20%  { opacity: 1; transform: translate(0, 2px); }
+  60%  { opacity: 0.7; transform: translate(4px, -10px); }
+  100% { opacity: 0; transform: translate(10px, -22px); }
+`;
+
+const chainFlash = keyframes`
+  0%   { opacity: 0; transform: scale(0.6); }
+  30%  { opacity: 1; transform: scale(1.6); }
+  100% { opacity: 0; transform: scale(2.4); }
+`;
+
+const DockChainsSvg = styled.svg<{ $snapping: boolean; $visible: boolean }>`
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 12;
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transition: opacity 180ms ease;
+
+  .chain-group {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .chain-group--tl {
+    ${({ $snapping }) =>
+      $snapping &&
+      css`animation: ${chainSnapTop} 520ms cubic-bezier(0.55, 0.02, 0.26, 1) forwards;`}
+  }
+  .chain-group--tr {
+    ${({ $snapping }) =>
+      $snapping &&
+      css`animation: ${chainSnapTop} 520ms cubic-bezier(0.55, 0.02, 0.26, 1) 60ms forwards;`}
+  }
+  .chain-group--bl {
+    ${({ $snapping }) =>
+      $snapping &&
+      css`animation: ${chainSnapBottom} 520ms cubic-bezier(0.55, 0.02, 0.26, 1) 120ms forwards;`}
+  }
+  .chain-group--br {
+    ${({ $snapping }) =>
+      $snapping &&
+      css`animation: ${chainSnapBottom} 520ms cubic-bezier(0.55, 0.02, 0.26, 1) 180ms forwards;`}
+  }
+
+  .flash {
+    fill: rgba(255, 230, 150, 0.95);
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    filter: drop-shadow(0 0 6px rgba(255, 210, 120, 0.9));
+  }
+  .flash--tl { ${({ $snapping }) => $snapping && css`animation: ${chainFlash} 380ms ease-out forwards;`} }
+  .flash--tr { ${({ $snapping }) => $snapping && css`animation: ${chainFlash} 380ms ease-out 60ms forwards;`} }
+  .flash--bl { ${({ $snapping }) => $snapping && css`animation: ${chainFlash} 380ms ease-out 120ms forwards;`} }
+  .flash--br { ${({ $snapping }) => $snapping && css`animation: ${chainFlash} 380ms ease-out 180ms forwards;`} }
+
+  .chain-node {
+    ${({ $snapping }) =>
+      $snapping &&
+      css`animation: ${chainFlash} 320ms ease-out forwards;`}
+  }
+`;
+
+type Point = { x: number; y: number };
+type ChainAnchor = {
+  top: { l: Point; r: Point };
+  bottom: { l: Point; r: Point };
+  center: Point;
+};
+
+type DockChainsProps = {
+  anchor: ChainAnchor | null;
+  snapping: boolean;
+  visible: boolean;
+};
+
+const DockChains = ({ anchor, snapping, visible }: DockChainsProps) => {
+  if (!anchor && !snapping) return null;
+  const zero: Point = { x: 0, y: 0 };
+  const safe = anchor ?? { top: { l: zero, r: zero }, bottom: { l: zero, r: zero }, center: zero };
+  const { top, bottom, center } = safe;
+
+  const renderChain = (
+    start: Point,
+    className: string,
+    flashClass: string,
+    sagSign: 1 | -1,
+  ) => {
+    const dx = center.x - start.x;
+    const dy = center.y - start.y;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const sag = sagSign * Math.min(10, len * 0.05);
+    const midX = (start.x + center.x) * 0.5 + (start.x < center.x ? -1.5 : 1.5);
+    const midY = (start.y + center.y) * 0.5 + sag;
+    const d = `M ${start.x} ${start.y} Q ${midX} ${midY} ${center.x} ${center.y}`;
+    return (
+      <g className={`chain-group ${className}`} key={className}>
+        <path d={d} className="chain-under" />
+        <path d={d} className="chain-over" />
+        <path d={d} className="chain-core" />
+        <circle className={`flash ${flashClass}`} cx={start.x} cy={start.y} r={3.2} />
+      </g>
+    );
+  };
+
+  return (
+    <DockChainsSvg
+      $snapping={snapping}
+      $visible={visible}
+      viewBox={`0 0 ${typeof window !== 'undefined' ? window.innerWidth : 1920} ${typeof window !== 'undefined' ? window.innerHeight : 1080}`}
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <style>{`
+          .chain-under { fill: none; stroke: rgba(120, 80, 20, 0.55); stroke-width: 5; stroke-linecap: round; }
+          .chain-over  { fill: none; stroke: rgba(205, 158, 62, 0.95); stroke-width: 4.2; stroke-linecap: round; stroke-dasharray: 7 5; }
+          .chain-core  { fill: none; stroke: rgba(255, 236, 180, 0.9); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 2 10; stroke-dashoffset: -3; filter: drop-shadow(0 0 3px rgba(255, 220, 140, 0.85)); }
+          .chain-node  { fill: rgba(120, 80, 20, 0.9); stroke: rgba(255, 236, 180, 0.95); stroke-width: 1.2; filter: drop-shadow(0 0 4px rgba(255, 220, 140, 0.85)); }
+        `}</style>
+      </defs>
+      {renderChain(top.l, 'chain-group--tl', 'flash--tl', 1)}
+      {renderChain(top.r, 'chain-group--tr', 'flash--tr', 1)}
+      {renderChain(bottom.l, 'chain-group--bl', 'flash--bl', -1)}
+      {renderChain(bottom.r, 'chain-group--br', 'flash--br', -1)}
+      <circle cx={center.x} cy={center.y} r={4.2} className="chain-node" />
+    </DockChainsSvg>
+  );
+};
 
 const WorkSection = styled.section`
   scroll-margin-top: 5.5rem;
