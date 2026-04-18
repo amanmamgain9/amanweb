@@ -14,19 +14,6 @@ export type ExperienceEntry = {
   stack: string[];
 };
 
-export type ProjectEntry = {
-  name: string;
-  summary: string;
-  href: string;
-  label: string;
-  tags: string[];
-};
-
-export type PrincipleEntry = {
-  title: string;
-  body: string;
-};
-
 export const homeContent = {
   hero: {
     eyebrow: '',
@@ -47,11 +34,12 @@ export const homeContent = {
       period: '2025 - 2026',
       company: 'Independent Product Builder',
       role: 'PlanMyWorkday.com and AIAnkiPro.com',
-      signal: 'Ship -> iterate',
+      signal: '',
       summary:
-        'Built PlanMyWorkday.com, a keyboard-first daily planner with integrated timer for fast, focused execution.',
+        'Built multiple products.',
       highlights: [
-        'Built AIAnkiPro.com to turn notes, videos, and AI chats into flashcards with Learn and Shuffle modes for stronger recall.',
+        'PlanMyWorkday.com: keyboard-first daily planner with integrated timer for low-friction execution.',
+        'AIAnkiPro.com: converts notes, videos, and AI chats into flashcards with Learn and Shuffle review modes.',
       ],
       stack: ['Full-stack web', 'AI-assisted workflows', 'Product iteration'],
     },
@@ -60,14 +48,14 @@ export const homeContent = {
       period: '2021 - 2024',
       company: 'Glip',
       role: 'Founding Engineer',
-      signal: 'Capture -> economy',
+      signal: '',
       summary:
-        'Built the bridge from live gameplay moments to ownership, progression, and AI-driven interactions.',
+        'Built product systems across Electron, web, and Unity.',
       highlights: [
-        'Shipped a low-latency Electron capture stack on top of OBS APIs for mintable game moments.',
-        'Built wallet, marketplace, and task-economy surfaces in React and Node for crypto-native gameplay loops.',
-        'Implemented BTX gameplay systems in Unity, including progression, loadouts, inventory flows, and proximity voice chat.',
-        'Prototyped AI character chat with voice and monetization hooks for in-world interaction.',
+        'Developed low-latency game capture app in Electron using OBS APIs.',
+        'Built web flows for NFT creation and auction, wallet operations, and crypto reward tasks.',
+        'Implemented Unity gameplay features: crouch, scoreboard, vault and loadout customization, and quick-sell with infinite-scroll selection.',
+        'Integrated proximity voice chat and AI character chat with monetized React interface.',
       ],
       stack: ['Electron', 'React', 'Node.js', 'Unity', 'C#', 'Applied AI'],
     },
@@ -76,13 +64,13 @@ export const homeContent = {
       period: '2019 - 2021',
       company: 'Spinny',
       role: 'Tech Lead',
-      signal: 'Lead -> throughput',
+      signal: '',
       summary:
-        'Took ownership of product velocity across mobile and backend systems for vehicle-finance operations.',
+        'Led full-stack delivery for vehicle-finance operations.',
       highlights: [
-        'Led development for client management and loan automation flows.',
-        'Built React Native iOS interfaces for operational teams handling real-world throughput.',
-        'Created dynamic questionnaire systems for profiling and approval prediction.',
+        'Built React Native iOS app for client management workflows.',
+        'Led backend development for loan application automation.',
+        'Implemented dynamic questionnaires for profiling and loan approval prediction.',
       ],
       stack: ['Django', 'React', 'React Native', 'Workflow Design'],
     },
@@ -91,13 +79,13 @@ export const homeContent = {
       period: '2019',
       company: 'Innovaccer',
       role: 'SDE-2',
-      signal: 'Converge -> simplify',
+      signal: '',
       summary:
-        'Collapsed fragmented healthcare workflows into a cleaner, more maintainable product system.',
+        'Consolidated healthcare workflows into a maintainable product base.',
       highlights: [
-        'Unified multiple patient-care coordinator variants into a single codebase.',
-        'Built Elasticsearch query generation for complex data retrieval flows.',
-        'Containerized local environments to remove staging dependencies from day-to-day development.',
+        'Unified multi-client patient-care coordinator variants into one codebase.',
+        'Built Elasticsearch query generator for retrieval workflows.',
+        'Containerized local environment to remove staging API dependency.',
       ],
       stack: ['Django', 'Pyramid', 'Elasticsearch', 'Containers'],
     },
@@ -106,13 +94,14 @@ export const homeContent = {
       period: '2017 - 2019',
       company: 'Back2Stores',
       role: 'Co-founder and Full-stack Engineer',
-      signal: 'Found -> scale',
+      signal: '',
       summary:
-        'Operated as the technical core of a B2B commerce product and scaled it to enterprise clients.',
+        'Served as sole technical lead for a B2B commerce platform.',
       highlights: [
-        'Served 30+ enterprise clients as the primary technical lead.',
-        'Built Android commerce experiences linking manufacturers, warehouses, and consumers.',
-        'Handled order management, inventory, infrastructure, messaging, and operational tooling end to end.',
+        'Scaled platform to 30+ enterprise clients.',
+        'Built Android commerce app connecting manufacturers to consumers.',
+        'Implemented order management, BOM, inventory tracking, and warehouse monitoring.',
+        'Managed AWS infrastructure and RabbitMQ plus Celery messaging workflows.',
       ],
       stack: ['Angular', 'Android', 'Django', 'AWS', 'RabbitMQ'],
     },
@@ -121,61 +110,19 @@ export const homeContent = {
       period: '2014 - 2017',
       company: 'HT Media',
       role: 'Software Developer',
-      signal: 'Ship -> sharpen',
+      signal: '',
       summary:
-        'Started in high-volume production systems, learning how to ship features while keeping debugging and performance under control.',
+        'Built and optimized internal and growth-facing web systems.',
       highlights: [
-        'Worked across application management, test management, and growth-facing web systems.',
-        'Built autosuggestion, payment integration, lead forms, SEO surfaces, and analytics dashboards.',
-        'Learned the production discipline behind debugging, optimization, and iterative shipping.',
+        'Optimized Application Management System for performance and debugging.',
+        'Developed multi-client test management system.',
+        'Implemented autosuggestion, payment integration, lead forms, SEO flows, and analytics dashboards.',
       ],
       stack: ['Django', 'jQuery', 'Web Product Engineering'],
     },
   ] satisfies ExperienceEntry[],
-  projects: [
-    {
-      name: 'Kauri Captioner',
-      summary:
-        'A browser-side subtitling tool powered by Whisper, canvas rendering, and ffmpeg.wasm.',
-      href: 'https://amanmamgain9.github.io/sub_gen/',
-      label: 'Open project',
-      tags: ['React', 'Whisper', 'Canvas API', 'ffmpeg.wasm'],
-    },
-    {
-      name: 'Project Tab Manager',
-      summary:
-        'A Chrome extension for grouping work by project instead of drowning in tab entropy.',
-      href: 'https://github.com/amanmamgain9/project-tab-manager',
-      label: 'View repo',
-      tags: ['React', 'Chrome Extension API', 'Productivity'],
-    },
-    {
-      name: 'Transformer Notes',
-      summary:
-        'A compact written exploration of attention mechanics and how model internals map to actual implementation choices.',
-      href: 'mailto:amanmamgain9@gmail.com?subject=Share%20the%20transformer%20notes',
-      label: 'Ask for it',
-      tags: ['Writing', 'ML', 'Systems Thinking'],
-    },
-  ] satisfies ProjectEntry[],
-  principles: [
-    {
-      title: 'Build tactile interfaces',
-      body:
-        'I like interfaces that feel intentional: clear rhythm, strong motion hierarchy, and transitions that explain structure instead of decorating it.',
-    },
-    {
-      title: 'Own the full stack',
-      body:
-        'The interesting work usually lives in the seams between frontend, infra, data flow, and product constraints. I prefer owning those seams.',
-    },
-    {
-      title: 'Prototype hard problems fast',
-      body:
-        'Games, workflow tools, AI products, browser-side media systems: I like bringing unclear ideas into a usable form quickly.',
-    },
-  ] satisfies PrincipleEntry[],
   links: {
+    calendly: 'https://calendly.com/amanmamgain9/30min',
     email: 'mailto:amanmamgain9@gmail.com',
     github: 'https://github.com/amanmamgain9',
     linkedin: 'https://linkedin.com/in/aman-mamgain-7729599b/',

@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import {
   FaArrowDown,
+  FaCalendarAlt,
   FaEnvelope,
   FaFilePdf,
   FaGithub,
@@ -16,23 +17,19 @@ import { useRobotMovement } from '../hooks/useRobotMovement';
 
 const buildExperienceBlocks = (experience: ExperienceEntry): ReflowBlock[] => {
   const baseBlocks: ReflowBlock[] = [
-    { kind: 'meta', text: `${experience.period}    ${experience.signal}` },
+    { kind: 'meta', text: experience.period },
     { kind: 'heading', text: experience.company },
     { kind: 'role', text: experience.role },
   ];
 
-  if (experience.id === 'independent-products') {
-    return [
-      ...baseBlocks,
-      { kind: 'body', text: experience.summary },
-      ...experience.highlights.map((highlight) => ({ kind: 'body' as const, text: highlight })),
-      { kind: 'stack', text: `Stack: ${experience.stack.join(' • ')}` },
-    ];
-  }
+  const detailLines = [experience.summary, ...experience.highlights]
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => `- ${line}`);
 
   return [
     ...baseBlocks,
-    { kind: 'body', text: [experience.summary, ...experience.highlights].join(' ') },
+    ...detailLines.map((line) => ({ kind: 'body' as const, text: line })),
     { kind: 'stack', text: `Stack: ${experience.stack.join(' • ')}` },
   ];
 };
@@ -53,18 +50,31 @@ export const HomePage = () => {
   const experienceStackRef = useRef<HTMLDivElement | null>(null);
   const mainFlowRef = useRef<HTMLElement | null>(null);
   const heroDockRef = useRef<HTMLDivElement | null>(null);
+  const footerRef = useRef<HTMLElement | null>(null);
   const [isHiRobotLoaded, setIsHiRobotLoaded] = useState(false);
+  const [isOtherLinksOpen, setIsOtherLinksOpen] = useState(false);
   const {
     isCompact,
     scrollingAndroid,
     reflowObstacle,
     speechTarget,
+    isFooterVisible,
     handleFootprintChange,
   } = useRobotMovement({
     mainFlowRef,
     heroVisualRef: heroDockRef,
+    footerRef,
     freezeMovement: !isHiRobotLoaded,
   });
+
+  useEffect(() => {
+    if (!isOtherLinksOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOtherLinksOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOtherLinksOpen]);
 
   return (
     <PageShell>
@@ -145,66 +155,56 @@ export const HomePage = () => {
           </TimelineLayout>
         </WorkSection>
 
-        <PrinciplesSection>
-          <SectionIntro>
-            <ReflowParagraph
-              blocks={[
-                { kind: 'sectionEyebrow', text: 'WORKING STYLE' },
-                { kind: 'sectionTitle', text: 'Working style' },
-              ]}
-              compact={isCompact}
-              androidGlobal={reflowObstacle}
-            />
-          </SectionIntro>
-
-          <PrinciplesGrid>
-            {homeContent.principles.map((principle) => (
-              <PrincipleCard key={principle.title}>
-                <ReflowParagraph
-                  blocks={[
-                    { kind: 'principleTitle', text: principle.title },
-                    { kind: 'principleBody', text: principle.body },
-                  ]}
-                  compact={isCompact}
-                  androidGlobal={reflowObstacle}
-                />
-              </PrincipleCard>
-            ))}
-          </PrinciplesGrid>
-        </PrinciplesSection>
       </MainFlow>
 
-      <Footer id="contact">
-        <FooterReflowWrap>
-          <ReflowParagraph
-            blocks={[
-              { kind: 'footerCopy', text: 'Available for product engineering, creative frontend systems, and prototypes that need to feel alive.' },
-            ]}
-            compact={isCompact}
-            androidGlobal={reflowObstacle}
-          />
-        </FooterReflowWrap>
+      <Footer id="contact" ref={footerRef}>
         <FooterLinks>
-          <FooterLink href={homeContent.links.email}>
-            <FaEnvelope /> Email
+          <FooterLink href={homeContent.links.calendly} target="_blank" rel="noreferrer">
+            <FaCalendarAlt /> Set up a call
           </FooterLink>
           <FooterLink href={homeContent.links.github} target="_blank" rel="noreferrer">
             <FaGithub /> GitHub
           </FooterLink>
-          <FooterLink href={homeContent.links.linkedin} target="_blank" rel="noreferrer">
-            <FaLinkedin /> LinkedIn
-          </FooterLink>
-          <FooterLink href={homeContent.links.resume} target="_blank" rel="noreferrer">
-            <FaFilePdf /> Resume
-          </FooterLink>
+          <FooterLinkButton type="button" onClick={() => setIsOtherLinksOpen(true)}>
+            Other links
+          </FooterLinkButton>
         </FooterLinks>
       </Footer>
+      {isOtherLinksOpen && (
+        <LinksScrim
+          role="presentation"
+          onClick={() => setIsOtherLinksOpen(false)}
+        >
+          <LinksDialog
+            role="dialog"
+            aria-modal="true"
+            aria-label="Other links"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <DialogHeading>Other links</DialogHeading>
+            <DialogLinks>
+              <DialogLink href={homeContent.links.email}>
+                <FaEnvelope /> Email
+              </DialogLink>
+              <DialogLink href={homeContent.links.linkedin} target="_blank" rel="noreferrer">
+                <FaLinkedin /> LinkedIn
+              </DialogLink>
+              <DialogLink href={homeContent.links.resume} target="_blank" rel="noreferrer">
+                <FaFilePdf /> Resume
+              </DialogLink>
+            </DialogLinks>
+            <DialogCloseButton type="button" onClick={() => setIsOtherLinksOpen(false)}>
+              Close
+            </DialogCloseButton>
+          </LinksDialog>
+        </LinksScrim>
+      )}
       <AndroidModelOverlay
         android={scrollingAndroid}
         onFootprintChange={handleFootprintChange}
         onLoaded={() => setIsHiRobotLoaded(true)}
       />
-      {isHiRobotLoaded && speechTarget && (
+      {isHiRobotLoaded && speechTarget && !isFooterVisible && (
         <HiBubble
           aria-hidden="true"
           style={
@@ -462,6 +462,7 @@ const HeroRobotDock = styled.div`
 `;
 
 const WorkSection = styled.section`
+  scroll-margin-top: 5.5rem;
   display: grid;
   gap: 2rem;
   padding: 2rem 0 1rem;
@@ -513,36 +514,14 @@ const ExperienceNarrative = styled.div`
   opacity: 1;
 `;
 
-const PrinciplesSection = styled.section`
-  padding: 4rem 0 2rem;
-`;
-
-const PrinciplesGrid = styled.div`
-  margin-top: 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const PrincipleCard = styled.article`
-  padding: 1.35rem;
-  border-radius: 1.6rem;
-  border: 1px solid rgba(181, 137, 0, 0.2);
-  background: linear-gradient(180deg, rgba(255, 248, 228, 0.88), rgba(245, 233, 203, 0.9));
-`;
-
 const Footer = styled.footer`
   position: relative;
   z-index: 1;
   width: min(1200px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 0 0 3rem;
+  padding: 0.3rem 0 3rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 1.2rem;
   flex-wrap: wrap;
@@ -552,18 +531,13 @@ const Footer = styled.footer`
   }
 `;
 
-const FooterReflowWrap = styled.div`
-  max-width: 38rem;
-  flex: 1;
-`;
-
 const FooterLinks = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
 `;
 
-const FooterLink = styled.a`
+const footerLinkBase = css`
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -572,7 +546,68 @@ const FooterLink = styled.a`
   border: 1px solid rgba(181, 137, 0, 0.22);
   background: rgba(255, 250, 240, 0.74);
   color: var(--text);
+`;
+
+const FooterLink = styled.a`
+  ${footerLinkBase}
   text-decoration: none;
+`;
+
+const FooterLinkButton = styled.button`
+  ${footerLinkBase}
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-md);
+`;
+
+const LinksScrim = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgba(44, 40, 30, 0.24);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+`;
+
+const LinksDialog = styled.div`
+  width: min(100%, 24rem);
+  border-radius: 1rem;
+  border: 1px solid rgba(181, 137, 0, 0.22);
+  background: rgba(255, 248, 228, 0.98);
+  box-shadow: 0 20px 42px rgba(120, 95, 58, 0.22);
+  padding: 1rem;
+  display: grid;
+  gap: 0.8rem;
+`;
+
+const DialogHeading = styled.h3`
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+`;
+
+const DialogLinks = styled.div`
+  display: grid;
+  gap: 0.6rem;
+`;
+
+const DialogLink = styled.a`
+  ${footerLinkBase}
+  text-decoration: none;
+  justify-content: flex-start;
+`;
+
+const DialogCloseButton = styled.button`
+  justify-self: end;
+  border: 1px solid rgba(181, 137, 0, 0.22);
+  background: rgba(255, 250, 240, 0.8);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
 `;
 
 const HiBubble = styled.div`

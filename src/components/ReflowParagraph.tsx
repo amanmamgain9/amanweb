@@ -58,31 +58,31 @@ const getBlockStyle = (kind: ReflowBlock['kind'], compact: boolean): BlockStyle 
   switch (kind) {
     case 'meta':
       return {
-        font: interFont(compact ? FONT_WEIGHT.regular : FONT_WEIGHT.semibold, compact ? 11 : 12),
-        lineHeight: compact ? 18 : 20,
+        font: interFont(compact ? FONT_WEIGHT.regular : FONT_WEIGHT.semibold, compact ? 10 : 11),
+        lineHeight: compact ? 16 : 18,
         color: '#b58900',
         marginTop: 0,
       };
     case 'heading':
       return {
-        font: interFont(compact ? FONT_WEIGHT.semibold : FONT_WEIGHT.bold, compact ? 22 : 25),
-        lineHeight: compact ? 30 : 34,
+        font: interFont(compact ? FONT_WEIGHT.semibold : FONT_WEIGHT.bold, compact ? 21 : 24),
+        lineHeight: compact ? 28 : 32,
         color: '#333333',
         marginTop: compact ? 4 : 6,
       };
     case 'role':
       return {
-        font: interFont(FONT_WEIGHT.regular, compact ? 14 : 16),
-        lineHeight: compact ? 23 : 25,
+        font: interFont(FONT_WEIGHT.regular, compact ? 13 : 15),
+        lineHeight: compact ? 21 : 23,
         color: '#586e75',
         marginTop: compact ? 2 : 3,
       };
     case 'stack':
       return {
-        font: interFont(FONT_WEIGHT.regular, compact ? 12 : 13),
-        lineHeight: compact ? 20 : 22,
+        font: interFont(FONT_WEIGHT.regular, compact ? 11 : 12),
+        lineHeight: compact ? 18 : 20,
         color: '#586e75',
-        marginTop: compact ? 7 : 9,
+        marginTop: compact ? 6 : 8,
       };
     case 'heroEyebrow':
       return {
@@ -164,15 +164,15 @@ const getBlockStyle = (kind: ReflowBlock['kind'], compact: boolean): BlockStyle 
       };
     case 'principleTitle':
       return {
-        font: interFont(FONT_WEIGHT.bold, compact ? 16 : 19),
-        lineHeight: compact ? 22 : 26,
+        font: interFont(FONT_WEIGHT.bold, compact ? 15 : 18),
+        lineHeight: compact ? 21 : 24,
         color: '#333333',
         marginTop: 0,
       };
     case 'principleBody':
       return {
-        font: interFont(FONT_WEIGHT.regular, compact ? 13 : 15),
-        lineHeight: compact ? 22 : 27,
+        font: interFont(FONT_WEIGHT.regular, compact ? 12 : 14),
+        lineHeight: compact ? 20 : 24,
         color: '#586e75',
         marginTop: compact ? 8 : 10,
       };
@@ -186,8 +186,8 @@ const getBlockStyle = (kind: ReflowBlock['kind'], compact: boolean): BlockStyle 
     case 'body':
     default:
       return {
-        font: interFont(FONT_WEIGHT.regular, compact ? 15 : 17),
-        lineHeight: compact ? 25 : 28,
+        font: interFont(FONT_WEIGHT.regular, compact ? 14 : 16),
+        lineHeight: compact ? 23 : 26,
         color: '#333333',
         marginTop: compact ? 6 : 8,
       };
