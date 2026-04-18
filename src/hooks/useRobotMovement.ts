@@ -61,14 +61,14 @@ const computeScrollingAndroid = (
   const roamY = viewport.isCompact ? 108 : 128;
 
   const heroRect = hero?.getBoundingClientRect() ?? null;
-  const dockX = heroRect ? heroRect.left + heroRect.width * 0.5 : vw * 0.72;
-  const dockY = heroRect ? heroRect.top + heroRect.height * 0.5 : 140;
+  const rawDockX = heroRect ? heroRect.left + heroRect.width * 0.5 : vw * 0.72;
+  const rawDockY = heroRect ? heroRect.top + heroRect.height * 0.5 : 140;
 
   if (freezeMovement) {
     return {
       position: {
-        x: clamp(dockX, pad, vw - pad),
-        y: clamp(dockY, radius + 8, vh - radius - 8),
+        x: clamp(rawDockX, pad, vw - pad),
+        y: clamp(rawDockY, radius + 8, vh - radius - 8),
         radius,
         intensity: 0.6,
         mode: 'dock',
@@ -77,15 +77,20 @@ const computeScrollingAndroid = (
     };
   }
 
-  const undocked = dockY <= roamY;
+  // Transition band around roamY: smooth cross-fade between dock and roam
+  // to avoid the x-snap on re-dock caused by sparse scroll samples.
+  const bandAbove = 50;
+  const bandBelow = 10;
+  const dockThreshold = roamY + bandAbove;
+  const isDocked = rawDockY > roamY;
 
-  if (!undocked) {
+  if (rawDockY >= dockThreshold) {
     refs.undockRef.current = null;
     refs.peekSmoothRef.current = null;
     return {
       position: {
-        x: clamp(dockX, pad, vw - pad),
-        y: clamp(dockY, radius + 8, vh - radius - 8),
+        x: clamp(rawDockX, pad, vw - pad),
+        y: clamp(rawDockY, radius + 8, vh - radius - 8),
         radius,
         intensity: 0.55,
         mode: 'dock',
@@ -95,7 +100,7 @@ const computeScrollingAndroid = (
   }
 
   if (refs.undockRef.current === null) {
-    refs.undockRef.current = { x0: dockX, scroll0: window.scrollY };
+    refs.undockRef.current = { x0: rawDockX, scroll0: window.scrollY };
   }
 
   const centerX = flowRect.left + flowRect.width * 0.5;
@@ -108,6 +113,7 @@ const computeScrollingAndroid = (
 
   const roamX = centerX + amplitude * Math.cos(omega * t + phase);
   const roamPosY = roamY;
+  const roamIntensity = 0.56 + Math.sin(t * Math.PI) * 0.28;
 
   if (isPeekActive) {
     const targetX = vw - radius * 0.5;
@@ -136,15 +142,26 @@ const computeScrollingAndroid = (
 
   refs.peekSmoothRef.current = null;
 
+  // Cross-fade roam ↔ dock across the band using smoothstep. At s=1
+  // (band top, rawDockY = roamY + bandAbove) we output pure dock; at s=0
+  // (band bottom, rawDockY = roamY − bandBelow) we output pure roam. The
+  // band removes the ~5–20 px x-jump that was visible when re-docking on
+  // scroll-up because the last undocked sample had t > 0.
+  const dockBlend = clamp01((rawDockY - (roamY - bandBelow)) / (bandAbove + bandBelow));
+  const s = dockBlend * dockBlend * (3 - 2 * dockBlend);
+  const blendedX = lerp(roamX, rawDockX, s);
+  const blendedY = lerp(roamPosY, rawDockY, s);
+  const blendedIntensity = lerp(roamIntensity, 0.55, s);
+
   return {
     position: {
-      x: clamp(roamX, pad, vw - pad),
-      y: clamp(roamPosY, radius + 8, vh - radius - 8),
+      x: clamp(blendedX, pad, vw - pad),
+      y: clamp(blendedY, radius + 8, vh - radius - 8),
       radius,
-      intensity: 0.56 + Math.sin(t * Math.PI) * 0.28,
-      mode: 'roam',
+      intensity: blendedIntensity,
+      mode: isDocked ? 'dock' : 'roam',
     },
-    isDocked: false,
+    isDocked,
   };
 };
 
