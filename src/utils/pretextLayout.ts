@@ -135,6 +135,18 @@ export function layoutTextBlocks(
           if (placedInBand) break;
           continue;
         }
+        // Pretext follows `overflow-wrap: break-word` and will split a long
+        // word at a grapheme boundary when the slot is narrower than the
+        // word. That is what was clipping "experimental" mid-letter when the
+        // robot squeezed the line. Refuse those obstacle-induced mid-word
+        // breaks: skip this slot so we either try a wider slot in the same
+        // band or fall through, push the line past the obstacle, and rewrap
+        // cleanly in a full-width band below.
+        const isMidWordBreak = line.end.graphemeIndex > 0;
+        if (isMidWordBreak && near) {
+          if (placedInBand) break;
+          continue;
+        }
         allLines.push({
           x: Math.round(slot.left),
           y: Math.round(lineTop),
