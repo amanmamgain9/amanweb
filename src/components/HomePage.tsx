@@ -275,62 +275,50 @@ export const HomePage = () => {
         </section>
       </main>
 
-      <section
-        className="relative z-[1] scroll-mt-16 border-t border-line bg-paper-deep"
-        id="robot"
-      >
-        <div className={`${pageContainerClasses} grid min-h-[24rem] items-center gap-8 py-14 md:grid-cols-[1fr_0.85fr] md:py-20`}>
+      <footer className="relative z-[1] bg-orange text-white" id="contact">
+        <div className={`${pageContainerClasses} grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.35fr_0.65fr] lg:py-28`}>
           <div>
-            <p className={`${sectionKickerClasses} mb-3`}>Small experiment</p>
-            <h2 className="text-h1">Hi, robot.</h2>
-            <p className="mt-4 max-w-lg text-lg leading-relaxed text-muted">
-              A little Three.js character that now lives at the end of the page.
-            </p>
+            <p className="text-caption font-bold uppercase tracking-widest">Have a difficult product to build?</p>
+            <h2 className="mt-3 text-hero">Let’s make it real.</h2>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <a
+                className={footerLinkClasses}
+                href={homeContent.links.email}
+              >
+                <FaEnvelope /> Email
+              </a>
+              <a
+                className={footerLinkClasses}
+                href={homeContent.links.calendly}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Book a call <FaArrowRight />
+              </a>
+              <a
+                className={footerLinkClasses}
+                href={homeContent.links.github}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaGithub /> GitHub
+              </a>
+              <a
+                className={footerLinkClasses}
+                href={homeContent.links.linkedin}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FaLinkedin /> LinkedIn
+              </a>
+            </div>
           </div>
           <div
-            className="relative min-h-56 border border-line bg-paper/60 md:min-h-64"
+            className="relative min-h-56 scroll-mt-16 border border-white/30 bg-white/5 md:min-h-64"
+            id="robot"
             ref={robotDockRef}
             aria-label="Animated robot waving hello"
           />
-        </div>
-      </section>
-
-      <footer className="relative z-[1] bg-orange text-white" id="contact">
-        <div className={`${pageContainerClasses} py-16 md:py-24 lg:py-32`}>
-          <p className="text-caption font-bold uppercase tracking-widest">Have a difficult product to build?</p>
-          <h2 className="mt-3 text-hero">Let’s make it real.</h2>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <a
-              className={footerLinkClasses}
-              href={homeContent.links.email}
-            >
-              <FaEnvelope /> Email
-            </a>
-            <a
-              className={footerLinkClasses}
-              href={homeContent.links.calendly}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Book a call <FaArrowRight />
-            </a>
-            <a
-              className={footerLinkClasses}
-              href={homeContent.links.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FaGithub /> GitHub
-            </a>
-            <a
-              className={footerLinkClasses}
-              href={homeContent.links.linkedin}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FaLinkedin /> LinkedIn
-            </a>
-          </div>
         </div>
       </footer>
 
