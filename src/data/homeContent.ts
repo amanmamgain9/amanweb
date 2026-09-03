@@ -45,12 +45,12 @@ export const homeContent = {
     {
       name: 'Karaka',
       status: 'Live',
-      summary: 'A persistent runtime for multi-agent applications.',
+      summary: 'A DeepSeek Harness fork that allows you to ship production agents inside your product.',
       detail:
-        'An open-source application runtime built on DeepSeek Harness, with durable agents and server-to-server integration.',
-      image: '/plugin-landscape-social.png',
-      href: 'https://github.com/amanmamgain9/karaka',
-      tags: ['Agent runtime', 'Open source', 'DeepSeek Harness'],
+        'Simple SDK. CLI setup. Persistent conversations. Authenticated tools. One self-contained runtime.',
+      image: '/project-karaka.webp',
+      href: 'https://github.com/karaka-ai/karaka',
+      tags: ['Agent infrastructure', 'SDK + CLI', 'Open source'],
     },
     {
       name: 'AIAnkiPro',

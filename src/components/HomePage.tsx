@@ -28,7 +28,7 @@ const ProjectBody = ({ project }: { project: FeaturedProject }) => (
   <>
     <div className="relative aspect-[8/5] overflow-hidden border border-line bg-paper-deep">
       <img
-        className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.025]"
+        className="h-full w-full object-contain transition-transform duration-300 ease-out group-hover:scale-[1.025]"
         src={project.image}
         alt=""
       />
