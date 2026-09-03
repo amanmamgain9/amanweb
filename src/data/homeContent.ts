@@ -22,6 +22,7 @@ export type FeaturedProject = {
 
 export type WorkInProgress = {
   name: string;
+  status: 'Available now' | 'In development';
   summary: string;
   href?: string;
 };
@@ -73,16 +74,19 @@ export const homeContent = {
   workInProgress: [
     {
       name: 'Coursyn',
+      status: 'In development',
       summary: 'AI-generated courses built as explorable learning systems.',
     },
     {
-      name: 'Founder Game',
-      summary: 'A progression system that turns founder work into quests, skills, and momentum.',
-    },
-    {
       name: 'Karaka',
+      status: 'Available now',
       summary: 'A persistent multi-agent application runtime built on DeepSeek Harness.',
       href: 'https://github.com/amanmamgain9/karaka',
+    },
+    {
+      name: 'Founder Game',
+      status: 'In development',
+      summary: 'A progression system that turns founder work into quests, skills, and momentum.',
     },
   ] satisfies WorkInProgress[],
   experiences: [

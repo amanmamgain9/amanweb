@@ -12,6 +12,7 @@ import {
   homeContent,
   type ExperienceEntry,
   type FeaturedProject,
+  type WorkInProgress,
 } from '../data/homeContent';
 import { useActiveExperience } from '../hooks/useActiveExperience';
 import { useRobotMovement } from '../hooks/useRobotMovement';
@@ -20,7 +21,7 @@ const focusRingClasses = 'focus-visible:outline-[3px] focus-visible:outline-blue
 const pageContainerClasses = 'mx-auto w-full max-w-page px-page-gutter-compact sm:px-page-gutter';
 const navLinkClasses = `text-sm-plus text-muted no-underline hover:text-ink ${focusRingClasses}`;
 const footerLinkClasses = `inline-flex items-center gap-2 border border-white/50 px-4 py-3 text-white no-underline hover:bg-white hover:text-ink ${focusRingClasses}`;
-const pipelineItemClasses = 'relative min-h-44 border-b border-r border-line p-4 text-ink';
+const pipelineItemClasses = 'group grid gap-2 border-b border-line py-5 text-ink sm:grid-cols-[8rem_minmax(0,1fr)_auto] sm:gap-4';
 const sectionKickerClasses = 'text-caption font-bold uppercase tracking-widest text-orange';
 
 const ProjectBody = ({ project }: { project: FeaturedProject }) => (
@@ -81,11 +82,20 @@ const ProjectEntry = ({ project }: { project: FeaturedProject }) => {
   );
 };
 
-const PipelineBody = ({ name, summary }: { name: string; summary: string }) => (
+const PipelineBody = ({ item }: { item: WorkInProgress }) => (
   <>
-    <p className={sectionKickerClasses}>In development</p>
-    <h3 className="mt-8 text-h3">{name}</h3>
-    <p className="mt-2 text-sm-plus leading-normal text-muted">{summary}</p>
+    <p
+      className={`pt-0.5 text-caption font-bold uppercase tracking-widest ${
+        item.status === 'Available now' ? 'text-blue' : 'text-orange'
+      }`}
+    >
+      {item.status}
+    </p>
+    <div>
+      <h3 className="text-h3 transition-colors group-hover:text-blue">{item.name}</h3>
+      <p className="mt-1.5 max-w-xl text-sm-plus leading-normal text-muted">{item.summary}</p>
+    </div>
+    {item.href ? <FaExternalLinkAlt className="mt-1 text-xs text-muted" aria-hidden="true" /> : null}
   </>
 );
 
@@ -173,26 +183,25 @@ export const HomePage = () => {
 
           <div className="mt-20 grid gap-8 border-t border-line pt-8 md:grid-cols-[0.65fr_1.35fr] lg:mt-32">
             <div>
-              <p className={`${sectionKickerClasses} mb-3`}>On the bench</p>
+              <p className={`${sectionKickerClasses} mb-3`}>Current work</p>
               <p className="max-w-72 text-base leading-relaxed text-muted">
-                Active builds that will gain links as they become public.
+                Early releases and active builds.
               </p>
             </div>
-            <div className="grid border-t border-line lg:grid-cols-3">
+            <div className="border-t border-line">
               {homeContent.workInProgress.map((item) => item.href ? (
                 <a
-                  className={`${pipelineItemClasses} no-underline hover:bg-white/45 [&_svg]:absolute [&_svg]:right-4 [&_svg]:top-4 [&_svg]:text-xs ${focusRingClasses}`}
+                  className={`${pipelineItemClasses} no-underline ${focusRingClasses}`}
                   key={item.name}
                   href={item.href}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <PipelineBody name={item.name} summary={item.summary} />
-                  <FaExternalLinkAlt aria-hidden="true" />
+                  <PipelineBody item={item} />
                 </a>
               ) : (
                 <article className={pipelineItemClasses} key={item.name}>
-                  <PipelineBody name={item.name} summary={item.summary} />
+                  <PipelineBody item={item} />
                 </article>
               ))}
             </div>
