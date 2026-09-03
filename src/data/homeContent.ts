@@ -1,124 +1,138 @@
-export type HeroStat = {
-  label: string;
-  value: string;
-};
-
 export type ExperienceEntry = {
   id: string;
   period: string;
   company: string;
   role: string;
-  signal: string;
   summary: string;
   highlights: string[];
   stack: string[];
 };
 
+export type ProjectStatus = 'Live' | 'Launching soon';
+
+export type FeaturedProject = {
+  name: string;
+  status: ProjectStatus;
+  summary: string;
+  detail: string;
+  image: string;
+  href?: string;
+  tags: string[];
+};
+
+export type WorkInProgress = {
+  name: string;
+  summary: string;
+  href?: string;
+};
+
 export const homeContent = {
-  hero: {
-    eyebrow: '',
+  identity: {
     name: 'Aman Mamgain',
-    title: 'Full-stack engineer.',
-    summary:
-      'I build product systems across web and mobile.',
-    supporting:
-      'Ten years across product engineering, founding builds, game workflows, and AI powered applications.',
-    stats: [
-      { label: 'Years shipping', value: '10+' },
-      { label: 'Modes', value: 'Web / Mobile / Games / AI' },
-    ] satisfies HeroStat[],
   },
+  featuredProjects: [
+    {
+      name: 'PlanMyWorkday',
+      status: 'Live',
+      summary: 'Task management as fast as your brain.',
+      detail:
+        'A keyboard-first daily planner with a built-in focus timer and a deliberately low-friction workflow.',
+      image: '/project-planmyworkday.webp',
+      href: 'https://planmyworkday.com',
+      tags: ['Product design', 'Full-stack web', 'Subscriptions'],
+    },
+    {
+      name: 'AIAnkiPro',
+      status: 'Live',
+      summary: 'Turn scattered input into lasting recall.',
+      detail:
+        'Transforms notes, videos, and AI chats into a learn-first flashcard loop with recall, card chat, and voice.',
+      image: '/project-aiankipro.webp',
+      href: 'https://aiankipro.com',
+      tags: ['Learning systems', 'Applied AI', 'Voice'],
+    },
+    {
+      name: 'Rarely',
+      status: 'Launching soon',
+      summary: 'Make the pet photo talk.',
+      detail:
+        'A consumer product that turns one pet photo and a short line into a synchronized talking-pet video.',
+      image: '/project-rarely.webp',
+      tags: ['Generative video', 'Payments', 'Consumer AI'],
+    },
+    {
+      name: 'PadelCue',
+      status: 'Launching soon',
+      summary: 'One court cue. Better padel.',
+      detail:
+        'An Android-first coaching app with daily tips, drills, saved playbooks, progress, and reminders.',
+      image: '/project-padelcue.webp',
+      tags: ['React Native', 'Firebase', 'Android'],
+    },
+  ] satisfies FeaturedProject[],
+  workInProgress: [
+    {
+      name: 'Coursyn',
+      summary: 'AI-generated courses built as explorable learning systems.',
+    },
+    {
+      name: 'Founder Game',
+      summary: 'A progression system that turns founder work into quests, skills, and momentum.',
+    },
+    {
+      name: 'Karaka',
+      summary: 'A persistent multi-agent application runtime built on DeepSeek Harness.',
+      href: 'https://github.com/amanmamgain9/karaka',
+    },
+  ] satisfies WorkInProgress[],
   experiences: [
     {
       id: 'independent-products',
-      period: '2025 - 2026',
-      company: 'Independent Product Builder',
-      role: 'PlanMyWorkday.com and AIAnkiPro.com',
-      signal: '',
-      summary:
-        'Built multiple products.',
+      period: '2025 — now',
+      company: 'Independent products',
+      role: 'Product engineer and founder',
+      summary: 'Taking focused products from rough idea to production.',
       highlights: [
-        'PlanMyWorkday.com: keyboard-first daily planner with integrated timer for low-friction execution.',
-        'AIAnkiPro.com: converts notes, videos, and AI chats into flashcards with Learn and Shuffle review modes.',
+        'Shipped PlanMyWorkday and AIAnkiPro as complete web products.',
+        'Building consumer AI, learning, mobile coaching, and agent-runtime products toward launch.',
       ],
-      stack: ['Full-stack web', 'AI-assisted workflows', 'Product iteration'],
+      stack: ['Product strategy', 'TypeScript', 'React', 'AI systems'],
     },
     {
       id: 'glip',
-      period: '2021 - 2024',
+      period: '2021 — 2024',
       company: 'Glip',
-      role: 'Founding Engineer',
-      signal: '',
-      summary:
-        'Built product systems across Electron, web, and Unity.',
+      role: 'Founding engineer',
+      summary: 'Built product systems across desktop, web, and Unity.',
       highlights: [
-        'Developed low-latency game capture app in Electron using OBS APIs.',
-        'Built web flows for NFT creation and auction, wallet operations, and crypto reward tasks.',
-        'Implemented Unity gameplay features: crouch, scoreboard, vault and loadout customization, and quick-sell with infinite-scroll selection.',
-        'Integrated proximity voice chat and AI character chat with monetized React interface.',
+        'Developed low-latency game capture in Electron using OBS APIs.',
+        'Built wallet, auction, reward, gameplay, voice-chat, and AI-character experiences.',
       ],
-      stack: ['Electron', 'React', 'Node.js', 'Unity', 'C#', 'Applied AI'],
+      stack: ['Electron', 'React', 'Node.js', 'Unity', 'C#'],
     },
     {
       id: 'spinny',
-      period: '2019 - 2021',
+      period: '2019 — 2021',
       company: 'Spinny',
-      role: 'Tech Lead',
-      signal: '',
-      summary:
-        'Led full-stack delivery for vehicle-finance operations.',
+      role: 'Tech lead',
+      summary: 'Led full-stack delivery for vehicle-finance operations.',
       highlights: [
-        'Built React Native iOS app for client management workflows.',
-        'Led backend development for loan application automation.',
-        'Implemented dynamic questionnaires for profiling and loan approval prediction.',
+        'Built a React Native client-management app and loan-automation backend.',
+        'Designed dynamic profiling and loan-approval workflows.',
       ],
-      stack: ['Django', 'React', 'React Native', 'Workflow Design'],
+      stack: ['Django', 'React', 'React Native', 'Workflow systems'],
     },
     {
-      id: 'innovaccer',
-      period: '2019',
-      company: 'Innovaccer',
-      role: 'SDE-2',
-      signal: '',
-      summary:
-        'Consolidated healthcare workflows into a maintainable product base.',
+      id: 'earlier-work',
+      period: '2014 — 2019',
+      company: 'Back2Stores · Innovaccer · HT Media',
+      role: 'Co-founder, SDE-2, and software developer',
+      summary: 'Built commerce, healthcare, and media systems from product UI to infrastructure.',
       highlights: [
-        'Unified multi-client patient-care coordinator variants into one codebase.',
-        'Built Elasticsearch query generator for retrieval workflows.',
-        'Containerized local environment to remove staging API dependency.',
+        'Scaled a B2B commerce platform to more than 30 enterprise clients.',
+        'Unified healthcare workflows and shipped growth, payment, analytics, and internal systems.',
       ],
-      stack: ['Django', 'Pyramid', 'Elasticsearch', 'Containers'],
-    },
-    {
-      id: 'back2stores',
-      period: '2017 - 2019',
-      company: 'Back2Stores',
-      role: 'Co-founder and Full-stack Engineer',
-      signal: '',
-      summary:
-        'Served as sole technical lead for a B2B commerce platform.',
-      highlights: [
-        'Scaled platform to 30+ enterprise clients.',
-        'Built Android commerce app connecting manufacturers to consumers.',
-        'Implemented order management, BOM, inventory tracking, and warehouse monitoring.',
-        'Managed AWS infrastructure and RabbitMQ plus Celery messaging workflows.',
-      ],
-      stack: ['Angular', 'Android', 'Django', 'AWS', 'RabbitMQ'],
-    },
-    {
-      id: 'ht-media',
-      period: '2014 - 2017',
-      company: 'HT Media',
-      role: 'Software Developer',
-      signal: '',
-      summary:
-        'Built and optimized internal and growth-facing web systems.',
-      highlights: [
-        'Optimized Application Management System for performance and debugging.',
-        'Developed multi-client test management system.',
-        'Implemented autosuggestion, payment integration, lead forms, SEO flows, and analytics dashboards.',
-      ],
-      stack: ['Django', 'jQuery', 'Web Product Engineering'],
+      stack: ['Django', 'Android', 'Angular', 'AWS', 'Elasticsearch'],
     },
   ] satisfies ExperienceEntry[],
   links: {

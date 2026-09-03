@@ -1,5 +1,4 @@
 import { Suspense, useEffect, useMemo, useRef } from 'react';
-import styled from 'styled-components';
 import { Canvas, useFrame, useGraph, useThree } from '@react-three/fiber';
 import { useAnimations, useGLTF } from '@react-three/drei';
 import type {
@@ -13,20 +12,17 @@ import type {
 } from 'three';
 import type { GLTF } from 'three-stdlib';
 import { SkeletonUtils } from 'three-stdlib';
-import { Box3, LinearFilter, LinearMipmapLinearFilter, Quaternion, Vector3 } from 'three';
+import { LinearFilter, LinearMipmapLinearFilter, Quaternion, Vector3 } from 'three';
 
 type AndroidPosition = {
   x: number;
   y: number;
   radius: number;
   intensity: number;
-  rx?: number;
-  ry?: number;
 } | null;
 
 type AndroidModelOverlayProps = {
   android: AndroidPosition;
-  onFootprintChange?: (footprint: Exclude<AndroidPosition, null>) => void;
   onLoaded?: () => void;
   isPeek?: boolean;
 };
@@ -53,8 +49,6 @@ type GLTFResult = GLTF & {
 
 const isTexture = (value: unknown): value is Texture =>
   typeof value === 'object' && value !== null && 'isTexture' in value;
-
-const lerp = (from: number, to: number, factor: number) => from + (to - from) * factor;
 
 type ArmBones = {
   leftShoulder: Bone | null;
@@ -269,20 +263,16 @@ const PixelCamera = () => {
 const Robot = ({
   android,
   modelPath,
-  onFootprintChange,
   onLoaded,
   isPeek = false,
 }: {
   android: Exclude<AndroidPosition, null>;
   modelPath: string;
-  onFootprintChange?: (footprint: Exclude<AndroidPosition, null>) => void;
   onLoaded?: () => void;
   isPeek?: boolean;
 }) => {
   const groupRef = useRef<Group>(null);
   const hasNotifiedLoadedRef = useRef(false);
-  const footprintRef = useRef<Exclude<AndroidPosition, null> | null>(null);
-  const worldBoundsRef = useRef(new Box3());
   const armBonesRef = useRef<ArmBones | null>(null);
   const { scene, animations } = useGLTF(modelPath, DRACO_DECODER_PATH);
   const { size, gl } = useThree();
@@ -366,38 +356,6 @@ const Robot = ({
       }
     }
 
-    mesh.updateWorldMatrix(true, false);
-    const geoBBox = mesh.geometry.boundingBox;
-    if (!geoBBox) return;
-    const worldBounds = worldBoundsRef.current.copy(geoBBox).applyMatrix4(mesh.matrixWorld);
-    const minX = worldBounds.min.x + size.width * 0.5;
-    const maxX = worldBounds.max.x + size.width * 0.5;
-    const minY = size.height * 0.5 - worldBounds.max.y;
-    const maxY = size.height * 0.5 - worldBounds.min.y;
-
-    const rawHalfW = (maxX - minX) * 0.5;
-    const rawFootprint = {
-      x: (minX + maxX) * 0.5 + rawHalfW * 0.28,
-      y: (minY + maxY) * 0.5,
-      rx: Math.max(rawHalfW * 0.78, 16),
-      ry: Math.max((maxY - minY) * 0.5 * 0.78, 20),
-      radius: Math.max(rawHalfW * 0.72, (maxY - minY) * 0.5 * 0.62, 16),
-      intensity: android.intensity,
-    };
-
-    const previous = footprintRef.current;
-    const smoothed = previous
-      ? {
-          x: lerp(previous.x, rawFootprint.x, 0.22),
-          y: lerp(previous.y, rawFootprint.y, 0.22),
-          rx: lerp(previous.rx ?? previous.radius, rawFootprint.rx, 0.22),
-          ry: lerp(previous.ry ?? previous.radius, rawFootprint.ry, 0.22),
-          radius: lerp(previous.radius, rawFootprint.radius, 0.22),
-          intensity: rawFootprint.intensity,
-        }
-      : rawFootprint;
-    footprintRef.current = smoothed;
-    onFootprintChange?.(smoothed);
   });
 
   return (
@@ -414,16 +372,19 @@ const Robot = ({
   );
 };
 
-export const AndroidModelOverlay = ({ android, onFootprintChange, onLoaded, isPeek }: AndroidModelOverlayProps) => {
+export const AndroidModelOverlay = ({ android, onLoaded, isPeek }: AndroidModelOverlayProps) => {
   if (!android) return null;
 
   return (
-    <Overlay aria-hidden="true">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[11] drop-shadow-robot [&_*]:!pointer-events-none"
+    >
       <Canvas
         orthographic
         dpr={[1, 2]}
         gl={{ alpha: true, antialias: true }}
-        style={{ pointerEvents: 'none' }}
+        className="pointer-events-none"
       >
         <PixelCamera />
         <ambientLight intensity={1.35} />
@@ -434,22 +395,13 @@ export const AndroidModelOverlay = ({ android, onFootprintChange, onLoaded, isPe
           <Robot
             android={android}
             modelPath={MODEL_PATH}
-            onFootprintChange={onFootprintChange}
             onLoaded={onLoaded}
             isPeek={isPeek}
           />
         </Suspense>
       </Canvas>
-    </Overlay>
+    </div>
   );
 };
 
 useGLTF.preload(MODEL_PATH, DRACO_DECODER_PATH);
-
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 11;
-  pointer-events: none;
-  filter: drop-shadow(0 10px 18px rgba(53, 255, 168, 0.28));
-`;

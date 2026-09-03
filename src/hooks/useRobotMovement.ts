@@ -1,16 +1,12 @@
-import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react';
+import { useEffect, useRef, useState, type MutableRefObject } from 'react';
 
 export type AndroidPosition = {
   x: number;
   y: number;
   radius: number;
   intensity: number;
-  rx?: number;
-  ry?: number;
   mode?: 'dock' | 'roam' | 'peek';
 } | null;
-
-type FootprintUpdate = Exclude<AndroidPosition, null>;
 
 type ViewportBands = {
   isCompact: boolean;
@@ -180,16 +176,11 @@ export const useRobotMovement = ({
   footerRef,
   freezeMovement = false,
 }: UseRobotMovementArgs) => {
-  const [viewport, setViewport] = useState<ViewportBands>(() => readViewportBands());
   const [scrollingAndroid, setScrollingAndroid] = useState<AndroidPosition>(null);
-  const [androidFootprint, setAndroidFootprint] = useState<AndroidPosition>(null);
-  const [isDocked, setIsDocked] = useState(true);
-  const [undockSignal, setUndockSignal] = useState(0);
   const [isPeek, setIsPeek] = useState(false);
 
   const undockRef = useRef<UndockState>(null);
   const peekSmoothRef = useRef<SmoothState>(null);
-  const lastDockedRef = useRef(true);
   const isPeekRef = useRef(false);
 
   useEffect(() => {
@@ -213,12 +204,7 @@ export const useRobotMovement = ({
 
     const update = () => {
       const nextViewport = readViewportBands();
-      setViewport((current) => {
-        if (current.isCompact === nextViewport.isCompact) return current;
-        return nextViewport;
-      });
-
-      const { position, isDocked: dockedNow } = computeScrollingAndroid(
+      const { position } = computeScrollingAndroid(
         mainFlowRef.current,
         heroVisualRef?.current ?? null,
         nextViewport,
@@ -229,16 +215,6 @@ export const useRobotMovement = ({
       );
 
       setScrollingAndroid(position);
-
-      if (lastDockedRef.current && !dockedNow) {
-        setUndockSignal((n) => n + 1);
-      }
-      lastDockedRef.current = dockedNow;
-      setIsDocked((current) => (current === dockedNow ? current : dockedNow));
-
-      if (!position) {
-        setAndroidFootprint((current) => (current ? null : current));
-      }
     };
 
     const schedule = () => {
@@ -291,30 +267,8 @@ export const useRobotMovement = ({
     window.dispatchEvent(new Event('robot:peek-change'));
   }, [isPeek]);
 
-  const handleFootprintChange = useCallback((next: FootprintUpdate) => {
-    setAndroidFootprint((current) => {
-      if (!current) return next;
-      const dx = Math.abs(current.x - next.x);
-      const dy = Math.abs(current.y - next.y);
-      const dr = Math.abs(current.radius - next.radius);
-      const drx = Math.abs((current.rx ?? current.radius) - (next.rx ?? next.radius));
-      const dry = Math.abs((current.ry ?? current.radius) - (next.ry ?? next.radius));
-      if (dx < 0.75 && dy < 0.75 && dr < 0.6 && drx < 0.6 && dry < 0.6) return current;
-      return next;
-    });
-  }, []);
-
-  const reflowObstacle = freezeMovement ? null : (androidFootprint ?? scrollingAndroid);
-  const speechTarget = reflowObstacle;
-
   return {
-    isCompact: viewport.isCompact,
     scrollingAndroid,
-    reflowObstacle,
-    speechTarget,
-    handleFootprintChange,
-    isDocked,
-    undockSignal,
     isPeek,
   };
 };

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 import {
   Box3,
   Color,
@@ -132,52 +131,25 @@ export const RobotVrmLoadPage = () => {
   }, []);
 
   return (
-    <Shell>
-      <Panel>
-        <h1>VRM Load Test</h1>
+    <div className="grid min-h-dvh grid-cols-[20rem_minmax(0,1fr)] bg-debug-bg font-sans text-debug-text">
+      <aside className="grid content-start gap-3 border-r border-debug-text/15 p-4 text-sm text-debug-muted">
+        <h1 className="text-lg font-semibold text-debug-text">VRM Load Test</h1>
         <p>
           Status: <strong>{state}</strong>
         </p>
         {state === 'loading' ? <p>Progress: {progress.toFixed(1)}%</p> : null}
-        {state === 'error' ? <ErrorText>{errorMessage || 'Failed to load model.'}</ErrorText> : null}
+        {state === 'error' ? (
+          <p className="text-debug-error">{errorMessage || 'Failed to load model.'}</p>
+        ) : null}
         <p>Model path: {MODEL_PATH}</p>
-        <a href="/">Back to homepage</a>
-      </Panel>
-      <Viewport ref={viewportRef} />
-    </Shell>
+        <a
+          className="focus-visible:outline-[3px] focus-visible:outline-blue focus-visible:outline-offset-4"
+          href="/"
+        >
+          Back to homepage
+        </a>
+      </aside>
+      <main ref={viewportRef} className="min-h-dvh" />
+    </div>
   );
 };
-
-const Shell = styled.div`
-  min-height: 100dvh;
-  display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  background: #100d0b;
-  color: #f7eddc;
-`;
-
-const Panel = styled.aside`
-  padding: 1rem;
-  border-right: 1px solid rgba(247, 237, 220, 0.16);
-  display: grid;
-  align-content: start;
-  gap: 0.7rem;
-
-  h1 {
-    font-size: var(--font-size-lg);
-  }
-
-  p,
-  a {
-    font-size: var(--font-size-sm-plus);
-    color: #e9dcc9;
-  }
-`;
-
-const ErrorText = styled.p`
-  color: #ff9c8b;
-`;
-
-const Viewport = styled.main`
-  min-height: 100dvh;
-`;
