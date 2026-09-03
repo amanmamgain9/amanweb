@@ -7,6 +7,12 @@ const ArticlesPage = lazy(() =>
   })),
 );
 
+const PluginLandscapeArticle = lazy(() =>
+  import('./components/PluginLandscapeArticle').then((module) => ({
+    default: module.PluginLandscapeArticle,
+  })),
+);
+
 const RobotVrmLoadPage = lazy(() =>
   import('./components/RobotVrmLoadPage').then((m) => ({
     default: m.RobotVrmLoadPage,
@@ -28,6 +34,17 @@ export default function App() {
     return (
       <Suspense fallback={null}>
         <ArticlesPage />
+      </Suspense>
+    );
+  }
+
+  if (
+    path === '/articles/deepseek-harness-plugin-landscape'
+    || path === '/writing/deepseek-harness-plugin-landscape'
+  ) {
+    return (
+      <Suspense fallback={null}>
+        <PluginLandscapeArticle />
       </Suspense>
     );
   }

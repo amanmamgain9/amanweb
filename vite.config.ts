@@ -22,6 +22,8 @@ export default defineConfig({
       input: {
         main: resolve(rootDir, 'index.html'),
         articles: resolve(rootDir, 'articles/index.html'),
+        pluginLandscape: resolve(rootDir, 'articles/deepseek-harness-plugin-landscape/index.html'),
+        legacyPluginLandscape: resolve(rootDir, 'writing/deepseek-harness-plugin-landscape/index.html'),
       },
       output: {
         // Pull the 3D stack into its own chunk so it caches across

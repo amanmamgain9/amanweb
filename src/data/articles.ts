@@ -10,6 +10,15 @@ export type ArticleEntry = {
 
 export const articles: ArticleEntry[] = [
   {
+    title: 'DeepSeek Harness plugin landscape',
+    summary: 'A searchable reference to 205 plugins across 48 groups.',
+    source: 'On this site',
+    publishedAt: '2026-09',
+    publishedLabel: 'September 2026',
+    href: '/articles/deepseek-harness-plugin-landscape',
+    external: false,
+  },
+  {
     title: 'Attention is all you need',
     summary: 'Understanding the maths behind attention.',
     source: 'Substack',
