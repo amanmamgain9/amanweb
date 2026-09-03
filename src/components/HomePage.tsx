@@ -193,9 +193,6 @@ export const HomePage = () => {
             <a className={`${navLinkClasses} hidden sm:block`} href="#experience">
               Experience
             </a>
-            <a className={`${navLinkClasses} hidden md:block`} href="#robot">
-              Robot
-            </a>
             <a className={`${navLinkClasses} hidden sm:block`} href="#contact">
               Contact
             </a>
