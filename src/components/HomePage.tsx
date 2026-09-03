@@ -125,7 +125,7 @@ export const HomePage = () => {
   });
 
   return (
-    <div className="min-h-dvh overflow-clip bg-paper bg-[linear-gradient(rgba(23,23,20,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(23,23,20,0.025)_1px,transparent_1px)] bg-[size:32px_32px] font-sans text-ink">
+    <div className="min-h-dvh overflow-clip bg-paper font-sans text-ink">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur-md">
         <nav
           className={`${pageContainerClasses} flex min-h-16 items-center justify-between gap-8`}
