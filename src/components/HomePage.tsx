@@ -155,16 +155,10 @@ export const HomePage = () => {
             <span className="font-bold tracking-tight">{homeContent.identity.name}</span>
           </a>
           <div className="flex items-center gap-3 sm:gap-6">
-            <a className={navLinkClasses} href="#work">
-              Work
-            </a>
             <a className={navLinkClasses} href="/articles/">
-              Writing
+              Blog
             </a>
-            <a className={`${navLinkClasses} hidden sm:block`} href="#experience">
-              Experience
-            </a>
-            <a className={`${navLinkClasses} hidden sm:block`} href="#contact">
+            <a className={navLinkClasses} href="#contact">
               Contact
             </a>
           </div>
