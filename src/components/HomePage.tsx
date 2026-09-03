@@ -12,7 +12,6 @@ import {
   homeContent,
   type ExperienceEntry,
   type FeaturedProject,
-  type WorkInProgress,
 } from '../data/homeContent';
 import { useActiveExperience } from '../hooks/useActiveExperience';
 
@@ -27,8 +26,6 @@ const focusRingClasses = 'focus-visible:outline-[3px] focus-visible:outline-blue
 const pageContainerClasses = 'mx-auto w-full max-w-page px-page-gutter-compact sm:px-page-gutter';
 const navLinkClasses = `text-sm-plus text-muted no-underline hover:text-ink ${focusRingClasses}`;
 const footerLinkClasses = `inline-flex items-center gap-2 border border-white/50 px-4 py-3 text-white no-underline hover:bg-white hover:text-ink ${focusRingClasses}`;
-const pipelineItemClasses = 'group grid gap-2 border-b border-line py-5 text-ink sm:grid-cols-[8rem_minmax(0,1fr)_auto] sm:gap-4';
-const sectionKickerClasses = 'text-caption font-bold uppercase tracking-widest text-orange';
 
 const ProjectBody = ({ project }: { project: FeaturedProject }) => (
   <>
@@ -78,23 +75,6 @@ const ProjectEntry = ({ project }: { project: FeaturedProject }) => {
     </article>
   );
 };
-
-const PipelineBody = ({ item }: { item: WorkInProgress }) => (
-  <>
-    <p
-      className={`pt-0.5 text-caption font-bold uppercase tracking-widest ${
-        item.status === 'Available now' ? 'text-blue' : 'text-orange'
-      }`}
-    >
-      {item.status}
-    </p>
-    <div>
-      <h3 className="text-h3 transition-colors group-hover:text-blue">{item.name}</h3>
-      <p className="mt-1.5 max-w-xl text-sm-plus leading-normal text-muted">{item.summary}</p>
-    </div>
-    {item.href ? <FaExternalLinkAlt className="mt-1 text-xs text-muted" aria-hidden="true" /> : null}
-  </>
-);
 
 const ExperienceCard = ({ experience }: { experience: ExperienceEntry }) => (
   <>
@@ -202,31 +182,6 @@ export const HomePage = () => {
             ))}
           </div>
 
-          <div className="mt-20 grid gap-8 border-t border-line pt-8 md:grid-cols-[0.65fr_1.35fr] lg:mt-32">
-            <div>
-              <p className={`${sectionKickerClasses} mb-3`}>Current work</p>
-              <p className="max-w-72 text-base leading-relaxed text-muted">
-                Early releases and active builds.
-              </p>
-            </div>
-            <div className="border-t border-line">
-              {homeContent.workInProgress.map((item: WorkInProgress) => item.href ? (
-                <a
-                  className={`${pipelineItemClasses} no-underline ${focusRingClasses}`}
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <PipelineBody item={item} />
-                </a>
-              ) : (
-                <article className={pipelineItemClasses} key={item.name}>
-                  <PipelineBody item={item} />
-                </article>
-              ))}
-            </div>
-          </div>
         </section>
 
         <section className="scroll-mt-24 border-t border-line py-20 md:py-28 lg:py-36" id="experience">

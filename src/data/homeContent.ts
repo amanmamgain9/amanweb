@@ -18,13 +18,6 @@ export type FeaturedProject = {
   href?: string;
 };
 
-export type WorkInProgress = {
-  name: string;
-  status: 'Available now' | 'In development';
-  summary: string;
-  href?: string;
-};
-
 export const homeContent = {
   identity: {
     name: 'Aman Mamgain',
@@ -64,18 +57,6 @@ export const homeContent = {
       image: '/project-padelcue.webp',
     },
   ] satisfies FeaturedProject[],
-  workInProgress: [
-    {
-      name: 'Coursyn',
-      status: 'In development',
-      summary: 'AI-generated courses built as explorable learning systems.',
-    },
-    {
-      name: 'Founder Game',
-      status: 'In development',
-      summary: 'A progression system that turns founder work into quests, skills, and momentum.',
-    },
-  ] satisfies WorkInProgress[],
   experiences: [
     {
       id: 'independent-products',
