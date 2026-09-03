@@ -48,17 +48,12 @@ const ProjectBody = ({ project }: { project: FeaturedProject }) => (
     </div>
     <div className="pt-5">
       <div className="flex items-center justify-between gap-4 [&_svg]:shrink-0 [&_svg]:text-xs [&_svg]:text-muted">
-        <h3 className="text-h3 transition-colors duration-150 group-hover:text-blue">
+        <h3 className="text-h2 transition-colors duration-150 group-hover:text-blue">
           {project.name}
         </h3>
         {project.href ? <FaExternalLinkAlt aria-hidden="true" /> : null}
       </div>
-      <p className="mt-2 text-lg font-semibold">{project.summary}</p>
-      {project.detail ? (
-        <p className="mt-2.5 max-w-lg text-base leading-relaxed text-muted">
-          {project.detail}
-        </p>
-      ) : null}
+      <p className="mt-3 max-w-lg text-base leading-relaxed text-muted">{project.summary}</p>
     </div>
   </>
 );

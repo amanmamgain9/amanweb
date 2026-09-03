@@ -14,7 +14,6 @@ export type FeaturedProject = {
   name: string;
   status: ProjectStatus;
   summary: string;
-  detail?: string;
   image: string;
   href?: string;
 };
@@ -42,8 +41,6 @@ export const homeContent = {
       name: 'PlanMyWorkday',
       status: 'Live',
       summary: 'Task management as fast as your brain.',
-      detail:
-        'A keyboard-first daily planner with a built-in focus timer and a deliberately low-friction workflow.',
       image: '/project-planmyworkday.webp',
       href: 'https://planmyworkday.com',
     },
@@ -51,8 +48,6 @@ export const homeContent = {
       name: 'AIAnkiPro',
       status: 'Live',
       summary: 'Turn scattered input into lasting recall.',
-      detail:
-        'Transforms notes, videos, and AI chats into a learn-first flashcard loop with recall, card chat, and voice.',
       image: '/project-aiankipro.webp',
       href: 'https://aiankipro.com',
     },
@@ -60,16 +55,12 @@ export const homeContent = {
       name: 'Rarely',
       status: 'Launching soon',
       summary: 'Make the pet photo talk.',
-      detail:
-        'A consumer product that turns one pet photo and a short line into a synchronized talking-pet video.',
       image: '/project-rarely.webp',
     },
     {
       name: 'PadelCue',
       status: 'Launching soon',
       summary: 'One court cue. Better padel.',
-      detail:
-        'An Android-first coaching app with daily tips, drills, saved playbooks, progress, and reminders.',
       image: '/project-padelcue.webp',
     },
   ] satisfies FeaturedProject[],
