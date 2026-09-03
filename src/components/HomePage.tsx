@@ -189,7 +189,7 @@ export const HomePage = () => {
               </p>
             </div>
             <div className="border-t border-line">
-              {homeContent.workInProgress.map((item) => item.href ? (
+              {homeContent.workInProgress.map((item: WorkInProgress) => item.href ? (
                 <a
                   className={`${pipelineItemClasses} no-underline ${focusRingClasses}`}
                   key={item.name}

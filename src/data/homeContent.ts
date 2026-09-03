@@ -43,6 +43,16 @@ export const homeContent = {
       tags: ['Product design', 'Full-stack web', 'Subscriptions'],
     },
     {
+      name: 'Karaka',
+      status: 'Live',
+      summary: 'A persistent runtime for multi-agent applications.',
+      detail:
+        'An open-source application runtime built on DeepSeek Harness, with durable agents and server-to-server integration.',
+      image: '/plugin-landscape-social.png',
+      href: 'https://github.com/amanmamgain9/karaka',
+      tags: ['Agent runtime', 'Open source', 'DeepSeek Harness'],
+    },
+    {
       name: 'AIAnkiPro',
       status: 'Live',
       summary: 'Turn scattered input into lasting recall.',
@@ -78,12 +88,6 @@ export const homeContent = {
       summary: 'AI-generated courses built as explorable learning systems.',
     },
     {
-      name: 'Karaka',
-      status: 'Available now',
-      summary: 'A persistent multi-agent application runtime built on DeepSeek Harness.',
-      href: 'https://github.com/amanmamgain9/karaka',
-    },
-    {
       name: 'Founder Game',
       status: 'In development',
       summary: 'A progression system that turns founder work into quests, skills, and momentum.',
@@ -97,8 +101,8 @@ export const homeContent = {
       role: 'Product engineer and founder',
       summary: 'Taking focused products from rough idea to production.',
       highlights: [
-        'Shipped PlanMyWorkday and AIAnkiPro as complete web products.',
-        'Building consumer AI, learning, mobile coaching, and agent-runtime products toward launch.',
+        'Shipped PlanMyWorkday, AIAnkiPro, and the first public version of Karaka.',
+        'Building consumer AI, learning, and mobile coaching products toward launch.',
       ],
       stack: ['Product strategy', 'TypeScript', 'React', 'AI systems'],
     },
