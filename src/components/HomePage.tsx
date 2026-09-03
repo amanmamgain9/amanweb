@@ -239,12 +239,8 @@ export const HomePage = () => {
         </section>
 
         <section className="scroll-mt-24 border-t border-line py-20 md:py-28 lg:py-36" id="experience">
-          <header className="mb-10 max-w-3xl lg:mb-16">
-            <p className={`${sectionKickerClasses} mb-3`}>Experience</p>
-            <h2 className="text-h1">The compact version.</h2>
-            <p className="mt-4 text-lg leading-relaxed text-muted">
-              Founding builds, product teams, and operational systems since 2014.
-            </p>
+          <header className="mb-10 lg:mb-16">
+            <h2 className="text-h1">Experience</h2>
           </header>
           <div className="grid gap-4 md:grid-cols-2">
             {homeContent.experiences.map((experience) => (
