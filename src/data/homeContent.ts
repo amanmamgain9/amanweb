@@ -14,10 +14,9 @@ export type FeaturedProject = {
   name: string;
   status: ProjectStatus;
   summary: string;
-  detail: string;
+  detail?: string;
   image: string;
   href?: string;
-  tags: string[];
 };
 
 export type WorkInProgress = {
@@ -36,11 +35,8 @@ export const homeContent = {
       name: 'Karaka',
       status: 'Live',
       summary: 'A DeepSeek Harness fork that allows you to ship production agents inside your product.',
-      detail:
-        'Simple SDK. CLI setup. Persistent conversations. Authenticated tools. One self-contained runtime.',
       image: '/project-karaka.webp',
       href: 'https://github.com/karaka-ai/karaka',
-      tags: ['Agent infrastructure', 'SDK + CLI', 'Open source'],
     },
     {
       name: 'PlanMyWorkday',
@@ -50,7 +46,6 @@ export const homeContent = {
         'A keyboard-first daily planner with a built-in focus timer and a deliberately low-friction workflow.',
       image: '/project-planmyworkday.webp',
       href: 'https://planmyworkday.com',
-      tags: ['Product design', 'Full-stack web', 'Subscriptions'],
     },
     {
       name: 'AIAnkiPro',
@@ -60,7 +55,6 @@ export const homeContent = {
         'Transforms notes, videos, and AI chats into a learn-first flashcard loop with recall, card chat, and voice.',
       image: '/project-aiankipro.webp',
       href: 'https://aiankipro.com',
-      tags: ['Learning systems', 'Applied AI', 'Voice'],
     },
     {
       name: 'Rarely',
@@ -69,7 +63,6 @@ export const homeContent = {
       detail:
         'A consumer product that turns one pet photo and a short line into a synchronized talking-pet video.',
       image: '/project-rarely.webp',
-      tags: ['Generative video', 'Payments', 'Consumer AI'],
     },
     {
       name: 'PadelCue',
@@ -78,7 +71,6 @@ export const homeContent = {
       detail:
         'An Android-first coaching app with daily tips, drills, saved playbooks, progress, and reminders.',
       image: '/project-padelcue.webp',
-      tags: ['React Native', 'Firebase', 'Android'],
     },
   ] satisfies FeaturedProject[],
   workInProgress: [

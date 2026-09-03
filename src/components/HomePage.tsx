@@ -54,15 +54,11 @@ const ProjectBody = ({ project }: { project: FeaturedProject }) => (
         {project.href ? <FaExternalLinkAlt aria-hidden="true" /> : null}
       </div>
       <p className="mt-2 text-lg font-semibold">{project.summary}</p>
-      <p className="mt-2.5 max-w-lg text-base leading-relaxed text-muted">
-        {project.detail}
-      </p>
-      <ul
-        className="mt-4 flex list-none flex-wrap gap-x-4 gap-y-2 p-0 text-caption text-muted [&_li::before]:mr-2 [&_li::before]:text-orange [&_li::before]:content-['•']"
-        aria-label={`${project.name} technologies`}
-      >
-        {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
-      </ul>
+      {project.detail ? (
+        <p className="mt-2.5 max-w-lg text-base leading-relaxed text-muted">
+          {project.detail}
+        </p>
+      ) : null}
     </div>
   </>
 );
