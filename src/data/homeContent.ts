@@ -33,16 +33,6 @@ export const homeContent = {
   },
   featuredProjects: [
     {
-      name: 'PlanMyWorkday',
-      status: 'Live',
-      summary: 'Task management as fast as your brain.',
-      detail:
-        'A keyboard-first daily planner with a built-in focus timer and a deliberately low-friction workflow.',
-      image: '/project-planmyworkday.webp',
-      href: 'https://planmyworkday.com',
-      tags: ['Product design', 'Full-stack web', 'Subscriptions'],
-    },
-    {
       name: 'Karaka',
       status: 'Live',
       summary: 'A DeepSeek Harness fork that allows you to ship production agents inside your product.',
@@ -51,6 +41,16 @@ export const homeContent = {
       image: '/project-karaka.webp',
       href: 'https://github.com/karaka-ai/karaka',
       tags: ['Agent infrastructure', 'SDK + CLI', 'Open source'],
+    },
+    {
+      name: 'PlanMyWorkday',
+      status: 'Live',
+      summary: 'Task management as fast as your brain.',
+      detail:
+        'A keyboard-first daily planner with a built-in focus timer and a deliberately low-friction workflow.',
+      image: '/project-planmyworkday.webp',
+      href: 'https://planmyworkday.com',
+      tags: ['Product design', 'Full-stack web', 'Subscriptions'],
     },
     {
       name: 'AIAnkiPro',
