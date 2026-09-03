@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   FaArrowRight,
   FaEnvelope,
@@ -15,7 +15,13 @@ import {
   type WorkInProgress,
 } from '../data/homeContent';
 import { useActiveExperience } from '../hooks/useActiveExperience';
-import { useRobotMovement } from '../hooks/useRobotMovement';
+
+type RobotPosition = {
+  x: number;
+  y: number;
+  radius: number;
+  intensity: number;
+} | null;
 
 const focusRingClasses = 'focus-visible:outline-[3px] focus-visible:outline-blue focus-visible:outline-offset-4';
 const pageContainerClasses = 'mx-auto w-full max-w-page px-page-gutter-compact sm:px-page-gutter';
@@ -120,19 +126,52 @@ const ExperienceCard = ({ experience }: { experience: ExperienceEntry }) => (
 
 export const HomePage = () => {
   const activeExperienceId = useActiveExperience(homeContent.experiences);
-  const mainFlowRef = useRef<HTMLElement | null>(null);
-  const heroDockRef = useRef<HTMLDivElement | null>(null);
-  const footerRef = useRef<HTMLElement | null>(null);
+  const robotDockRef = useRef<HTMLDivElement | null>(null);
+  const [robotPosition, setRobotPosition] = useState<RobotPosition>(null);
   const [robotLoaded, setRobotLoaded] = useState(false);
-  const {
-    scrollingAndroid,
-    isPeek,
-  } = useRobotMovement({
-    mainFlowRef,
-    heroVisualRef: heroDockRef,
-    footerRef,
-    freezeMovement: !robotLoaded,
-  });
+
+  useEffect(() => {
+    let frame = 0;
+
+    const updateRobotPosition = () => {
+      const dock = robotDockRef.current;
+      if (!dock) return;
+
+      const rect = dock.getBoundingClientRect();
+      const isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+
+      setRobotPosition(isVisible ? {
+        x: rect.left + rect.width * 0.5,
+        y: rect.top + rect.height * 0.52,
+        radius: window.innerWidth < 640 ? 32 : 44,
+        intensity: 0.65,
+      } : null);
+    };
+
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        updateRobotPosition();
+      });
+    };
+
+    const observer = new IntersectionObserver(scheduleUpdate, {
+      threshold: [0, 0.25, 0.75, 1],
+    });
+    if (robotDockRef.current) observer.observe(robotDockRef.current);
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    scheduleUpdate();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   return (
     <div className="min-h-dvh overflow-clip bg-paper font-sans text-ink">
@@ -154,6 +193,9 @@ export const HomePage = () => {
             <a className={`${navLinkClasses} hidden sm:block`} href="#experience">
               Experience
             </a>
+            <a className={`${navLinkClasses} hidden md:block`} href="#robot">
+              Robot
+            </a>
             <a className={`${navLinkClasses} hidden sm:block`} href="#contact">
               Contact
             </a>
@@ -161,20 +203,11 @@ export const HomePage = () => {
         </nav>
       </header>
 
-      <main
-        className={`${pageContainerClasses} relative z-[1]`}
-        id="top"
-        ref={mainFlowRef}
-      >
+      <main className={`${pageContainerClasses} relative z-[1]`} id="top">
         <section
           className="relative scroll-mt-24 pb-20 pt-8 md:pb-28 md:pt-14 lg:pb-36"
           id="work"
         >
-          <div
-            className="pointer-events-none absolute right-7 top-[clamp(6.5rem,9vw,7.5rem)] h-px w-px"
-            ref={heroDockRef}
-            aria-label="Home position for the animated robot"
-          />
           <div className="grid gap-x-6 gap-y-14 md:grid-cols-2">
             {homeContent.featuredProjects.map((project) => (
               <ProjectEntry key={project.name} project={project} />
@@ -242,7 +275,27 @@ export const HomePage = () => {
         </section>
       </main>
 
-      <footer className="relative z-[1] bg-orange text-white" id="contact" ref={footerRef}>
+      <section
+        className="relative z-[1] scroll-mt-16 border-t border-line bg-paper-deep"
+        id="robot"
+      >
+        <div className={`${pageContainerClasses} grid min-h-[24rem] items-center gap-8 py-14 md:grid-cols-[1fr_0.85fr] md:py-20`}>
+          <div>
+            <p className={`${sectionKickerClasses} mb-3`}>Small experiment</p>
+            <h2 className="text-h1">Hi, robot.</h2>
+            <p className="mt-4 max-w-lg text-lg leading-relaxed text-muted">
+              A little Three.js character that now lives at the end of the page.
+            </p>
+          </div>
+          <div
+            className="relative min-h-56 border border-line bg-paper/60 md:min-h-64"
+            ref={robotDockRef}
+            aria-label="Animated robot waving hello"
+          />
+        </div>
+      </section>
+
+      <footer className="relative z-[1] bg-orange text-white" id="contact">
         <div className={`${pageContainerClasses} py-16 md:py-24 lg:py-32`}>
           <p className="text-caption font-bold uppercase tracking-widest">Have a difficult product to build?</p>
           <h2 className="mt-3 text-hero">Let’s make it real.</h2>
@@ -282,17 +335,17 @@ export const HomePage = () => {
       </footer>
 
       <AndroidModelOverlay
-        android={scrollingAndroid}
+        android={robotPosition}
         onLoaded={() => setRobotLoaded(true)}
-        isPeek={isPeek}
+        isPeek={false}
       />
-      {robotLoaded && scrollingAndroid && !isPeek ? (
+      {robotLoaded && robotPosition ? (
         <div
           className="pointer-events-none fixed z-[18] rounded-full border border-ink/30 bg-white/90 px-2 py-1 text-caption text-ink"
           aria-hidden="true"
           style={{
-            left: scrollingAndroid.x + scrollingAndroid.radius + 10,
-            top: scrollingAndroid.y - scrollingAndroid.radius - 16,
+            left: robotPosition.x + robotPosition.radius + 10,
+            top: robotPosition.y - robotPosition.radius - 16,
           } as CSSProperties}
         >
           Hi
