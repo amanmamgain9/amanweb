@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const rootDir = fileURLToPath(new URL('.', import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -15,6 +19,10 @@ export default defineConfig({
     // trigger the Vite notice.
     chunkSizeWarningLimit: 850,
     rollupOptions: {
+      input: {
+        main: resolve(rootDir, 'index.html'),
+        articles: resolve(rootDir, 'articles/index.html'),
+      },
       output: {
         // Pull the 3D stack into its own chunk so it caches across
         // deploys when only app code changes, and so the app chunk
