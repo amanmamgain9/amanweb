@@ -23,24 +23,24 @@ export const homeContent = {
     name: 'Aman Mamgain',
     introduction: {
       eyebrow: "Hey, I'm Aman.",
-      headline: 'I build software for ideas I can’t leave alone.',
-      summary: 'Lately: AI agents, tools for thinking, and a few experiments that aren’t ready to behave.',
+      headline: 'I build software.',
+      summary: 'Lately: AI agents, AI-assisted search, and productivity tools.',
     },
   },
   featuredProjects: [
+    {
+      name: 'PlayThisLife',
+      status: 'Live',
+      summary: 'Turn real goals into quests, and completed work into visible skill progress.',
+      image: '/project-playthislife.png',
+      href: 'https://playthislife.com',
+    },
     {
       name: 'Karaka',
       status: 'Live',
       summary: 'A DeepSeek Harness fork that allows you to ship production agents inside your product.',
       image: '/project-karaka.webp',
       href: 'https://github.com/karaka-ai/karaka',
-    },
-    {
-      name: 'PlanMyWorkday',
-      status: 'Live',
-      summary: 'Task management as fast as your brain.',
-      image: '/project-planmyworkday.webp',
-      href: 'https://planmyworkday.com',
     },
     {
       name: 'AIAnkiPro',
@@ -70,7 +70,7 @@ export const homeContent = {
       role: 'Product engineer and founder',
       summary: 'Taking focused products from rough idea to production.',
       highlights: [
-        'Shipped PlanMyWorkday, AIAnkiPro, and the first public version of Karaka.',
+        'Built and shipped PlayThisLife, powered by Karaka, from idea to production.',
         'Building consumer AI, learning, and mobile coaching products toward launch.',
       ],
       stack: ['Product strategy', 'TypeScript', 'React', 'AI systems'],
