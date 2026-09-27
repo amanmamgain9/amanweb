@@ -22,9 +22,9 @@ export const homeContent = {
   identity: {
     name: 'Aman Mamgain',
     introduction: {
-      eyebrow: "Hello, I'm Aman.",
-      headline: 'I turn rough ideas into products people can use.',
-      summary: 'Product engineer and independent builder working across applied AI, web, mobile, and games.',
+      eyebrow: "Hey, I'm Aman.",
+      headline: 'I build software for ideas I can’t leave alone.',
+      summary: 'Lately: AI agents, tools for thinking, and a few experiments that aren’t ready to behave.',
     },
   },
   featuredProjects: [

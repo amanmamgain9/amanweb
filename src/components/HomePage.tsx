@@ -166,17 +166,15 @@ export const HomePage = () => {
       </header>
 
       <main className={`${pageContainerClasses} relative z-[1]`} id="top">
-        <section className="grid min-h-[min(44rem,calc(100dvh-4rem))] content-center gap-10 border-b border-line py-16 md:grid-cols-[minmax(0,1.45fr)_minmax(16rem,0.55fr)] md:items-end md:py-24 lg:gap-20">
-          <div>
+        <section className="grid min-h-[min(48rem,calc(100dvh-4rem))] content-center gap-12 border-b border-line py-16 md:grid-cols-[minmax(0,1.35fr)_minmax(16rem,0.65fr)] md:items-center md:py-20 lg:gap-24">
+          <div className="md:pb-4">
             <p className="text-caption font-bold uppercase tracking-widest text-orange">
               {homeContent.identity.introduction.eyebrow}
             </p>
-            <h1 className="mt-5 max-w-[13ch] text-hero">
+            <h1 className="mt-5 max-w-[12ch] text-hero">
               {homeContent.identity.introduction.headline}
             </h1>
-          </div>
-          <div className="md:pb-2">
-            <p className="max-w-md text-fluid-body leading-relaxed text-muted">
+            <p className="mt-8 max-w-xl text-fluid-body leading-relaxed text-muted">
               {homeContent.identity.introduction.summary}
             </p>
             <a
@@ -186,6 +184,16 @@ export const HomePage = () => {
               See selected work <FaArrowRight aria-hidden="true" />
             </a>
           </div>
+          <figure className="relative mx-auto w-[min(82%,19rem)] rotate-[2deg] border-2 border-ink bg-blue shadow-[-12px_12px_0_0_#245fd6] transition-transform duration-300 hover:rotate-0 md:mx-0 md:w-full">
+            <img
+              className="aspect-[4/5] h-full w-full object-cover"
+              src="/moi.webp"
+              alt="Aman laughing in the rain by a reservoir"
+              width="640"
+              height="800"
+              loading="eager"
+            />
+          </figure>
         </section>
 
         <section
