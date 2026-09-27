@@ -166,10 +166,38 @@ export const HomePage = () => {
       </header>
 
       <main className={`${pageContainerClasses} relative z-[1]`} id="top">
+        <section className="grid min-h-[min(44rem,calc(100dvh-4rem))] content-center gap-10 border-b border-line py-16 md:grid-cols-[minmax(0,1.45fr)_minmax(16rem,0.55fr)] md:items-end md:py-24 lg:gap-20">
+          <div>
+            <p className="text-caption font-bold uppercase tracking-widest text-orange">
+              {homeContent.identity.introduction.eyebrow}
+            </p>
+            <h1 className="mt-5 max-w-[13ch] text-hero">
+              {homeContent.identity.introduction.headline}
+            </h1>
+          </div>
+          <div className="md:pb-2">
+            <p className="max-w-md text-fluid-body leading-relaxed text-muted">
+              {homeContent.identity.introduction.summary}
+            </p>
+            <a
+              className={`mt-8 inline-flex items-center gap-2.5 text-ink underline decoration-blue decoration-2 underline-offset-4 ${focusRingClasses}`}
+              href="#work"
+            >
+              See selected work <FaArrowRight aria-hidden="true" />
+            </a>
+          </div>
+        </section>
+
         <section
           className="relative scroll-mt-24 pb-20 pt-8 md:pb-28 md:pt-14 lg:pb-36"
           id="work"
         >
+          <header className="mb-10 flex items-end justify-between gap-6 md:mb-14">
+            <h2 className="text-h1">Selected work</h2>
+            <p className="hidden max-w-52 text-right text-sm-plus leading-relaxed text-muted sm:block">
+              Products I’ve designed, built, and shipped.
+            </p>
+          </header>
           <div className="grid gap-x-6 gap-y-14 md:grid-cols-2">
             {homeContent.featuredProjects.map((project) => (
               <ProjectEntry key={project.name} project={project} />

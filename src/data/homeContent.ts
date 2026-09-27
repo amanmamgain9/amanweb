@@ -21,6 +21,11 @@ export type FeaturedProject = {
 export const homeContent = {
   identity: {
     name: 'Aman Mamgain',
+    introduction: {
+      eyebrow: "Hello, I'm Aman.",
+      headline: 'I turn rough ideas into products people can use.',
+      summary: 'Product engineer and independent builder working across applied AI, web, mobile, and games.',
+    },
   },
   featuredProjects: [
     {
