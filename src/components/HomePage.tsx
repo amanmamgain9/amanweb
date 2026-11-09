@@ -99,16 +99,25 @@ export const HomePage = () => (
     </header>
 
     <main className={pageContainerClasses} id="top">
-      <section className="max-w-[42.5rem] pb-18 pt-10 md:pb-24 md:pt-18">
-        <h1 className="font-serif text-[clamp(2.4rem,5vw,3.4rem)] font-medium leading-[1.05] tracking-[-0.02em]">
-          {homeContent.identity.greeting}
-        </h1>
-        <p className="mt-5.5 text-lg leading-relaxed">{homeContent.identity.summary}</p>
-        <div className="mt-8 flex flex-wrap gap-2.5">
-          <ContactButtons />
-          <a className={buttonClasses} href={homeContent.links.resume} target="_blank" rel="noreferrer">
-            Résumé
-          </a>
+      <section className="grid items-center gap-8 pb-18 pt-10 md:grid-cols-[minmax(0,42.5rem)_auto] md:justify-between md:gap-12 md:pb-24 md:pt-18">
+        <img
+          className="aspect-[4/5] w-28 rounded-2xl border border-line object-cover md:order-last md:w-60"
+          src={homeContent.identity.photo}
+          alt={homeContent.identity.name}
+          width="640"
+          height="800"
+        />
+        <div>
+          <h1 className="font-serif text-[clamp(2.4rem,5vw,3.4rem)] font-medium leading-[1.05] tracking-[-0.02em]">
+            {homeContent.identity.greeting}
+          </h1>
+          <p className="mt-5.5 text-lg leading-relaxed">{homeContent.identity.summary}</p>
+          <div className="mt-8 flex flex-wrap gap-2.5">
+            <ContactButtons />
+            <a className={buttonClasses} href={homeContent.links.resume} target="_blank" rel="noreferrer">
+              Résumé
+            </a>
+          </div>
         </div>
       </section>
 

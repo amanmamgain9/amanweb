@@ -16,6 +16,7 @@ export const homeContent = {
   identity: {
     name: 'Aman Mamgain',
     greeting: "Hey, I'm Aman.",
+    photo: '/aman-headshot.webp',
     summary:
       "I'm a generalist software engineer. I've built 3D proximity voice chat for a first-person shooter, an iOS app for car showroom salespeople, and Django backends for loan approvals. After Glip I took a sabbatical, did contract work through Turing, and built a few products of my own.",
   },
