@@ -1,6 +1,6 @@
 # amanweb
 
-Aman Mamgain's portfolio: selected products, active builds, experience, and writing. The homepage includes a Three.js robot that docks in the hero and roams while the visitor scrolls.
+Aman Mamgain's portfolio: an introduction, projects, experience, and writing.
 
 ## Local development
 
@@ -22,6 +22,6 @@ The UI uses Tailwind CSS v4 through the Vite plugin. Shared colors, typography, 
 
 ## Content
 
-Homepage copy, projects, launch states, experience, and links live in `src/data/homeContent.ts`. A project may omit `href` while it is in development; add the public URL when it launches.
+Homepage copy, the featured project, other projects, experience, and links live in `src/data/homeContent.ts`.
 
 The article index lives at `/articles/` and includes both local and external writing. Local articles are client-rendered React pages with matching static HTML entries for link-preview metadata. The DeepSeek Harness landscape lives at `/articles/deepseek-harness-plugin-landscape`; its previous `/writing/...` route remains available as an alias.

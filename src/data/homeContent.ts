@@ -1,115 +1,87 @@
 export type ExperienceEntry = {
-  id: string;
   period: string;
   company: string;
-  role: string;
-  summary: string;
-  highlights: string[];
-  stack: string[];
+  role?: string;
+  summary?: string;
 };
 
-export type ProjectStatus = 'Live' | 'Launching soon';
-
-export type FeaturedProject = {
+export type Project = {
   name: string;
-  status: ProjectStatus;
   summary: string;
   image: string;
-  href?: string;
+  href: string;
 };
 
 export const homeContent = {
   identity: {
     name: 'Aman Mamgain',
-    introduction: {
-      eyebrow: "Hey, I'm Aman.",
-      headline: 'I build software.',
-      summary: 'Lately: AI agents, AI-assisted search, and productivity tools.',
-    },
+    greeting: "Hey, I'm Aman.",
+    summary:
+      "I'm a generalist software engineer. I've built 3D proximity voice chat for a first-person shooter, an iOS app for car showroom salespeople, and Django backends for loan approvals. After Glip I took a sabbatical, did contract work through Turing, and built a few products of my own.",
   },
-  featuredProjects: [
-    {
-      name: 'PlayThisLife',
-      status: 'Live',
-      summary: 'Turn real goals into quests, and completed work into visible skill progress.',
-      image: '/project-playthislife.png',
-      href: 'https://playthislife.com',
-    },
+  featuredProject: {
+    name: 'PlayThisLife',
+    summary: 'One planner for tasks, habits, workouts and chores, with an AI assistant that sets it up for you.',
+    role: 'Founder. Designed, built and run by me.',
+    href: 'https://playthislife.com',
+    logo: '/playthislife-cat.svg',
+    video: 'https://www.playthislife.com/product/how-it-works.mp4',
+    poster: 'https://www.playthislife.com/product/how-it-works-poster.webp',
+  },
+  projects: [
     {
       name: 'Karaka',
-      status: 'Live',
-      summary: 'A DeepSeek Harness fork that allows you to ship production agents inside your product.',
+      summary: 'A DeepSeek Harness fork for shipping agents inside your product.',
       image: '/project-karaka.webp',
       href: 'https://github.com/karaka-ai/karaka',
     },
     {
       name: 'AIAnkiPro',
-      status: 'Live',
-      summary: 'Turn scattered input into lasting recall.',
+      summary: 'Turns notes into flashcards.',
       image: '/project-aiankipro.webp',
-      href: 'https://aiankipro.com',
+      href: 'https://github.com/amanmamgain9/anki-ai-pro',
+    },
+    {
+      name: 'PlanMyWorkDay',
+      summary: 'A planner you can use without touching a mouse.',
+      image: '/project-planmyworkday.webp',
+      href: 'https://github.com/amanmamgain9/only-tasks',
     },
     {
       name: 'Rarely',
-      status: 'Launching soon',
       summary: 'Make the pet photo talk.',
       image: '/project-rarely.webp',
+      href: 'https://github.com/amanmamgain9/rarely-cards',
     },
-    {
-      name: 'PadelCue',
-      status: 'Launching soon',
-      summary: 'One court cue. Better padel.',
-      image: '/project-padelcue.webp',
-    },
-  ] satisfies FeaturedProject[],
+  ] satisfies Project[],
   experiences: [
     {
-      id: 'independent-products',
-      period: '2025 — now',
-      company: 'Independent products',
-      role: 'Product engineer and founder',
-      summary: 'Taking focused products from rough idea to production.',
-      highlights: [
-        'Built and shipped PlayThisLife, powered by Karaka, from idea to production.',
-        'Building consumer AI, learning, and mobile coaching products toward launch.',
-      ],
-      stack: ['Product strategy', 'TypeScript', 'React', 'AI systems'],
+      period: 'Recent',
+      company: 'Turing',
+      role: 'Contract engineer',
+      summary: 'Built replicas of real web apps used to train AI computer-use agents.',
     },
     {
-      id: 'glip',
-      period: '2021 — 2024',
+      period: '2025',
+      company: 'Sabbatical',
+    },
+    {
+      period: '2021 – 2024',
       company: 'Glip',
       role: 'Founding engineer',
-      summary: 'Built product systems across desktop, web, and Unity.',
-      highlights: [
-        'Developed low-latency game capture in Electron using OBS APIs.',
-        'Built wallet, auction, reward, gameplay, voice-chat, and AI-character experiences.',
-      ],
-      stack: ['Electron', 'React', 'Node.js', 'Unity', 'C#'],
+      summary: 'Game capture app on OBS, crypto wallet and marketplace, proximity voice chat in a Unity shooter.',
     },
     {
-      id: 'spinny',
-      period: '2019 — 2021',
+      period: '2019 – 2021',
       company: 'Spinny',
       role: 'Tech lead',
-      summary: 'Led full-stack delivery for vehicle-finance operations.',
-      highlights: [
-        'Built a React Native client-management app and loan-automation backend.',
-        'Designed dynamic profiling and loan-approval workflows.',
-      ],
-      stack: ['Django', 'React', 'React Native', 'Workflow systems'],
+      summary: 'Loan approval system with the ops team, and an iOS app for showroom sales teams.',
     },
     {
-      id: 'earlier-work',
-      period: '2014 — 2019',
-      company: 'Back2Stores · Innovaccer · HT Media',
-      role: 'Co-founder, SDE-2, and software developer',
-      summary: 'Built commerce, healthcare, and media systems from product UI to infrastructure.',
-      highlights: [
-        'Scaled a B2B commerce platform to more than 30 enterprise clients.',
-        'Unified healthcare workflows and shipped growth, payment, analytics, and internal systems.',
-      ],
-      stack: ['Django', 'Android', 'Angular', 'AWS', 'Elasticsearch'],
+      period: '2014 – 2019',
+      company: 'Back2Stores',
+      role: 'Co-founder',
+      summary: 'B2B commerce platform used by 30+ enterprise clients. Before that, Innovaccer and HT Media.',
     },
   ] satisfies ExperienceEntry[],
   links: {

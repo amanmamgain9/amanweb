@@ -1,313 +1,144 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import {
-  FaArrowRight,
-  FaEnvelope,
-  FaExternalLinkAlt,
-  FaFilePdf,
-  FaGithub,
-  FaLinkedin,
-} from 'react-icons/fa';
-import { AndroidModelOverlay } from './AndroidModelOverlay';
-import {
-  homeContent,
-  type ExperienceEntry,
-  type FeaturedProject,
-} from '../data/homeContent';
-import { useActiveExperience } from '../hooks/useActiveExperience';
+import { homeContent, type ExperienceEntry, type Project } from '../data/homeContent';
 
-type RobotPosition = {
-  x: number;
-  y: number;
-  radius: number;
-  intensity: number;
-} | null;
+const focusRingClasses = 'focus-visible:outline-2 focus-visible:outline-ink focus-visible:outline-offset-4';
+const pageContainerClasses = 'mx-auto w-full max-w-[65rem] px-5';
+const navLinkClasses = `text-[15px] text-muted no-underline hover:text-ink ${focusRingClasses}`;
+const buttonClasses = `inline-flex items-center rounded-full border border-line bg-white px-5 py-2.5 text-[15px] font-medium text-ink no-underline hover:border-ink ${focusRingClasses}`;
+const primaryButtonClasses = `inline-flex items-center rounded-full border border-ink bg-ink px-5 py-2.5 text-[15px] font-medium text-white no-underline ${focusRingClasses}`;
+const sectionHeadingClasses = 'mb-9 font-serif text-[clamp(2rem,3.4vw,2.6rem)] font-medium tracking-[-0.02em]';
 
-const focusRingClasses = 'focus-visible:outline-[3px] focus-visible:outline-blue focus-visible:outline-offset-4';
-const pageContainerClasses = 'mx-auto w-full max-w-page px-page-gutter-compact sm:px-page-gutter';
-const navLinkClasses = `text-sm-plus text-muted no-underline hover:text-ink ${focusRingClasses}`;
-const footerLinkClasses = `inline-flex items-center gap-2 border border-white/50 px-4 py-3 text-white no-underline hover:bg-white hover:text-ink ${focusRingClasses}`;
+const ContactButtons = () => (
+  <div className="flex flex-wrap gap-2.5">
+    <a className={primaryButtonClasses} href={homeContent.links.email}>Email me</a>
+    <a className={buttonClasses} href={homeContent.links.calendly} target="_blank" rel="noreferrer">
+      Book a call
+    </a>
+  </div>
+);
 
-const ProjectBody = ({ project }: { project: FeaturedProject }) => (
-  <>
-    <div className="relative aspect-[8/5] overflow-hidden border border-line bg-paper-deep">
-      <img
-        className="h-full w-full object-contain transition-transform duration-300 ease-out group-hover:scale-[1.025]"
-        src={project.image}
-        alt=""
-      />
-      <span
-        className={`absolute left-3 top-3 px-2.5 py-1.5 text-caption font-bold uppercase tracking-widest ${
-          project.status === 'Live' ? 'bg-blue text-white' : 'bg-launch text-ink'
-        }`}
-      >
-        {project.status}
-      </span>
-    </div>
-    <div className="pt-5">
-      <div className="flex items-center justify-between gap-4 [&_svg]:shrink-0 [&_svg]:text-xs [&_svg]:text-muted">
-        <h3 className="text-h2 transition-colors duration-150 group-hover:text-blue">
-          {project.name}
-        </h3>
-        {project.href ? <FaExternalLinkAlt aria-hidden="true" /> : null}
+const PlayThisLifeLogo = () => (
+  <span className="inline-flex items-center gap-2">
+    <img className="size-[30px]" src={homeContent.featuredProject.logo} alt="" />
+    <span className="inline-block -rotate-2 font-retro text-[26px] leading-[1.2] tracking-[-0.025em] text-ptl-cream [-webkit-text-stroke:0.75px_var(--color-ptl-brown)] [paint-order:stroke_fill] [text-shadow:1px_2px_0_var(--color-ptl-brown)]">
+      Play This <span className="text-ptl-orange">Life</span>
+    </span>
+  </span>
+);
+
+const FeaturedProject = () => {
+  const project = homeContent.featuredProject;
+
+  return (
+    <div className="grid items-center gap-10 rounded-[20px] border border-line bg-white p-6 md:grid-cols-[1fr_1.7fr] md:p-8">
+      <div>
+        <a className={`no-underline ${focusRingClasses}`} href={project.href} target="_blank" rel="noreferrer">
+          <PlayThisLifeLogo />
+        </a>
+        <p className="mt-4 text-[17px]">{project.summary}</p>
+        <p className="mt-2.5 text-sm text-muted">{project.role}</p>
+        <a className={`${primaryButtonClasses} mt-6`} href={project.href} target="_blank" rel="noreferrer">
+          Visit
+        </a>
       </div>
-      <p className="mt-3 max-w-lg text-base leading-relaxed text-muted">{project.summary}</p>
-    </div>
-  </>
-);
-
-const ProjectEntry = ({ project }: { project: FeaturedProject }) => {
-  if (project.href) {
-    return (
-      <a
-        className={`group grid content-start text-ink no-underline ${focusRingClasses}`}
-        href={project.href}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <ProjectBody project={project} />
-      </a>
-    );
-  }
-
-  return (
-    <article className="group grid content-start text-ink">
-      <ProjectBody project={project} />
-    </article>
-  );
-};
-
-const ExperienceCard = ({ experience }: { experience: ExperienceEntry }) => (
-  <>
-    <p className="text-caption font-semibold uppercase tracking-widest text-orange">
-      {experience.period}
-    </p>
-    <h3 className="mt-2 text-h3">{experience.company}</h3>
-    <p className="mt-1 text-sm-plus text-muted">{experience.role}</p>
-    <p className="mt-4 text-base leading-relaxed">{experience.summary}</p>
-    <ul className="mt-2 list-none space-y-2 p-0 text-base leading-relaxed">
-      {experience.highlights.map((highlight) => (
-        <li key={highlight}>— {highlight}</li>
-      ))}
-    </ul>
-    <p className="mt-4 text-sm leading-relaxed text-muted">
-      {experience.stack.join(' · ')}
-    </p>
-  </>
-);
-
-export const HomePage = () => {
-  const activeExperienceId = useActiveExperience(homeContent.experiences);
-  const robotDockRef = useRef<HTMLDivElement | null>(null);
-  const [robotPosition, setRobotPosition] = useState<RobotPosition>(null);
-  const [robotLoaded, setRobotLoaded] = useState(false);
-
-  useEffect(() => {
-    let frame = 0;
-
-    const updateRobotPosition = () => {
-      const dock = robotDockRef.current;
-      if (!dock) return;
-
-      const rect = dock.getBoundingClientRect();
-      const isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
-
-      setRobotPosition(isVisible ? {
-        x: rect.left + rect.width * 0.5,
-        y: rect.top + rect.height * 0.52,
-        radius: window.innerWidth < 640 ? 32 : 44,
-        intensity: 0.65,
-      } : null);
-    };
-
-    const scheduleUpdate = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        updateRobotPosition();
-      });
-    };
-
-    const observer = new IntersectionObserver(scheduleUpdate, {
-      threshold: [0, 0.25, 0.75, 1],
-    });
-    if (robotDockRef.current) observer.observe(robotDockRef.current);
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
-    scheduleUpdate();
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', scheduleUpdate);
-      window.removeEventListener('resize', scheduleUpdate);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  return (
-    <div className="min-h-dvh overflow-clip bg-paper font-sans text-ink">
-      <header className="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur-md">
-        <nav
-          className={`${pageContainerClasses} flex min-h-16 items-center justify-between gap-8`}
-          aria-label="Primary navigation"
-        >
-          <a className={`grid text-ink no-underline ${focusRingClasses}`} href="#top">
-            <span className="font-bold tracking-tight">{homeContent.identity.name}</span>
-          </a>
-          <div className="flex items-center gap-3 sm:gap-6">
-            <a className={navLinkClasses} href="/articles/">
-              Blog
-            </a>
-            <a className={navLinkClasses} href="#contact">
-              Contact
-            </a>
-          </div>
-        </nav>
-      </header>
-
-      <main className={`${pageContainerClasses} relative z-[1]`} id="top">
-        <section className="grid min-h-[min(48rem,calc(100dvh-4rem))] content-center gap-12 border-b border-line py-16 md:grid-cols-[minmax(0,1.35fr)_minmax(16rem,0.65fr)] md:items-center md:py-20 lg:gap-24">
-          <div className="md:pb-4">
-            <p className="text-caption font-bold uppercase tracking-widest text-orange">
-              {homeContent.identity.introduction.eyebrow}
-            </p>
-            <h1 className="mt-5 max-w-[12ch] text-hero">
-              {homeContent.identity.introduction.headline}
-            </h1>
-            <p className="mt-8 max-w-xl text-fluid-body leading-relaxed text-muted">
-              {homeContent.identity.introduction.summary}
-            </p>
-            <a
-              className={`mt-8 inline-flex items-center gap-2.5 text-ink underline decoration-blue decoration-2 underline-offset-4 ${focusRingClasses}`}
-              href="#work"
-            >
-              See selected work <FaArrowRight aria-hidden="true" />
-            </a>
-          </div>
-          <figure className="relative mx-auto w-[min(82%,19rem)] rotate-[2deg] border-2 border-ink bg-blue shadow-[-12px_12px_0_0_#245fd6] transition-transform duration-300 hover:rotate-0 md:mx-0 md:w-full">
-            <img
-              className="aspect-[4/5] h-full w-full object-cover"
-              src="/moi.webp"
-              alt="Aman laughing in the rain by a reservoir"
-              width="640"
-              height="800"
-              loading="eager"
-            />
-          </figure>
-        </section>
-
-        <section
-          className="relative scroll-mt-24 pb-20 pt-8 md:pb-28 md:pt-14 lg:pb-36"
-          id="work"
-        >
-          <header className="mb-10 flex items-end justify-between gap-6 md:mb-14">
-            <h2 className="text-h1">Selected work</h2>
-            <p className="hidden max-w-52 text-right text-sm-plus leading-relaxed text-muted sm:block">
-              Products I’ve designed, built, and shipped.
-            </p>
-          </header>
-          <div className="grid gap-x-6 gap-y-14 md:grid-cols-2">
-            {homeContent.featuredProjects.map((project) => (
-              <ProjectEntry key={project.name} project={project} />
-            ))}
-          </div>
-
-        </section>
-
-        <section className="scroll-mt-24 border-t border-line py-20 md:py-28 lg:py-36" id="experience">
-          <header className="mb-10 lg:mb-16">
-            <h2 className="text-h1">Experience</h2>
-          </header>
-          <div className="grid gap-4 md:grid-cols-2">
-            {homeContent.experiences.map((experience) => (
-              <article
-                className={`min-w-0 border p-6 transition-colors duration-200 ${
-                  experience.id === activeExperienceId
-                    ? 'border-blue/55 bg-white/65'
-                    : 'border-line bg-white/30'
-                }`}
-                id={experience.id}
-                key={experience.id}
-              >
-                <ExperienceCard experience={experience} />
-              </article>
-            ))}
-          </div>
-          <a
-            className={`mt-8 inline-flex items-center gap-2.5 text-ink underline underline-offset-4 ${focusRingClasses}`}
-            href={homeContent.links.resume}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Full résumé <FaFilePdf />
-          </a>
-        </section>
-      </main>
-
-      <footer className="relative z-[1] bg-orange text-white" id="contact">
-        <div className={`${pageContainerClasses} grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.35fr_0.65fr] lg:py-28`}>
-          <div>
-            <p className="text-caption font-bold uppercase tracking-widest">Have a difficult product to build?</p>
-            <h2 className="mt-3 text-hero">Let’s make it real.</h2>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                className={footerLinkClasses}
-                href={homeContent.links.email}
-              >
-                <FaEnvelope /> Email
-              </a>
-              <a
-                className={footerLinkClasses}
-                href={homeContent.links.calendly}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Book a call <FaArrowRight />
-              </a>
-              <a
-                className={footerLinkClasses}
-                href={homeContent.links.github}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaGithub /> GitHub
-              </a>
-              <a
-                className={footerLinkClasses}
-                href={homeContent.links.linkedin}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaLinkedin /> LinkedIn
-              </a>
-            </div>
-          </div>
-          <div
-            className="relative min-h-56 scroll-mt-16 border border-white/30 bg-white/5 md:min-h-64"
-            id="robot"
-            ref={robotDockRef}
-            aria-label="Animated robot waving hello"
-          />
-        </div>
-      </footer>
-
-      <AndroidModelOverlay
-        android={robotPosition}
-        onLoaded={() => setRobotLoaded(true)}
-        isPeek={false}
+      <video
+        className="block w-full rounded-xl bg-ink"
+        src={project.video}
+        poster={project.poster}
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-label={`${project.name} demo`}
       />
-      {robotLoaded && robotPosition ? (
-        <div
-          className="pointer-events-none fixed z-[18] rounded-full border border-ink/30 bg-white/90 px-2 py-1 text-caption text-ink"
-          aria-hidden="true"
-          style={{
-            left: robotPosition.x + robotPosition.radius + 10,
-            top: robotPosition.y - robotPosition.radius - 16,
-          } as CSSProperties}
-        >
-          Hi
-        </div>
-      ) : null}
     </div>
   );
 };
+
+const ProjectTile = ({ project }: { project: Project }) => (
+  <a
+    className={`flex flex-col overflow-hidden rounded-2xl border border-line bg-white text-ink no-underline transition-colors hover:border-ink ${focusRingClasses}`}
+    href={project.href}
+    target="_blank"
+    rel="noreferrer"
+  >
+    <img className="block aspect-[16/10] w-full border-b border-line object-cover" src={project.image} alt="" loading="lazy" />
+    <div className="px-5 pb-5.5 pt-4.5">
+      <h3 className="font-serif text-2xl font-medium leading-tight tracking-[-0.02em]">{project.name}</h3>
+      <p className="mt-1.5 text-[15px] text-muted">{project.summary}</p>
+      <span className="mt-3 inline-block text-sm font-medium">GitHub ↗</span>
+    </div>
+  </a>
+);
+
+const ExperienceRow = ({ experience }: { experience: ExperienceEntry }) => (
+  <li className="grid gap-1 border-t border-line py-5.5 first:border-t-0 first:pt-0 md:grid-cols-[120px_1fr] md:gap-5">
+    <span className="text-sm text-muted md:pt-1.5">{experience.period}</span>
+    <div>
+      <h3 className="font-serif text-2xl font-medium leading-tight tracking-[-0.02em]">
+        {experience.company}
+        {experience.role ? (
+          <small className="ml-2 font-sans text-[15px] tracking-normal text-muted">{experience.role}</small>
+        ) : null}
+      </h3>
+      {experience.summary ? <p className="mt-1 text-muted">{experience.summary}</p> : null}
+    </div>
+  </li>
+);
+
+export const HomePage = () => (
+  <div className="min-h-dvh bg-paper font-sans text-ink">
+    <header className={`${pageContainerClasses} flex items-center justify-between py-6`}>
+      <a className={`whitespace-nowrap font-semibold text-ink no-underline ${focusRingClasses}`} href="#top">
+        {homeContent.identity.name}
+      </a>
+      <nav className="flex gap-4 sm:gap-6" aria-label="Primary navigation">
+        <a className={navLinkClasses} href="#projects">Projects</a>
+        <a className={navLinkClasses} href="#experience">Experience</a>
+        <a className={navLinkClasses} href="/articles/">Writing</a>
+      </nav>
+    </header>
+
+    <main className={pageContainerClasses} id="top">
+      <section className="max-w-[42.5rem] pb-18 pt-10 md:pb-24 md:pt-18">
+        <h1 className="font-serif text-[clamp(2.4rem,5vw,3.4rem)] font-medium leading-[1.05] tracking-[-0.02em]">
+          {homeContent.identity.greeting}
+        </h1>
+        <p className="mt-5.5 text-lg leading-relaxed">{homeContent.identity.summary}</p>
+        <div className="mt-8 flex flex-wrap gap-2.5">
+          <ContactButtons />
+          <a className={buttonClasses} href={homeContent.links.resume} target="_blank" rel="noreferrer">
+            Résumé
+          </a>
+        </div>
+      </section>
+
+      <section className="scroll-mt-6 border-t border-line pb-18 pt-14" id="projects">
+        <h2 className={sectionHeadingClasses}>Projects</h2>
+        <FeaturedProject />
+        <div className="mt-5 grid gap-5 md:grid-cols-2">
+          {homeContent.projects.map((project) => (
+            <ProjectTile key={project.name} project={project} />
+          ))}
+        </div>
+      </section>
+
+      <section className="scroll-mt-6 border-t border-line pb-18 pt-14" id="experience">
+        <h2 className={sectionHeadingClasses}>Experience</h2>
+        <ul className="list-none p-0">
+          {homeContent.experiences.map((experience) => (
+            <ExperienceRow key={experience.company} experience={experience} />
+          ))}
+        </ul>
+      </section>
+    </main>
+
+    <footer className={`${pageContainerClasses} flex flex-wrap items-center justify-between gap-5 border-t border-line pb-20 pt-14`} id="contact">
+      <h2 className="font-serif text-[2rem] font-medium tracking-[-0.02em]">Let's talk.</h2>
+      <div className="flex flex-wrap gap-2.5">
+        <ContactButtons />
+        <a className={buttonClasses} href={homeContent.links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+        <a className={buttonClasses} href={homeContent.links.github} target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+    </footer>
+  </div>
+);
