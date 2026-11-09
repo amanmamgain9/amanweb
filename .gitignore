@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 .aider*
 .cursor/
+
+# Private working files kept out of this public repo
+APPLIED_JOBS.md
+LINKEDIN_PROFILE_UPDATES.md
+OUTREACH.md
+output/
+tmp/
+.claude/
+.vercel

@@ -16,6 +16,14 @@ npm run build
 npm run lint
 ```
 
+## Deploy
+
+```bash
+npm run deploy
+```
+
+This builds the site and uploads `dist/` to production on Vercel. See `scripts/deploy.sh` for which Vercel account it uses.
+
 ## Styling
 
 The UI uses Tailwind CSS v4 through the Vite plugin. Shared colors, typography, content widths, and page gutters are defined in `src/styles/theme.css`; components use Tailwind utilities directly. There is no separate global component stylesheet.
